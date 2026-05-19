@@ -1,8 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { DeviceInfo } from '../../services/auth.service';
-
+import { DeviceInfo } from '../../models/Device';
 @Component({
   selector: 'app-dashboard-header',
   imports: [CommonModule, FormsModule],

@@ -1,7 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { DeviceInfo } from '../../models/Device';
+import { AlertService } from '../../services/alert.service';
+import { AuthService } from '../../services/auth.service';
 import { TelemetryService } from '../../services/telemetry.service';
 import { TelemetryChartDesignComponent } from '../telemetry-chart-design/telemetry-chart-design.component';
 
@@ -15,6 +19,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
   @Input() key: string | null = null;
   public data: any = {};
   private telemetrySub?: Subscription;
+  private deviceSub?: Subscription;
+  public deviceInfo: DeviceInfo | null = null;
 
   public isLive = false;
   public history: any[] = [];
@@ -22,9 +28,34 @@ export class DashboardComponent implements OnInit, OnDestroy {
   readonly MAX_RPM = 7000;
   readonly SHIFT_RPM = 6500;
 
-  constructor(private telemetryService: TelemetryService) {}
+  constructor(
+    private telemetryService: TelemetryService,
+    private authService: AuthService,
+    private alertService: AlertService,
+    private router: Router,
+  ) {}
 
-  ngOnInit() {
+  async ngOnInit() {
+    this.deviceInfo = await this.authService.getDeviceInfoFromServer();
+
+    // Si no hay sesión activa, redirigir a login
+    if (!this.deviceInfo) {
+      this.router.navigate(['/login']);
+      return;
+    }
+
+    // Subscribe to device changes (actualizaciones posteriores)
+    this.deviceSub = this.authService.device$.subscribe((info) => {
+      this.deviceInfo = info;
+    });
+
+    if (this.authService.isSubscriptionExpired()) {
+      this.alertService.subscriptionExpired().then(() => {});
+      return;
+    }
+
+    this.key = this.authService.getDeviceKey();
+
     if (this.key) {
       this.telemetryService.joinRoom(this.key);
 
@@ -41,6 +72,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.telemetrySub?.unsubscribe();
+    this.deviceSub?.unsubscribe();
   }
 
   getTempStatus(temp: number): string {

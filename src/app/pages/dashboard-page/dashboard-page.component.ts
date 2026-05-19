@@ -4,12 +4,10 @@ import { Subscription } from 'rxjs/internal/Subscription';
 import { DashboardHeaderComponent } from '../../shared/components/dashboard-header/dashboard-header.component';
 import { DashboardComponent } from '../../shared/components/dashboard/dashboard.component';
 import { PlanInfoToolbarComponent } from '../../shared/components/plan-info-toolbar/plan-info-toolbar.component';
+import { DeviceInfo, PlanInfo } from '../../shared/models/Device';
 import { AlertService } from '../../shared/services/alert.service';
-import { AuthService, DeviceInfo } from '../../shared/services/auth.service';
-import {
-  PlanInfo,
-  SessionsService,
-} from '../../shared/services/sessions.service';
+import { AuthService } from '../../shared/services/auth.service';
+import { SessionsService } from '../../shared/services/sessions.service';
 
 @Component({
   selector: 'app-dashboard-page',

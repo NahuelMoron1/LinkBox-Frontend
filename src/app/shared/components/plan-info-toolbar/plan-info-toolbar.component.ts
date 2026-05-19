@@ -2,9 +2,9 @@ import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { DeviceInfo, PlanInfo } from '../../models/Device';
 import { AlertService } from '../../services/alert.service';
-import { DeviceInfo } from '../../services/auth.service';
-import { PlanInfo, SessionsService } from '../../services/sessions.service';
+import { SessionsService } from '../../services/sessions.service';
 
 @Component({
   selector: 'app-plan-info-toolbar',

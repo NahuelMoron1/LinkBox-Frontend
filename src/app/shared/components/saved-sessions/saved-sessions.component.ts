@@ -3,12 +3,9 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { SessionDataResponse, SessionInfo } from '../../models/Session';
 import { AlertService } from '../../services/alert.service';
-import {
-  SessionDataResponse,
-  SessionInfo,
-  SessionsService,
-} from '../../services/sessions.service';
+import { SessionsService } from '../../services/sessions.service';
 
 @Component({
   selector: 'app-saved-sessions',

@@ -3,15 +3,7 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { environment } from '../../environments/environment';
-
-export interface DeviceInfo {
-  id: string;
-  clientName: string;
-  plan: 'basic' | 'pro' | 'ultimate';
-  subscriptionStatus: 'active' | 'suspended' | 'expired';
-  subscriptionEndDate: string | null;
-  sessionsSavedThisMonth: number;
-}
+import { DeviceInfo } from '../models/Device';
 
 @Injectable({
   providedIn: 'root',
@@ -30,11 +22,6 @@ export class AuthService {
     this.loadDeviceFromToken();
   }
 
-  // ========== AUTHENTICATION ==========
-  /**
-   * Login con device_key y password
-   * El servidor automáticamente pone las cookies httpOnly (access_token, refresh_token)
-   */
   login(device_key: string, password: string): Observable<any> {
     return this.http
       .post(
@@ -53,9 +40,6 @@ export class AuthService {
       );
   }
 
-  /**
-   * Logout - el servidor limpia las cookies
-   */
   logout(): void {
     this.http
       .post(this.apiUrl + '/logout', {}, { withCredentials: true })
@@ -74,20 +58,12 @@ export class AuthService {
       });
   }
 
-  // ========== TOKEN & SESSION ==========
-  /**
-   * Obtener datos del token JWT (desde las cookies httpOnly del servidor)
-   * withCredentials: true envía las cookies automáticamente
-   */
   getToken(): Observable<DeviceInfo> {
     return this.http.get<DeviceInfo>(`${this.apiUrl}/token`, {
       withCredentials: true,
     });
   }
 
-  /**
-   * Promesa para obtener token - útil para componentes con async/await
-   */
   async getTokenTC(): Promise<DeviceInfo | null> {
     try {
       const deviceInfo = await this.getToken().toPromise();
