@@ -1,0 +1,25 @@
+<div class="dashboard-header">
+  <div class="header-left">
+    <h1>LinkBox Dashboard</h1>
+    <p class="client-name" *ngIf="deviceInfo && deviceInfo.clientName">
+      {{ deviceInfo.clientName }}
+    </p>
+  </div>
+  <div class="header-right">
+    <!-- Plan Badge -->
+    <span class="plan-badge" [ngClass]="getPlanBadgeColor()">
+      {{ getPlanBadgeText() }}
+    </span>
+    <!-- Subscription Status -->
+    <span
+      *ngIf="deviceInfo && deviceInfo.subscriptionStatus !== 'active'"
+      class="status-badge"
+      [ngClass]="{
+        'bg-red-600': deviceInfo.subscriptionStatus === 'expired',
+        'bg-yellow-600': deviceInfo.subscriptionStatus === 'suspended',
+      }"
+    >
+      {{ deviceInfo.subscriptionStatus | uppercase }}
+    </span>
+  </div>
+</div>

@@ -1,0 +1,39 @@
+<div class="main-container">
+  <div class="login-card">
+    <!-- Lado Izquierdo: Branding/Imagen -->
+    <div class="info-side">
+      <div class="top-nav">
+        <span class="logo">LinkBox.</span>
+      </div>
+      <div class="welcome-text">
+        <h1>
+          Welcome <br />
+          Back!
+        </h1>
+      </div>
+    </div>
+
+    <!-- Lado Derecho: Formulario -->
+    <div class="form-side">
+      <h2>Log in</h2>
+
+      <div class="input-group">
+        <i class="icon-user"></i>
+        <input type="text" [(ngModel)]="key" placeholder="Device Key (UUID)" />
+      </div>
+
+      <div class="input-group">
+        <i class="icon-lock"></i>
+        <input type="password" [(ngModel)]="password" placeholder="Password" />
+      </div>
+
+      <button class="btn-login" (click)="onLogin()">Log in</button>
+
+      <div class="divider">
+        <span>Or</span>
+      </div>
+
+      <button class="btn-signup">Request Access</button>
+    </div>
+  </div>
+</div>

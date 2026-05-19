@@ -1,0 +1,77 @@
+/* ========== HEADER SECTION ========== */
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 0;
+  border-bottom: 1px solid #1a1a1a;
+  flex: 0 0 auto;
+  margin-bottom: 10px;
+}
+
+.header-left h1 {
+  margin: 0;
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #fff;
+}
+
+.header-left .client-name {
+  margin: 3px 0 0 0;
+  font-size: 0.9rem;
+  color: #888;
+}
+
+.header-right {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.plan-badge {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: bold;
+  color: #fff;
+  letter-spacing: 0.5px;
+}
+
+.plan-badge.bg-blue-500 {
+  background-color: #3b82f6;
+}
+
+.plan-badge.bg-green-500 {
+  background-color: #10b981;
+}
+
+.plan-badge.bg-purple-500 {
+  background-color: #8b5cf6;
+}
+
+.status-badge {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: bold;
+  color: #fff;
+  animation: pulse 2s infinite;
+}
+
+.status-badge.bg-red-600 {
+  background-color: #dc2626;
+}
+
+.status-badge.bg-yellow-600 {
+  background-color: #ca8a04;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}

@@ -1,0 +1,17 @@
+<div class="chart-container">
+  <div class="chart-header">
+    <button (click)="prevMetric()"><</button>
+    <span class="active-metric">{{ metrics[currentIndex].label }}</span>
+    <button (click)="nextMetric()">></button>
+    <button class="reset-btn" (click)="resetZoom()">RESET ZOOM</button>
+  </div>
+  <canvas
+    #chartCanvas
+    (mousedown)="handleMouseDown($event)"
+    (mousemove)="handleMouseMove($event)"
+    (mouseup)="handleMouseUp()"
+    (mouseleave)="handleMouseLeave()"
+    (wheel)="handleMouseWheel($event)"
+  >
+  </canvas>
+</div>

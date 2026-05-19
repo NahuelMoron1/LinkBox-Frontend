@@ -1,0 +1,42 @@
+.chart-container {
+  background: #080808;
+  border: 1px solid #1a1a1a;
+  border-radius: 4px;
+  padding: 10px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  user-select: none;
+}
+.chart-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 8px;
+}
+.active-metric {
+  color: #eee;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 11px;
+  letter-spacing: 1px;
+  width: 120px;
+  text-align: center;
+}
+button {
+  background: #111;
+  border: 1px solid #333;
+  color: #888;
+  cursor: pointer;
+  padding: 3px 8px;
+  border-radius: 3px;
+  font-size: 10px;
+}
+button:hover {
+  color: #fff;
+  border-color: #555;
+}
+.reset-btn {
+  margin-left: 10px;
+  color: #ff6600;
+}

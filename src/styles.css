@@ -1,1 +1,43 @@
 /* You can add global styles to this file, and also import other style files */
+
+@font-face {
+  font-family: "f1Black";
+  src: url("../public/Formula1-Black.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "f1Bold";
+  src: url("../public/Formula1-Bold-4.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "f1BoldWeb";
+  src: url("../public/Formula1-Bold_web.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "f1Italic";
+  src: url("../public/Formula1-Italic.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "f1Regular";
+  src: url("../public/Formula1-Regular-1.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "f1Wide";
+  src: url("../public/Formula1-Wide.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+
+body {
+  background-color: rgb(112, 29, 29);
+  font-family: "f1BoldWeb";
+}

@@ -1,0 +1,40 @@
+<div class="plan-toolbar">
+  <div class="toolbar-info">
+    <p *ngIf="planInfo && planInfo.features.autoSave" class="feature-indicator">
+      ✓ Auto-save enabled
+    </p>
+    <p
+      *ngIf="deviceInfo && deviceInfo.plan === 'pro' && planInfo"
+      class="feature-indicator"
+    >
+      Sessions: {{ planInfo.features.sessionsSaved }}/{{
+        planInfo.features.sessionsPerMonth
+      }}
+    </p>
+  </div>
+  <div class="toolbar-actions">
+    <button
+      *ngIf="deviceInfo && deviceInfo.plan !== 'basic'"
+      class="btn btn-secondary"
+      (click)="onViewSessions()"
+    >
+      📂 View Sessions
+    </button>
+    <button
+      class="btn btn-primary"
+      [disabled]="!deviceInfo || getSaveSessionButtonInfo().disabled"
+      (click)="onSaveSession()"
+    >
+      {{ deviceInfo ? getSaveSessionButtonInfo().text : "Loading..." }}
+    </button>
+    <button
+      *ngIf="
+        deviceInfo && (deviceInfo.plan === 'basic' || deviceInfo.plan === 'pro')
+      "
+      class="btn btn-upgrade"
+      (click)="onUpgrade()"
+    >
+      ⬆️ Upgrade
+    </button>
+  </div>
+</div>

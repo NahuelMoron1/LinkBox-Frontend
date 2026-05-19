@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard</title>
+  </head>
+  <body>
+    <!-- HEADER WITH PLAN INFO -->
+    <app-dashboard-header [deviceInfo]="deviceInfo"></app-dashboard-header>
+
+    <!-- PLAN INFO TOOLBAR -->
+    <app-plan-info-toolbar
+      [deviceInfo]="deviceInfo"
+      [planInfo]="planInfo"
+      [key]="key"
+    ></app-plan-info-toolbar>
+
+    <app-dashboard [key]="key"></app-dashboard>
+  </body>
+</html>

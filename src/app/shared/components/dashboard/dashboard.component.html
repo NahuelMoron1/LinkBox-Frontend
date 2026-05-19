@@ -1,0 +1,77 @@
+<div class="dashboard-wrapper">
+  <!-- INDICADOR LED SUPERIOR (Estilo Volante F1/GT3) -->
+  <div class="rpm-led-strip">
+    <div
+      *ngFor="let led of [].constructor(15); let i = index"
+      class="led"
+      [ngClass]="data.rpm >= 6500 ? 'all-blue-blink' : getLedColor(i)"
+      [class.active]="(data.rpm / 6500) * 15 > i || data.rpm >= 6500"
+    ></div>
+  </div>
+
+  <div class="telemetry-grid">
+    <!-- LADO IZQUIERDO -->
+    <div class="side-panel">
+      <div class="data-box yellow">
+        <span class="label">OIL PRESS</span>
+        <span class="value">{{ data.oil_press || 0 | number: "1.0-0" }}</span>
+      </div>
+      <div class="data-box" [ngClass]="getTempStatus(data.water_temp)">
+        <span class="label">WATER TEMP</span>
+        <span class="value"
+          >{{ data.water_temp || 0 | number: "1.0-0" }}<small>°C</small></span
+        >
+      </div>
+      <div class="data-box" [ngClass]="getTempStatus(data.oil_temp)">
+        <span class="label">OIL TEMP</span>
+        <span class="value"
+          >{{ data.oil_temp || 0 | number: "1.0-0" }}<small>°C</small></span
+        >
+      </div>
+    </div>
+
+    <!-- CENTRO: Estilo GT3/DDU -->
+    <div class="center-panel">
+      <div class="gear-container">
+        <span class="label">GEAR</span>
+        <span class="value">{{ data.gear || "N" }}</span>
+      </div>
+
+      <div class="speed-container">
+        <span class="value">{{ data.speed || "0" }}</span>
+        <span class="label">KM/H</span>
+      </div>
+
+      <div class="rpm-digital">
+        <span class="value">{{ data.rpm || "0" }}</span>
+        <span class="label">/ 7000 RPM</span>
+      </div>
+    </div>
+
+    <!-- LADO DERECHO -->
+    <div class="side-panel">
+      <div class="data-box pink">
+        <span class="label">FUEL PRESS</span>
+        <span class="value">{{ data.fuel_press || "0.0" }}</span>
+      </div>
+      <div class="data-box">
+        <span class="label">SONDA (AFR)</span>
+        <span class="value">{{ data.sonda || "0.00" }}</span>
+      </div>
+      <div *ngIf="isLive" class="data-box status-ok">
+        <span class="label">SYSTEM</span>
+        <span class="value">LIVE</span>
+      </div>
+      <div *ngIf="!isLive" class="data-box status-stopped">
+        <span class="label">SYSTEM</span>
+        <span class="value">STOPPED</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="chart-section">
+    <app-telemetry-chart-design
+      [fullData]="history"
+    ></app-telemetry-chart-design>
+  </div>
+</div>

@@ -1,0 +1,81 @@
+/* ========== TOOLBAR SECTION ========== */
+.plan-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 15px;
+  background: linear-gradient(
+    135deg,
+    rgba(15, 15, 15, 0.8) 0%,
+    rgba(25, 25, 25, 0.5) 100%
+  );
+  border: 1px solid #1a1a1a;
+  border-radius: 6px;
+  margin-bottom: 15px;
+  flex: 0 0 auto;
+}
+
+.toolbar-info {
+  display: flex;
+  gap: 20px;
+}
+
+.feature-indicator {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #10b981;
+  font-weight: 500;
+}
+
+.toolbar-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.btn {
+  padding: 8px 14px;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-primary {
+  background-color: #3b82f6;
+  color: #fff;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background-color: #2563eb;
+  box-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+}
+
+.btn-secondary {
+  background-color: #6b7280;
+  color: #fff;
+}
+
+.btn-secondary:hover {
+  background-color: #4b5563;
+}
+
+.btn-upgrade {
+  background-color: #8b5cf6;
+  color: #fff;
+}
+
+.btn-upgrade:hover {
+  background-color: #7c3aed;
+  box-shadow: 0 0 10px rgba(139, 92, 246, 0.5);
+}

@@ -1,0 +1,12 @@
+<div class="chart-container">
+  <div class="chart-header">
+    <button (click)="prevMetric()"><</button>
+    <span class="active-metric">{{ metrics[currentIndex].label }}</span>
+    <button (click)="nextMetric()">></button>
+  </div>
+  <canvas
+    #chartCanvas
+    (mousemove)="onMouseMove($event)"
+    (mouseleave)="onMouseLeave()"
+  ></canvas>
+</div>
