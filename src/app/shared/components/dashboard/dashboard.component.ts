@@ -116,10 +116,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
           this.data = this.history[this.history.length - 1];
           this.isLive = true;
         }
-
-        console.log(
-          `[DASHBOARD-ULTIMATE] Loaded ${this.history.length} historical records`,
-        );
       }
     } catch (error) {
       console.error(
@@ -140,19 +136,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     // Establecer nuevo timeout
     this.inactivityTimeout = setTimeout(async () => {
-      console.log('[DASHBOARD] Inactivity detected - marking as stopped');
       this.isLive = false;
 
       // Para plan ULTIMATE: Notificar al servidor para completar la sesión
       if (this.plan === 'ultimate' && this.deviceId) {
-        const completed = await this.sessionsService.completeRecordingSession(
-          this.deviceId,
-        );
-        if (completed) {
-          console.log(
-            '[DASHBOARD-ULTIMATE] Recording session completed on server',
-          );
-        }
+        await this.sessionsService.completeRecordingSession(this.deviceId);
       }
     }, 3000); // 3 segundos sin datos
   }

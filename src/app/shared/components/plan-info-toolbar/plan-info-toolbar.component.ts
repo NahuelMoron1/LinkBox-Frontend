@@ -80,7 +80,6 @@ export class PlanInfoToolbarComponent {
       this.alertService.upgradePrompt('Basic', 'Pro', 20).then((upgrade) => {
         if (upgrade) {
           // Navigate to upgrade or show upgrade info
-          console.log('User wants to upgrade to Pro');
         }
       });
       return;
@@ -100,7 +99,6 @@ export class PlanInfoToolbarComponent {
           )
           .then((upgrade) => {
             if (upgrade) {
-              console.log('User wants to upgrade to Ultimate');
             }
           });
         return;

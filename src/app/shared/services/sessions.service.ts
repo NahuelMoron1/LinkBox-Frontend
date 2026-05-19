@@ -227,7 +227,6 @@ export class SessionsService {
         )
         .toPromise();
 
-      console.log('[SESSION] Recording session completed');
       return true;
     } catch (error) {
       console.error('Failed to complete recording session:', error);
