@@ -1,3 +1,4 @@
+import { CommonModule } from '@angular/common';
 import {
   AfterViewInit,
   Component,
@@ -9,10 +10,11 @@ import {
   SimpleChanges,
   ViewChild,
 } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-telemetry-chart-design',
-  imports: [],
+  imports: [FormsModule, CommonModule],
   templateUrl: './telemetry-chart-design.component.html',
   styleUrl: './telemetry-chart-design.component.css',
 })
@@ -293,5 +295,9 @@ export class TelemetryChartDesignComponent
     this.currentIndex =
       (this.currentIndex - 1 + this.metrics.length) % this.metrics.length;
     this.render();
+  }
+
+  get hasData(): boolean {
+    return this.fullData && this.fullData.length >= 2;
   }
 }

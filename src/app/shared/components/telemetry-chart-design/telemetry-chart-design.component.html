@@ -5,6 +5,11 @@
     <button (click)="nextMetric()">></button>
     <button class="reset-btn" (click)="resetZoom()">RESET ZOOM</button>
   </div>
+
+  <div *ngIf="!hasData" class="placeholder">
+    <span>Your data will appear here once telemetry logger starts</span>
+  </div>
+
   <canvas
     #chartCanvas
     (mousedown)="handleMouseDown($event)"

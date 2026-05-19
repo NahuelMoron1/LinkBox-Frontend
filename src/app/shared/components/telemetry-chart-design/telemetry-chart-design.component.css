@@ -40,3 +40,23 @@ button:hover {
   margin-left: 10px;
   color: #ff6600;
 }
+canvas {
+  flex-grow: 1;
+  width: 100%;
+  image-rendering: crisp-edges;
+}
+
+.placeholder {
+  flex-grow: 1;
+  width: 100%;
+  background-color: #1a1a1a;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #888;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.95rem;
+  text-align: center;
+  padding: 20px;
+}
