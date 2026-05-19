@@ -55,6 +55,7 @@ export class DashboardPageComponent {
     }
 
     this.key = this.authService.getDeviceKey();
+    console.log('KEY: ', this.key);
 
     // Load plan information
     this.sessionsService.loadPlanInfo(this.key);
@@ -67,6 +68,14 @@ export class DashboardPageComponent {
       const recordingData = await this.sessionsService.loadRecordingSession(
         this.deviceInfo.id,
       );
+
+      if (recordingData?.session) {
+        console.log(
+          `[ULTIMATE] Recording session loaded: ${recordingData.session.id}`,
+          `Records: ${recordingData.data.length}`,
+        );
+        // El dashboard recibirá los datos vía currentSession$
+      }
     }
   }
 }
