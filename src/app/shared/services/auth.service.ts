@@ -67,7 +67,6 @@ export class AuthService {
   async getTokenTC(): Promise<DeviceInfo | null> {
     try {
       const deviceInfo = await this.getToken().toPromise();
-      console.log('DEVICE: ', deviceInfo);
 
       if (deviceInfo) {
         this.deviceSubject.next(deviceInfo);

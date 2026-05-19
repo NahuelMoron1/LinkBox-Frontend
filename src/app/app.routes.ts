@@ -1,4 +1,6 @@
 import { Routes } from '@angular/router';
+import { loggedGuard } from './shared/guards/loggedGuard';
+import { loginGuard } from './shared/guards/loginGuard';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -8,6 +10,7 @@ export const routes: Routes = [
       import('./shared/components/login/login.component').then(
         (m) => m.LoginComponent,
       ),
+    canActivate: [loginGuard],
   },
   {
     path: 'sessions',
@@ -15,6 +18,7 @@ export const routes: Routes = [
       import('./pages/sessions-page/sessions-page.component').then(
         (m) => m.SessionsPageComponent,
       ),
+    canActivate: [loggedGuard],
   },
   {
     path: 'dashboard',
@@ -22,5 +26,6 @@ export const routes: Routes = [
       import('./pages/dashboard-page/dashboard-page.component').then(
         (m) => m.DashboardPageComponent,
       ),
+    canActivate: [loggedGuard],
   },
 ];
