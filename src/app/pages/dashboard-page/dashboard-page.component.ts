@@ -55,10 +55,27 @@ export class DashboardPageComponent {
     }
 
     this.key = this.authService.getDeviceKey();
+    console.log('KEY: ', this.key);
 
+    // Load plan information
     this.sessionsService.loadPlanInfo(this.key);
     this.planSub = this.sessionsService.planInfo$.subscribe((info) => {
       this.planInfo = info;
     });
+
+    // Para plan ULTIMATE: Cargar la sesión recording actual con histórico
+    if (this.deviceInfo.plan === 'ultimate') {
+      const recordingData = await this.sessionsService.loadRecordingSession(
+        this.deviceInfo.id,
+      );
+
+      if (recordingData?.session) {
+        console.log(
+          `[ULTIMATE] Recording session loaded: ${recordingData.session.id}`,
+          `Records: ${recordingData.data.length}`,
+        );
+        // El dashboard recibirá los datos vía currentSession$
+      }
+    }
   }
 }

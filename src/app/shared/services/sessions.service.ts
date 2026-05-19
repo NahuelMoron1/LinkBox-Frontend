@@ -181,4 +181,57 @@ export class SessionsService {
     this.loadSessions();
     this.loadPlanInfo(key);
   }
+
+  /**
+   * Get current recording session with all historical telemetry (Ultimate only)
+   */
+  getRecordingSession(
+    deviceId: string,
+  ): Observable<{ session: any; data: any[] }> {
+    return this.http.get<{ session: any; data: any[] }>(
+      `${this.apiUrl}/${deviceId}/recording-session`,
+      { withCredentials: true },
+    );
+  }
+
+  /**
+   * Load recording session and its historical data (Ultimate plan)
+   */
+  async loadRecordingSession(deviceId: string): Promise<{
+    session: any;
+    data: any[];
+  } | null> {
+    try {
+      const result = await this.getRecordingSession(deviceId).toPromise();
+      if (result?.session) {
+        this.currentSessionSubject.next(result.session);
+      }
+      return result || null;
+    } catch (error) {
+      console.error('Failed to load recording session:', error);
+      return null;
+    }
+  }
+
+  /**
+   * Complete the current recording session (Ultimate only)
+   * Called when client detects inactivity
+   */
+  async completeRecordingSession(deviceId: string): Promise<boolean> {
+    try {
+      await this.http
+        .post(
+          `${this.apiUrl}/${deviceId}/recording-session/complete`,
+          {},
+          { withCredentials: true },
+        )
+        .toPromise();
+
+      console.log('[SESSION] Recording session completed');
+      return true;
+    } catch (error) {
+      console.error('Failed to complete recording session:', error);
+      return false;
+    }
+  }
 }

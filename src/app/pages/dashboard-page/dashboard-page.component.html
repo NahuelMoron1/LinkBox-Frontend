@@ -16,6 +16,10 @@
       [key]="key"
     ></app-plan-info-toolbar>
 
-    <app-dashboard [key]="key"></app-dashboard>
+    <app-dashboard
+      [key]="key"
+      [plan]="deviceInfo?.plan || null"
+      [deviceId]="deviceInfo?.id || null"
+    ></app-dashboard>
   </body>
 </html>
