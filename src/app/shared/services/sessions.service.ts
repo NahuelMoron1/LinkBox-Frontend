@@ -190,7 +190,7 @@ export class SessionsService {
   ): Observable<{ session: any; data: any[] }> {
     return this.http.get<{ session: any; data: any[] }>(
       `${this.apiUrl}/${deviceId}/recording-session`,
-      { withCredentials: true },
+      { params: { key: deviceId }, withCredentials: true },
     );
   }
 
@@ -223,7 +223,7 @@ export class SessionsService {
         .post(
           `${this.apiUrl}/${deviceId}/recording-session/complete`,
           {},
-          { withCredentials: true },
+          { params: { key: deviceId }, withCredentials: true },
         )
         .toPromise();
 
