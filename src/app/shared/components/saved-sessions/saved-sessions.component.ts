@@ -6,11 +6,12 @@ import { Subscription } from 'rxjs';
 import { SessionDataResponse, SessionInfo } from '../../models/Session';
 import { AlertService } from '../../services/alert.service';
 import { SessionsService } from '../../services/sessions.service';
+import { TelemetryChartDesignComponent } from '../telemetry-chart-design/telemetry-chart-design.component';
 
 @Component({
   selector: 'app-saved-sessions',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, TelemetryChartDesignComponent],
   templateUrl: './saved-sessions.component.html',
   styleUrl: './saved-sessions.component.css',
 })

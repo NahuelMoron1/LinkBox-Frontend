@@ -124,6 +124,11 @@
         <!-- TELEMETRY DATA GRID -->
         <div *ngIf="sessionData" class="telemetry-data-section">
           <h3>Telemetry Data</h3>
+          <div class="chart-section">
+            <app-telemetry-chart-design
+              [fullData]="sessionData.data"
+            ></app-telemetry-chart-design>
+          </div>
           <div class="data-table">
             <table>
               <thead>
