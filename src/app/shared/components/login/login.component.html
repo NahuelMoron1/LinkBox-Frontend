@@ -1,11 +1,16 @@
 <div class="main-container">
+
+  <!-- Theme toggle (top-right floating) -->
+  <button class="floating-theme-btn" (click)="themeService.toggle()" [title]="themeService.isDark ? 'Light mode' : 'Dark mode'">
+    {{ themeService.isDark ? '◻ LIGHT' : '◼ DARK' }}
+  </button>
+
   <div class="login-card">
 
     <!-- LEFT: branding / image -->
     <div class="info-side">
       <div class="brand-block">
-        <span class="brand-name">LINKBOX</span>
-        <span class="brand-dot">.</span>
+        <span class="brand-name">LINKBOX</span><span class="brand-dot">.</span>
       </div>
       <div class="welcome-block">
         <p class="welcome-label">TELEMETRY COMMAND CENTER</p>

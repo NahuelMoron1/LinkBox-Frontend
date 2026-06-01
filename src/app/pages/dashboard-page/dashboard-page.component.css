@@ -1,7 +1,8 @@
 :host {
   display: block;
-  background: #000;
-  color: #fff;
+  background: var(--bg-0);
+  color: var(--tx-1);
+  transition: background 0.2s;
 }
 
 .page-wrapper {
@@ -12,7 +13,8 @@
 
 .page-header-bar {
   padding: 0 20px;
-  background: #060606;
-  border-bottom: 1px solid #181818;
+  background: var(--bg-1);
+  border-bottom: 1px solid var(--brd-2);
   flex: 0 0 auto;
+  transition: background 0.2s;
 }

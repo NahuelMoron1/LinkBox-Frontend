@@ -3,7 +3,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 12px 0;
-  border-bottom: 1px solid #181818;
+  border-bottom: 1px solid var(--brd-2);
 }
 
 /* Left */
@@ -17,24 +17,24 @@
   font-size: 1rem;
   font-weight: 900;
   letter-spacing: 5px;
-  color: #fff;
+  color: var(--tx-1);
 }
 
 .header-sep {
-  color: #2a2a2a;
+  color: var(--brd-4);
   font-size: 0.8rem;
 }
 
 .header-subtitle {
   font-size: 0.6rem;
   letter-spacing: 4px;
-  color: #3a3a3a;
+  color: var(--tx-5);
   font-weight: 700;
 }
 
 .client-name {
   font-size: 0.65rem;
-  color: #555;
+  color: var(--tx-4);
   letter-spacing: 1.5px;
   margin-left: 8px;
   font-weight: 600;
@@ -47,6 +47,25 @@
   align-items: center;
 }
 
+/* Theme toggle */
+.theme-toggle {
+  padding: 3px 10px;
+  background: transparent;
+  border: 1px solid var(--brd-4);
+  color: var(--tx-4);
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.12s;
+}
+
+.theme-toggle:hover {
+  border-color: var(--tx-4);
+  color: var(--tx-3);
+}
+
 /* Plan badge */
 .plan-badge {
   padding: 3px 10px;
@@ -54,12 +73,12 @@
   font-size: 0.58rem;
   font-weight: 700;
   letter-spacing: 2.5px;
-  text-transform: uppercase;
 }
 
-.plan-badge.bg-blue-500   { color: #4a9eff; border-color: #1a4a7a; }
-.plan-badge.bg-green-500  { color: #00e64d; border-color: #005c1f; }
-.plan-badge.bg-purple-500 { color: #b07eff; border-color: #4a1a7a; }
+.plan-badge.plan-basic   { color: var(--acc-b); border-color: var(--acc-b-drk); }
+.plan-badge.plan-pro     { color: var(--acc-g-dim); border-color: var(--acc-g-drk); }
+.plan-badge.plan-ultimate{ color: var(--acc-p); border-color: var(--acc-p-drk); }
+.plan-badge.plan-default { color: var(--tx-4); border-color: var(--brd-4); }
 
 /* Subscription status badge */
 .status-badge {
@@ -68,14 +87,13 @@
   font-size: 0.58rem;
   font-weight: 700;
   letter-spacing: 2.5px;
-  text-transform: uppercase;
   animation: blink-status 2s infinite;
 }
 
-.status-badge.status-expired   { color: #ff3344; border-color: #5a0010; }
-.status-badge.status-suspended { color: #ffaa00; border-color: #5a3a00; }
+.status-badge.status-expired   { color: var(--acc-r); border-color: var(--acc-r-drk); }
+.status-badge.status-suspended { color: var(--acc-a); border-color: var(--acc-a-drk); }
 
 @keyframes blink-status {
   0%, 100% { opacity: 1; }
-  50%       { opacity: 0.55; }
+  50%       { opacity: 0.5; }
 }

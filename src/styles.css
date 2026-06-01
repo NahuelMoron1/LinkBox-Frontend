@@ -1,54 +1,152 @@
 @font-face {
   font-family: "f1Black";
   src: url("../public/Formula1-Black.ttf") format("truetype");
-  font-weight: normal;
-  font-style: normal;
 }
 @font-face {
   font-family: "f1Bold";
   src: url("../public/Formula1-Bold-4.ttf") format("truetype");
-  font-weight: normal;
-  font-style: normal;
 }
 @font-face {
   font-family: "f1BoldWeb";
   src: url("../public/Formula1-Bold_web.ttf") format("truetype");
-  font-weight: normal;
-  font-style: normal;
 }
 @font-face {
   font-family: "f1Italic";
   src: url("../public/Formula1-Italic.ttf") format("truetype");
-  font-weight: normal;
-  font-style: normal;
 }
 @font-face {
   font-family: "f1Regular";
   src: url("../public/Formula1-Regular-1.ttf") format("truetype");
-  font-weight: normal;
-  font-style: normal;
 }
 @font-face {
   font-family: "f1Wide";
   src: url("../public/Formula1-Wide.ttf") format("truetype");
-  font-weight: normal;
-  font-style: normal;
 }
 
+/* ================================================
+   DESIGN TOKENS — DARK (default)
+   ================================================ */
+:root {
+  /* Backgrounds */
+  --bg-0: #000000;
+  --bg-1: #060606;
+  --bg-2: #080808;
+  --bg-3: #0a0a0a;
+  --bg-4: #050505;
+
+  /* Borders */
+  --brd-0: #0c0c0c;
+  --brd-1: #141414;
+  --brd-2: #181818;
+  --brd-3: #1c1c1c;
+  --brd-4: #252525;
+
+  /* Text */
+  --tx-1: #ffffff;
+  --tx-2: #cccccc;
+  --tx-3: #888888;
+  --tx-4: #555555;
+  --tx-5: #333333;
+  --tx-6: #2a2a2a;
+
+  /* Accent — Green */
+  --acc-g:      #00ff88;
+  --acc-g-dim:  #00cc66;
+  --acc-g-drk:  #004d22;
+  --acc-g-bg:   rgba(0, 204, 102, 0.07);
+
+  /* Accent — Amber */
+  --acc-a:      #ffaa00;
+  --acc-a-dim:  #cc8800;
+  --acc-a-drk:  #4d3a00;
+
+  /* Accent — Red */
+  --acc-r:      #ff3344;
+  --acc-r-dim:  #cc1122;
+  --acc-r-drk:  #4d0011;
+
+  /* Accent — Blue */
+  --acc-b:      #4a9eff;
+  --acc-b-dim:  #1a6eff;
+  --acc-b-drk:  #1a3a7a;
+
+  /* Accent — Purple */
+  --acc-p:      #b07eff;
+  --acc-p-dim:  #8855ff;
+  --acc-p-drk:  #3a1a7a;
+}
+
+/* ================================================
+   DESIGN TOKENS — LIGHT
+   ================================================ */
+[data-theme="light"] {
+  /* Backgrounds */
+  --bg-0: #eeeef0;
+  --bg-1: #ffffff;
+  --bg-2: #f8f8f8;
+  --bg-3: #f2f2f2;
+  --bg-4: #fafafa;
+
+  /* Borders */
+  --brd-0: #f0f0f0;
+  --brd-1: #e8e8e8;
+  --brd-2: #e0e0e0;
+  --brd-3: #d4d4d4;
+  --brd-4: #bfbfbf;
+
+  /* Text */
+  --tx-1: #0a0a0a;
+  --tx-2: #222222;
+  --tx-3: #666666;
+  --tx-4: #999999;
+  --tx-5: #bbbbbb;
+  --tx-6: #cccccc;
+
+  /* Accent — Green (darker for legibility on white) */
+  --acc-g:      #007a3d;
+  --acc-g-dim:  #005c2e;
+  --acc-g-drk:  #c0e0d0;
+  --acc-g-bg:   rgba(0, 122, 61, 0.06);
+
+  /* Accent — Amber */
+  --acc-a:      #cc7700;
+  --acc-a-dim:  #aa6600;
+  --acc-a-drk:  #e0d0b0;
+
+  /* Accent — Red */
+  --acc-r:      #cc1122;
+  --acc-r-dim:  #aa0011;
+  --acc-r-drk:  #f0c0c5;
+
+  /* Accent — Blue */
+  --acc-b:      #1a5fcc;
+  --acc-b-dim:  #0044aa;
+  --acc-b-drk:  #c0d4f0;
+
+  /* Accent — Purple */
+  --acc-p:      #6633cc;
+  --acc-p-dim:  #4422aa;
+  --acc-p-drk:  #d8c0f0;
+}
+
+/* ================================================
+   GLOBAL BASE
+   ================================================ */
 *, *::before, *::after {
   box-sizing: border-box;
 }
 
 body {
   margin: 0;
-  background-color: #000;
+  background-color: var(--bg-0);
+  color: var(--tx-1);
   font-family: "f1BoldWeb", "Arial", sans-serif;
-  color: #fff;
   -webkit-font-smoothing: antialiased;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 /* Global scrollbar */
 ::-webkit-scrollbar       { width: 4px; height: 4px; }
-::-webkit-scrollbar-track { background: #080808; }
-::-webkit-scrollbar-thumb { background: #252525; }
-::-webkit-scrollbar-thumb:hover { background: #333; }
+::-webkit-scrollbar-track { background: var(--bg-2); }
+::-webkit-scrollbar-thumb { background: var(--brd-4); }
+::-webkit-scrollbar-thumb:hover { background: var(--tx-5); }

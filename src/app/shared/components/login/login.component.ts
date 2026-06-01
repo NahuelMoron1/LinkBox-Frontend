@@ -3,6 +3,7 @@ import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import Swal from 'sweetalert2';
 import { AuthService } from '../../services/auth.service';
+import { ThemeService } from '../../services/theme.service';
 
 @Component({
   selector: 'app-login',
@@ -11,13 +12,14 @@ import { AuthService } from '../../services/auth.service';
   styleUrl: './login.component.css',
 })
 export class LoginComponent {
-  private authService: AuthService;
   public key: string = '';
   public password: string = '';
 
-  constructor(authService: AuthService) {
-    this.authService = authService;
-  }
+  constructor(
+    private authService: AuthService,
+    public themeService: ThemeService,
+  ) {}
+
   onLogin() {
     if (!this.key || !this.password) {
       Swal.fire({
@@ -30,8 +32,7 @@ export class LoginComponent {
     }
 
     this.authService.login(this.key, this.password).subscribe({
-      next: (res) => {
-        // Opcional: Una alerta de éxito rápida antes de redirigir
+      next: () => {
         Swal.fire({
           icon: 'success',
           title: 'Conectado',
@@ -44,9 +45,7 @@ export class LoginComponent {
         Swal.fire({
           icon: 'error',
           title: 'Acceso Denegado',
-          text:
-            err.error.message ||
-            'Credenciales incorrectas o dispositivo inactivo.',
+          text: err.error.message || 'Credenciales incorrectas o dispositivo inactivo.',
           confirmButtonColor: '#d33',
           background: '#fff',
           color: '#000',

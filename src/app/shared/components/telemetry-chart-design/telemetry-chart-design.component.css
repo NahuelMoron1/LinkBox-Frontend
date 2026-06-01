@@ -1,13 +1,14 @@
 .chart-container {
-  background: #080808;
-  border: 1px solid #1a1a1a;
-  border-radius: 4px;
+  background: var(--bg-2);
+  border: 1px solid var(--brd-2);
   padding: 10px;
   height: 100%;
   display: flex;
   flex-direction: column;
   user-select: none;
+  transition: background 0.2s;
 }
+
 .chart-header {
   display: flex;
   justify-content: center;
@@ -15,31 +16,44 @@
   gap: 15px;
   margin-bottom: 8px;
 }
+
 .active-metric {
-  color: #eee;
+  color: var(--tx-2);
   font-family: "JetBrains Mono", monospace;
   font-size: 11px;
-  letter-spacing: 1px;
-  width: 120px;
+  letter-spacing: 2px;
+  width: 130px;
   text-align: center;
 }
+
 button {
-  background: #111;
-  border: 1px solid #333;
-  color: #888;
+  background: var(--bg-3);
+  border: 1px solid var(--brd-4);
+  color: var(--tx-4);
   cursor: pointer;
-  padding: 3px 8px;
-  border-radius: 3px;
+  padding: 3px 10px;
   font-size: 10px;
+  font-family: inherit;
+  font-weight: 700;
+  letter-spacing: 1px;
+  transition: all 0.12s;
 }
+
 button:hover {
-  color: #fff;
-  border-color: #555;
+  color: var(--tx-2);
+  border-color: var(--tx-4);
 }
+
 .reset-btn {
-  margin-left: 10px;
-  color: #ff6600;
+  color: var(--acc-a-dim);
+  border-color: var(--acc-a-drk);
 }
+
+.reset-btn:hover {
+  color: var(--acc-a);
+  border-color: var(--acc-a-dim);
+}
+
 canvas {
   flex-grow: 1;
   width: 100%;
@@ -49,14 +63,15 @@ canvas {
 .placeholder {
   flex-grow: 1;
   width: 100%;
-  background-color: #1a1a1a;
-  border-radius: 4px;
+  background: var(--bg-3);
+  border: 1px solid var(--brd-1);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #888;
+  color: var(--tx-5);
   font-family: "JetBrains Mono", monospace;
-  font-size: 0.95rem;
+  font-size: 0.65rem;
+  letter-spacing: 2px;
   text-align: center;
   padding: 20px;
 }

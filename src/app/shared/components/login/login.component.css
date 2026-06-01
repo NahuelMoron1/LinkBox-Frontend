@@ -3,13 +3,40 @@
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  background: #000;
+  background: var(--bg-0);
+  transition: background 0.2s;
 }
 
 .main-container {
   width: 100%;
   max-width: 960px;
   padding: 24px;
+  position: relative;
+}
+
+/* ================================================
+   FLOATING THEME TOGGLE
+   ================================================ */
+.floating-theme-btn {
+  position: fixed;
+  top: 16px;
+  right: 20px;
+  padding: 4px 12px;
+  background: transparent;
+  border: 1px solid var(--brd-4);
+  color: var(--tx-4);
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  cursor: pointer;
+  font-family: inherit;
+  z-index: 100;
+  transition: all 0.12s;
+}
+
+.floating-theme-btn:hover {
+  border-color: var(--tx-4);
+  color: var(--tx-3);
 }
 
 /* ================================================
@@ -18,12 +45,14 @@
 .login-card {
   display: flex;
   min-height: 560px;
-  border: 1px solid #1c1c1c;
+  border: 1px solid var(--brd-3);
   overflow: hidden;
+  transition: border-color 0.2s;
 }
 
 /* ================================================
    LEFT: image / branding
+   (always dark — overlay on racing image)
    ================================================ */
 .info-side {
   flex: 1.3;
@@ -41,7 +70,7 @@
   content: "";
   position: absolute;
   inset: 0;
-  background: rgba(0, 0, 0, 0.72);
+  background: rgba(0, 0, 0, 0.74);
 }
 
 .brand-block,
@@ -66,7 +95,7 @@
   margin: 0 0 12px;
   font-size: 0.6rem;
   letter-spacing: 3px;
-  color: #555;
+  color: #777;
   font-weight: 600;
 }
 
@@ -80,16 +109,17 @@
 }
 
 /* ================================================
-   RIGHT: form
+   RIGHT: form (theme-aware)
    ================================================ */
 .form-side {
   flex: 1;
-  background: #060606;
-  border-left: 1px solid #181818;
+  background: var(--bg-1);
+  border-left: 1px solid var(--brd-2);
   padding: 52px 44px;
   display: flex;
   flex-direction: column;
   justify-content: center;
+  transition: background 0.2s, border-color 0.2s;
 }
 
 .form-header {
@@ -101,13 +131,13 @@
   font-size: 2rem;
   font-weight: 900;
   letter-spacing: 5px;
-  color: #fff;
+  color: var(--tx-1);
 }
 
 .form-subtitle {
   margin: 0;
   font-size: 0.65rem;
-  color: #444;
+  color: var(--tx-4);
   letter-spacing: 1px;
 }
 
@@ -122,28 +152,28 @@
 .field-label {
   font-size: 0.6rem;
   letter-spacing: 2.5px;
-  color: #555;
+  color: var(--tx-4);
   font-weight: 700;
 }
 
 .field-input {
-  background: #0a0a0a;
-  border: 1px solid #1e1e1e;
-  color: #ccc;
+  background: var(--bg-3);
+  border: 1px solid var(--brd-3);
+  color: var(--tx-2);
   padding: 13px 14px;
   font-size: 0.82rem;
   font-family: "Courier New", "Consolas", monospace;
   outline: none;
-  transition: border-color 0.15s;
+  transition: border-color 0.15s, background 0.2s;
   width: 100%;
 }
 
 .field-input::placeholder {
-  color: #2a2a2a;
+  color: var(--tx-6);
 }
 
 .field-input:focus {
-  border-color: #00cc66;
+  border-color: var(--acc-g-dim);
 }
 
 /* Buttons */
@@ -152,8 +182,8 @@
   padding: 14px;
   margin-top: 10px;
   background: transparent;
-  border: 1px solid #00cc66;
-  color: #00ff88;
+  border: 1px solid var(--acc-g-dim);
+  color: var(--acc-g);
   font-size: 0.7rem;
   font-weight: 700;
   letter-spacing: 4px;
@@ -163,7 +193,7 @@
 }
 
 .btn-login:hover {
-  background: rgba(0, 204, 102, 0.08);
+  background: var(--acc-g-bg);
 }
 
 .divider {
@@ -171,7 +201,7 @@
   align-items: center;
   gap: 12px;
   margin: 22px 0;
-  color: #2a2a2a;
+  color: var(--tx-6);
   font-size: 0.6rem;
   letter-spacing: 2px;
 }
@@ -181,19 +211,19 @@
   content: "";
   flex: 1;
   height: 1px;
-  background: #181818;
+  background: var(--brd-2);
 }
 
 .divider span {
-  color: #333;
+  color: var(--tx-5);
 }
 
 .btn-access {
   width: 100%;
   padding: 14px;
   background: transparent;
-  border: 1px solid #1e1e1e;
-  color: #333;
+  border: 1px solid var(--brd-3);
+  color: var(--tx-5);
   font-size: 0.7rem;
   font-weight: 700;
   letter-spacing: 4px;
@@ -203,8 +233,8 @@
 }
 
 .btn-access:hover {
-  border-color: #333;
-  color: #555;
+  border-color: var(--brd-4);
+  color: var(--tx-4);
 }
 
 /* ================================================
@@ -227,7 +257,7 @@
 
   .form-side {
     border-left: none;
-    border-top: 1px solid #181818;
+    border-top: 1px solid var(--brd-2);
     padding: 36px 32px;
   }
 }

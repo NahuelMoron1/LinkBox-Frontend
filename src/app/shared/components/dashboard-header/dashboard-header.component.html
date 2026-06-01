@@ -7,10 +7,16 @@
       {{ deviceInfo.clientName }}
     </span>
   </div>
+
   <div class="header-right">
+    <button class="theme-toggle" (click)="themeService.toggle()" [title]="themeService.isDark ? 'Switch to light mode' : 'Switch to dark mode'">
+      {{ themeService.isDark ? '◻ LIGHT' : '◼ DARK' }}
+    </button>
+
     <span class="plan-badge" [ngClass]="getPlanBadgeColor()">
       {{ getPlanBadgeText() }}
     </span>
+
     <span
       *ngIf="deviceInfo && deviceInfo.subscriptionStatus !== 'active'"
       class="status-badge"
