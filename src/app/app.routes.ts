@@ -19,6 +19,13 @@ export const routes: Routes = [
     canActivate: [loginGuard],
   },
   {
+    path: 'pricing/:planId',
+    loadComponent: () =>
+      import('./pages/pricing-page/pricing-page.component').then(
+        (m) => m.PricingPageComponent,
+      ),
+  },
+  {
     path: 'sessions',
     loadComponent: () =>
       import('./pages/sessions-page/sessions-page.component').then(

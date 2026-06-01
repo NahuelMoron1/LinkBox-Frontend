@@ -25,6 +25,7 @@ export class MainMenuPageComponent implements OnInit {
 
   plans = [
     {
+      id: 'basic',
       name: 'BASIC',
       badgeClass: 'plan-basic',
       taglineKey: 'plan.basic.tagline',
@@ -33,6 +34,7 @@ export class MainMenuPageComponent implements OnInit {
       highlight: false,
     },
     {
+      id: 'pro',
       name: 'PRO',
       badgeClass: 'plan-pro',
       taglineKey: 'plan.pro.tagline',
@@ -41,6 +43,7 @@ export class MainMenuPageComponent implements OnInit {
       highlight: false,
     },
     {
+      id: 'ultimate',
       name: 'ULTIMATE',
       badgeClass: 'plan-ultimate',
       taglineKey: 'plan.ult.tagline',

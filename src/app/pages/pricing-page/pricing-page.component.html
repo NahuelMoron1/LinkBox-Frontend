@@ -1,0 +1,185 @@
+<div class="pricing-wrapper">
+
+  <!-- ══ HEADER ══ -->
+  <header class="pricing-header">
+    <a class="header-brand" routerLink="/">LINKBOX<span class="brand-dot">.</span></a>
+    <div class="header-center">
+      <a class="header-back" routerLink="/">← {{ 'sess.back' | translate }}</a>
+    </div>
+    <div class="header-actions">
+      <button class="hdr-toggle" (click)="i18n.toggle()">{{ 'nav.langToggle' | translate }}</button>
+      <button class="hdr-toggle" (click)="themeService.toggle()">
+        {{ themeService.isDark ? '◻ LIGHT' : '◼ DARK' }}
+      </button>
+    </div>
+  </header>
+
+  <!-- ══ PLAN SELECTOR ══ -->
+  <div class="plan-selector">
+    <p class="billing-badge">{{ 'pricing.billing' | translate }}</p>
+    <div class="plan-tabs">
+      <button
+        *ngFor="let p of plansArray"
+        class="plan-tab"
+        [class.active]="selectedPlan.id === p.id"
+        [class.tab-popular]="p.popular"
+        (click)="selectPlan(p.id)"
+      >
+        <span class="tab-mark" *ngIf="p.popular">{{ 'pricing.mostPopular' | translate }}</span>
+        <span class="tab-badge" [ngClass]="p.badgeClass">{{ p.name }}</span>
+        <span class="tab-price">
+          ${{ p.monthlyPrice | number:'1.2-2' }}<small>{{ '/mo' }}</small>
+        </span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ══ MAIN CONTENT ══ -->
+  <div class="pricing-main">
+
+    <!-- LEFT: plan details + features -->
+    <div class="plan-detail">
+      <div class="plan-hero">
+        <span class="plan-hero-badge" [ngClass]="selectedPlan.badgeClass">{{ selectedPlan.name }}</span>
+        <h1 class="plan-hero-name">{{ selectedPlan.taglineKey | translate }}</h1>
+        <p class="plan-hero-desc">{{ selectedPlan.descKey | translate }}</p>
+      </div>
+
+      <div class="features-table">
+        <div class="features-table-header">{{ 'pricing.whatsIncluded' | translate }}</div>
+        <div
+          *ngFor="let f of selectedPlan.features"
+          class="feature-row"
+          [class.feature-row--on]="f.included"
+          [class.feature-row--off]="!f.included"
+        >
+          <span class="feature-check">{{ f.included ? '✓' : '—' }}</span>
+          <span class="feature-label">{{ f.labelKey | translate }}</span>
+        </div>
+      </div>
+
+      <div class="compare-hint">
+        <span>{{ 'pricing.comparePlans' | translate }}</span>
+        <button *ngFor="let p of plansArray" class="compare-btn"
+                [class.active]="selectedPlan.id === p.id" (click)="selectPlan(p.id)">
+          {{ p.name }}
+        </button>
+      </div>
+    </div>
+
+    <!-- RIGHT: order summary + checkout -->
+    <div class="checkout-panel">
+
+      <!-- Order summary -->
+      <div class="order-summary">
+        <div class="summary-title">{{ 'pricing.orderSummary' | translate }}</div>
+        <div class="summary-plan-row">
+          <span class="summary-plan-name">
+            <span class="summary-badge" [ngClass]="selectedPlan.badgeClass">{{ selectedPlan.name }}</span>
+            {{ 'pricing.annualPlan' | translate }}
+          </span>
+          <span class="summary-plan-price">${{ selectedPlan.yearlyPrice | number:'1.2-2' }}</span>
+        </div>
+        <div class="summary-breakdown">
+          ${{ selectedPlan.monthlyPrice | number:'1.2-2' }}/mo × 12 months
+        </div>
+        <div class="summary-sep"></div>
+        <div class="summary-total-row">
+          <span>{{ 'pricing.totalToday' | translate }}</span>
+          <span class="summary-total-amount">${{ selectedPlan.yearlyPrice | number:'1.2-2' }}</span>
+        </div>
+      </div>
+
+      <!-- Contact -->
+      <div class="form-block">
+        <div class="form-block-title">{{ 'pricing.contact' | translate }}</div>
+        <div class="field-group">
+          <label class="field-label">{{ 'pricing.emailLabel' | translate }}</label>
+          <input type="email" class="field-input" [(ngModel)]="form.email"
+                 [placeholder]="'pricing.emailPh' | translate" />
+        </div>
+        <div class="field-group">
+          <label class="field-label">{{ 'pricing.nameLabel' | translate }}</label>
+          <input type="text" class="field-input" [(ngModel)]="form.name"
+                 [placeholder]="'pricing.namePh' | translate" />
+        </div>
+      </div>
+
+      <!-- Payment -->
+      <div class="form-block">
+        <div class="form-block-title">{{ 'pricing.payment' | translate }}</div>
+        <div class="field-group">
+          <label class="field-label">{{ 'pricing.cardNumber' | translate }}</label>
+          <input type="text" class="field-input field-input--mono"
+                 [value]="form.cardNumber" (input)="formatCard($event)"
+                 [placeholder]="'pricing.cardPh' | translate" maxlength="19" />
+        </div>
+        <div class="field-row">
+          <div class="field-group">
+            <label class="field-label">{{ 'pricing.expiry' | translate }}</label>
+            <input type="text" class="field-input field-input--mono"
+                   [value]="form.expiry" (input)="formatExpiry($event)"
+                   [placeholder]="'pricing.expiryPh' | translate" maxlength="5" />
+          </div>
+          <div class="field-group">
+            <label class="field-label">{{ 'pricing.cvv' | translate }}</label>
+            <input type="text" class="field-input field-input--mono"
+                   [(ngModel)]="form.cvv"
+                   [placeholder]="'pricing.cvvPh' | translate" maxlength="4" />
+          </div>
+        </div>
+        <div class="field-group">
+          <label class="field-label">{{ 'pricing.cardHolder' | translate }}</label>
+          <input type="text" class="field-input" [(ngModel)]="form.cardName"
+                 [placeholder]="'pricing.cardNamePh' | translate" />
+        </div>
+        <div class="payment-security">
+          <span class="lock-icon">🔒</span>
+          {{ 'pricing.security' | translate }}
+        </div>
+      </div>
+
+      <!-- CTA -->
+      <button class="subscribe-btn" [ngClass]="selectedPlan.badgeClass + '-btn'" (click)="onSubscribe()">
+        {{ ('pricing.subscribeBtn' | translate) + ' ' + selectedPlan.name }}
+      </button>
+
+      <p class="legal-note">
+        {{ 'pricing.legalPaid1' | translate }}
+        ${{ selectedPlan.yearlyPrice | number:'1.2-2' }}
+        {{ 'pricing.legalPaid2' | translate }}
+      </p>
+    </div>
+
+  </div>
+
+  <!-- ══ FAQ ══ -->
+  <section class="faq-section">
+    <div class="faq-inner">
+      <p class="faq-eyebrow">{{ 'pricing.faqEyebrow' | translate }}</p>
+      <h2 class="faq-title">{{ 'pricing.faqTitle' | translate }}</h2>
+      <div class="faq-list">
+        <div *ngFor="let item of faqItems; let i = index"
+             class="faq-item" [class.open]="openFaqIndex === i" (click)="toggleFaq(i)">
+          <div class="faq-question">
+            <span>{{ item.qKey | translate }}</span>
+            <span class="faq-chevron">{{ openFaqIndex === i ? '−' : '+' }}</span>
+          </div>
+          <div class="faq-answer" *ngIf="openFaqIndex === i">{{ item.aKey | translate }}</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ TRUST BAR ══ -->
+  <div class="trust-bar">
+    <span class="trust-item">{{ 'pricing.trustSecure' | translate }}</span>
+    <span class="trust-sep">·</span>
+    <span class="trust-item">{{ 'pricing.trustBilled' | translate }}</span>
+    <span class="trust-sep">·</span>
+    <span class="trust-item">{{ 'pricing.trustCancel' | translate }}</span>
+    <span class="trust-sep">·</span>
+    <span class="trust-item">{{ 'pricing.trustStripe' | translate }}</span>
+  </div>
+
+</div>
