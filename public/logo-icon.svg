@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="400" height="400" viewBox="0 0 400 400"
+     xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@700&amp;display=swap');
+    </style>
+    <!-- Radial glow behind the green dot -->
+    <radialGradient id="dotGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%"   stop-color="#00ff88" stop-opacity="0.22"/>
+      <stop offset="100%" stop-color="#00ff88" stop-opacity="0"/>
+    </radialGradient>
+    <!-- Clip to circle -->
+    <clipPath id="circleClip">
+      <circle cx="200" cy="200" r="192"/>
+    </clipPath>
+  </defs>
+
+  <!-- ── BASE CIRCLE ── -->
+  <circle cx="200" cy="200" r="196" fill="#060606"/>
+  <!-- Outer ring -->
+  <circle cx="200" cy="200" r="194" fill="none" stroke="#1c1c1c" stroke-width="2"/>
+  <!-- Inner depth ring -->
+  <circle cx="200" cy="200" r="178" fill="none" stroke="#0e0e0e" stroke-width="1"/>
+
+  <!-- ── TACHOMETER ARC (top, green, like a gauge at full) ── -->
+  <!-- Arc from 222° to 318° (top portion, 96° span, clockwise) -->
+  <!-- 222° → x=200+175·cos(222°)=200-130=70,  y=200+175·sin(222°)=200-117=83  -->
+  <!-- 318° → x=200+175·cos(318°)=200+130=330, y=200+175·sin(318°)=200-117=83  -->
+  <path d="M 70,83 A 175,175 0 0,1 330,83"
+        fill="none" stroke="#00ff88" stroke-width="3"
+        stroke-linecap="round" opacity="0.5"/>
+
+  <!-- Arc end-caps (small circles at start & end of arc) -->
+  <circle cx="70"  cy="83" r="3.5" fill="#00ff88" opacity="0.6"/>
+  <circle cx="330" cy="83" r="3.5" fill="#00ff88" opacity="0.6"/>
+
+  <!-- ── LARGE "L" MONOGRAM ── -->
+  <text
+    x="100"
+    y="258"
+    font-family="'Rajdhani', 'Verdana', 'Arial', sans-serif"
+    font-weight="700"
+    font-size="178"
+    fill="#ffffff"
+    letter-spacing="0"
+    clip-path="url(#circleClip)"
+  >L</text>
+
+  <!-- ── BRAND DOT (the signature ".") ── -->
+  <!-- Glow halo behind the dot -->
+  <circle cx="196" cy="248" r="44" fill="url(#dotGlow)"/>
+  <!-- The dot itself -->
+  <circle cx="196" cy="248" r="20" fill="#00ff88"/>
+  <!-- Tiny inner dark circle — gives it depth / lens feel -->
+  <circle cx="196" cy="248" r="7"  fill="#050505"/>
+
+  <!-- ── WORDMARK at bottom ── -->
+  <text
+    x="200"
+    y="324"
+    font-family="'Rajdhani', 'Verdana', 'Arial', sans-serif"
+    font-weight="700"
+    font-size="17"
+    fill="#555555"
+    letter-spacing="9"
+    text-anchor="middle"
+  >LINKBOX</text>
+
+  <!-- Thin green underline below wordmark -->
+  <line x1="142" y1="332" x2="258" y2="332"
+        stroke="#00ff88" stroke-width="1" opacity="0.25"/>
+
+</svg>

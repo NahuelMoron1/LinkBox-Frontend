@@ -1,6 +1,8 @@
 <div class="dashboard-header">
   <div class="header-left">
-    <span class="header-title">LINKBOX</span>
+    <a class="header-brand-link" routerLink="/">
+      <span class="header-title">LINKBOX<span class="brand-dot">.</span></span>
+    </a>
     <span class="header-sep">·</span>
     <span class="header-subtitle">{{ 'header.sub' | translate }}</span>
     <span *ngIf="deviceInfo && deviceInfo.clientName" class="client-name">
@@ -24,5 +26,6 @@
     >
       {{ deviceInfo.subscriptionStatus === 'expired' ? ('header.expired' | translate) : ('header.suspended' | translate) }}
     </span>
+    <button class="logout-btn" (click)="logout()">{{ 'nav.logout' | translate }}</button>
   </div>
 </div>

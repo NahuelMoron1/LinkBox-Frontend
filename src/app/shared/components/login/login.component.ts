@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 import Swal from 'sweetalert2';
 import { TranslatePipe } from '../../pipes/translate.pipe';
 import { AuthService } from '../../services/auth.service';
@@ -9,7 +10,7 @@ import { ThemeService } from '../../services/theme.service';
 
 @Component({
   selector: 'app-login',
-  imports: [CommonModule, FormsModule, TranslatePipe],
+  imports: [CommonModule, FormsModule, TranslatePipe, RouterLink],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css',
 })

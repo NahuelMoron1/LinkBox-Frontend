@@ -27,6 +27,25 @@
   margin-bottom: 20px;
 }
 
+.hdr-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.hdr-brand {
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 5px;
+  color: var(--tx-1);
+  text-decoration: none;
+  transition: color 0.12s;
+}
+
+.hdr-brand:hover { color: var(--tx-2); }
+
+.hdr-brand .brand-dot { color: var(--acc-g); letter-spacing: 0; }
+
 .hdr-title-block {
   display: flex;
   align-items: center;

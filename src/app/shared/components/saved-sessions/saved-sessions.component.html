@@ -1,10 +1,13 @@
 <div class="sessions-wrapper">
   <div class="sessions-header">
-    <button class="hdr-btn" (click)="backToDashboard()">{{ 'sess.back' | translate }}</button>
+    <div class="hdr-left">
+      <a class="hdr-brand" routerLink="/">LINKBOX<span class="brand-dot">.</span></a>
+      <button class="hdr-btn" (click)="backToDashboard()">{{ 'sess.back' | translate }}</button>
+    </div>
     <div class="hdr-title-block">
       <span class="hdr-title">{{ 'sess.title' | translate }}</span>
     </div>
-    <button class="hdr-btn hdr-btn--right" (click)="loadSessions()" [disabled]="isLoading">
+    <button class="hdr-btn" (click)="loadSessions()" [disabled]="isLoading">
       {{ isLoading ? ('sess.loading' | translate) : ('sess.refresh' | translate) }}
     </button>
   </div>

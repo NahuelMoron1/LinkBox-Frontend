@@ -87,12 +87,22 @@
   z-index: 2;
 }
 
+.brand-link {
+  text-decoration: none;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0;
+}
+
 .brand-name {
   font-size: 1.5rem;
   font-weight: 700;
   letter-spacing: 8px;
   color: #fff;
+  transition: opacity 0.15s;
 }
+
+.brand-link:hover .brand-name { opacity: 0.75; }
 
 .brand-dot {
   color: #00ff88;

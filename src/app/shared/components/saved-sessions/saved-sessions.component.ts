@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { RouterLink } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { TranslatePipe } from '../../pipes/translate.pipe';
 import { SessionDataResponse, SessionInfo } from '../../models/Session';
@@ -12,7 +13,7 @@ import { TelemetryChartDesignComponent } from '../telemetry-chart-design/telemet
 @Component({
   selector: 'app-saved-sessions',
   standalone: true,
-  imports: [CommonModule, FormsModule, TelemetryChartDesignComponent, TranslatePipe],
+  imports: [CommonModule, FormsModule, TelemetryChartDesignComponent, TranslatePipe, RouterLink],
   templateUrl: './saved-sessions.component.html',
   styleUrl: './saved-sessions.component.css',
 })
