@@ -13,6 +13,8 @@ export class SessionsService {
   private appUrl = environment.endpoint;
   private apiUrl = `${this.appUrl}/api/devices`;
 
+  private readonly httpOptions = { withCredentials: true };
+
   private sessionsSubject = new BehaviorSubject<SessionInfo[]>([]);
   public sessions$ = this.sessionsSubject.asObservable();
 
@@ -27,23 +29,16 @@ export class SessionsService {
     private authService: AuthService,
   ) {}
 
-  /**
-   * Get all saved sessions for the current device
-   */
   getSessions(): Observable<any> {
     const deviceId = this.authService.getDeviceId();
-    if (!deviceId) {
-      throw new Error('Device ID not found');
-    }
+    if (!deviceId) throw new Error('Device ID not found');
 
-    return this.http.get<any>(`${this.apiUrl}/${deviceId}/sessions`, {
-      params: { key: deviceId },
-    });
+    return this.http.get<any>(
+      `${this.apiUrl}/${deviceId}/sessions`,
+      this.httpOptions,
+    );
   }
 
-  /**
-   * Load all sessions and update subject
-   */
   loadSessions(): void {
     const deviceId = this.authService.getDeviceId();
     if (!deviceId) return;
@@ -61,71 +56,50 @@ export class SessionsService {
 
   getSessionData(sessionId: string): Observable<SessionDataResponse> {
     const deviceId = this.authService.getDeviceId();
-    if (!deviceId) {
-      throw new Error('Device ID not found');
-    }
+    if (!deviceId) throw new Error('Device ID not found');
 
     return this.http.get<SessionDataResponse>(
       `${this.apiUrl}/sessions/${sessionId}/data`,
-      {
-        params: { key: deviceId },
-      },
+      this.httpOptions,
     );
   }
 
-  /**
-   * Save current session (Pro plan - max 2/month, Ultimate - unlimited)
-   */
   saveSession(sessionName: string): Observable<any> {
     const deviceId = this.authService.getDeviceId();
-    if (!deviceId) {
-      throw new Error('Device ID not found');
-    }
+    if (!deviceId) throw new Error('Device ID not found');
 
     return this.http.post<any>(
       `${this.apiUrl}/${deviceId}/sessions/save`,
-      {
-        sessionName,
-      },
-      { params: { key: deviceId } },
+      { sessionName },
+      this.httpOptions,
     );
   }
 
-  /**
-   * Delete a saved session
-   */
   deleteSession(sessionId: string): Observable<any> {
     const deviceId = this.authService.getDeviceId();
-    if (!deviceId) {
-      throw new Error('Device ID not found');
-    }
-    return this.http.delete<any>(`${this.apiUrl}/sessions/${sessionId}`, {
-      params: { key: deviceId },
-    });
+    if (!deviceId) throw new Error('Device ID not found');
+
+    return this.http.delete<any>(
+      `${this.apiUrl}/sessions/${sessionId}`,
+      this.httpOptions,
+    );
   }
 
-  /**
-   * Get plan information with feature details
-   */
-  getPlanInfo(key: string | null): Observable<PlanInfo> {
+  getPlanInfo(): Observable<PlanInfo> {
     const deviceId = this.authService.getDeviceId();
-    if (!deviceId) {
-      throw new Error('Device ID not found');
-    }
+    if (!deviceId) throw new Error('Device ID not found');
 
-    return this.http.get<PlanInfo>(`${this.apiUrl}/${deviceId}/plan-info`, {
-      params: { key: key || '' },
-    });
+    return this.http.get<PlanInfo>(
+      `${this.apiUrl}/${deviceId}/plan-info`,
+      this.httpOptions,
+    );
   }
 
-  /**
-   * Load plan info and update subject
-   */
-  loadPlanInfo(key: string | null): void {
+  loadPlanInfo(): void {
     const deviceId = this.authService.getDeviceId();
     if (!deviceId) return;
 
-    this.getPlanInfo(key).subscribe({
+    this.getPlanInfo().subscribe({
       next: (info) => {
         this.planInfoSubject.next(info);
       },
@@ -135,68 +109,44 @@ export class SessionsService {
     });
   }
 
-  /**
-   * Set current session (for playback/viewing)
-   */
   setCurrentSession(session: SessionInfo): void {
     this.currentSessionSubject.next(session);
   }
 
-  /**
-   * Get current session being viewed/played
-   */
   getCurrentSession(): SessionInfo | null {
     return this.currentSessionSubject.value;
   }
 
-  /**
-   * Check if can save session (Pro/Ultimate only)
-   */
   canSaveSession(): boolean {
     const plan = this.authService.getPlan();
     return plan === 'pro' || plan === 'ultimate';
   }
 
-  /**
-   * Get remaining saves for Pro plan
-   */
   getRemainingProSaves(): number {
     const planInfo = this.planInfoSubject.value;
     if (!planInfo || planInfo.plan !== 'pro') return 0;
     return planInfo.features.sessionsRemaining || 0;
   }
 
-  /**
-   * Check if subscription is expired
-   */
   isSubscriptionExpired(): boolean {
     const status = this.authService.getSubscriptionStatus();
     return status === 'expired';
   }
 
-  /**
-   * Refresh all data
-   */
-  refreshAll(key: string | null): void {
+  refreshAll(): void {
     this.loadSessions();
-    this.loadPlanInfo(key);
+    this.loadPlanInfo();
   }
 
-  /**
-   * Get current recording session with all historical telemetry (Ultimate only)
-   */
   getRecordingSession(
     deviceId: string,
   ): Observable<{ session: any; data: any[] }> {
     return this.http.get<{ session: any; data: any[] }>(
       `${this.apiUrl}/${deviceId}/recording-session`,
-      { params: { key: deviceId }, withCredentials: true },
+      this.httpOptions,
     );
   }
 
-  /**
-   * Load recording session and its historical data (Ultimate plan)
-   */
   async loadRecordingSession(deviceId: string): Promise<{
     session: any;
     data: any[];
@@ -213,21 +163,15 @@ export class SessionsService {
     }
   }
 
-  /**
-   * Complete the current recording session (Ultimate only)
-   * Called when client detects inactivity
-   */
   async completeRecordingSession(deviceId: string): Promise<boolean> {
     try {
       await this.http
         .post(
           `${this.apiUrl}/${deviceId}/recording-session/complete`,
           {},
-          { params: { key: deviceId }, withCredentials: true },
+          this.httpOptions,
         )
         .toPromise();
-
-      console.log('[SESSION] Recording session completed');
       return true;
     } catch (error) {
       console.error('Failed to complete recording session:', error);

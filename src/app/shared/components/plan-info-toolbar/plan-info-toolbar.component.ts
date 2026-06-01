@@ -81,7 +81,7 @@ export class PlanInfoToolbarComponent {
         this.alertService.close();
         this.alertService.sessionSaved(response.session.name, response.session.totalRecords);
         this.sessionsService.loadSessions();
-        this.sessionsService.loadPlanInfo(this.key);
+        this.sessionsService.loadPlanInfo();
       },
       error: (error) => {
         this.alertService.close();

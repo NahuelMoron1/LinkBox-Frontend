@@ -55,10 +55,9 @@ export class DashboardPageComponent {
     }
 
     this.key = this.authService.getDeviceKey();
-    console.log('KEY: ', this.key);
 
     // Load plan information
-    this.sessionsService.loadPlanInfo(this.key);
+    this.sessionsService.loadPlanInfo();
     this.planSub = this.sessionsService.planInfo$.subscribe((info) => {
       this.planInfo = info;
     });
