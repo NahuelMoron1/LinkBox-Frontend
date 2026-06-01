@@ -3,7 +3,13 @@ import { loggedGuard } from './shared/guards/loggedGuard';
 import { loginGuard } from './shared/guards/loginGuard';
 
 export const routes: Routes = [
-  { path: '', redirectTo: 'login', pathMatch: 'full' },
+  {
+    path: '',
+    loadComponent: () =>
+      import('./pages/main-menu-page/main-menu-page.component').then(
+        (m) => m.MainMenuPageComponent,
+      ),
+  },
   {
     path: 'login',
     loadComponent: () =>
@@ -28,4 +34,5 @@ export const routes: Routes = [
       ),
     canActivate: [loggedGuard],
   },
+  { path: '**', redirectTo: '' },
 ];
