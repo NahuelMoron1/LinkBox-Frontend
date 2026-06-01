@@ -180,10 +180,10 @@
   inset: 0;
   background: linear-gradient(
     105deg,
-    rgba(0, 0, 0, 0.92) 0%,
-    rgba(0, 0, 0, 0.72) 38%,
-    rgba(0, 0, 0, 0.35) 65%,
-    rgba(0, 0, 0, 0.15) 100%
+    rgba(0, 0, 0, 0.72) 0%,
+    rgba(0, 0, 0, 0.50) 38%,
+    rgba(0, 0, 0, 0.20) 65%,
+    rgba(0, 0, 0, 0.06) 100%
   );
 }
 
@@ -354,13 +354,13 @@
   content: "";
   position: absolute;
   inset: 0;
-  background: rgba(0, 0, 0, 0.78);
+  background: rgba(0, 0, 0, 0.52);
   z-index: 0;
 }
 
 /* Slightly lighter overlay in light mode */
 :host-context([data-theme="light"]) .features-section::before {
-  background: rgba(0, 0, 0, 0.68);
+  background: rgba(0, 0, 0, 0.44);
 }
 
 /* Section content sits above the overlay */
