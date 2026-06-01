@@ -1,81 +1,83 @@
-/* ========== TOOLBAR SECTION ========== */
 .plan-toolbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 12px 15px;
-  background: linear-gradient(
-    135deg,
-    rgba(15, 15, 15, 0.8) 0%,
-    rgba(25, 25, 25, 0.5) 100%
-  );
-  border: 1px solid #1a1a1a;
-  border-radius: 6px;
-  margin-bottom: 15px;
-  flex: 0 0 auto;
+  padding: 9px 0;
+  border-bottom: 1px solid #141414;
 }
 
+/* Info side */
 .toolbar-info {
   display: flex;
-  gap: 20px;
-}
-
-.feature-indicator {
-  margin: 0;
-  font-size: 0.85rem;
-  color: #10b981;
-  font-weight: 500;
-}
-
-.toolbar-actions {
-  display: flex;
-  gap: 10px;
+  gap: 16px;
   align-items: center;
 }
 
-.btn {
-  padding: 8px 14px;
-  border: none;
-  border-radius: 4px;
-  font-size: 0.85rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  white-space: nowrap;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+.feature-tag {
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: #3a3a3a;
+  border: 1px solid #1e1e1e;
+  padding: 2px 8px;
 }
 
-.btn:disabled {
-  opacity: 0.5;
+.feature-tag--on {
+  color: #00cc55;
+  border-color: #004d22;
+}
+
+/* Actions side */
+.toolbar-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.tb-btn {
+  padding: 5px 14px;
+  background: transparent;
+  border: 1px solid #252525;
+  color: #444;
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  cursor: pointer;
+  font-family: inherit;
+  white-space: nowrap;
+  transition: all 0.12s;
+}
+
+.tb-btn:hover:not(:disabled) {
+  border-color: #555;
+  color: #888;
+}
+
+.tb-btn:disabled {
+  opacity: 0.35;
   cursor: not-allowed;
 }
 
-.btn-primary {
-  background-color: #3b82f6;
-  color: #fff;
+/* Save button — green tinted */
+.tb-btn--save {
+  border-color: #004d22;
+  color: #00cc55;
 }
 
-.btn-primary:hover:not(:disabled) {
-  background-color: #2563eb;
-  box-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+.tb-btn--save:hover:not(:disabled) {
+  border-color: #00cc55;
+  color: #00ff88;
+  background: rgba(0, 204, 85, 0.06);
 }
 
-.btn-secondary {
-  background-color: #6b7280;
-  color: #fff;
+/* Upgrade button — amber tinted */
+.tb-btn--upgrade {
+  border-color: #4d3a00;
+  color: #cc8800;
 }
 
-.btn-secondary:hover {
-  background-color: #4b5563;
-}
-
-.btn-upgrade {
-  background-color: #8b5cf6;
-  color: #fff;
-}
-
-.btn-upgrade:hover {
-  background-color: #7c3aed;
-  box-shadow: 0 0 10px rgba(139, 92, 246, 0.5);
+.tb-btn--upgrade:hover {
+  border-color: #cc8800;
+  color: #ffaa00;
+  background: rgba(204, 136, 0, 0.06);
 }

@@ -35,6 +35,13 @@ export class DashboardComponent implements OnInit, OnDestroy {
   readonly MAX_RPM = 7000;
   readonly SHIFT_RPM = 6500;
 
+  selectedStyle: 'gt3' | 'classic' = 'gt3';
+
+  setStyle(style: 'gt3' | 'classic'): void {
+    this.selectedStyle = style;
+    localStorage.setItem('linkbox-dashboard-style', style);
+  }
+
   constructor(
     private telemetryService: TelemetryService,
     private authService: AuthService,
@@ -44,6 +51,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
   ) {}
 
   async ngOnInit() {
+    const saved = localStorage.getItem('linkbox-dashboard-style');
+    if (saved === 'gt3' || saved === 'classic') this.selectedStyle = saved;
+
     this.deviceInfo = await this.authService.getDeviceInfoFromServer();
 
     // Si no hay sesión activa, redirigir a login

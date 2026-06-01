@@ -1,38 +1,35 @@
 <div class="sessions-wrapper">
+
   <!-- HEADER -->
   <div class="sessions-header">
-    <button class="btn-back" (click)="backToDashboard()">
-      ← Back to Dashboard
-    </button>
-    <h1>Saved Sessions</h1>
-    <button class="btn-refresh" (click)="loadSessions()" [disabled]="isLoading">
-      {{ isLoading ? "Loading..." : "🔄 Refresh" }}
+    <button class="hdr-btn" (click)="backToDashboard()">BACK</button>
+    <div class="hdr-title-block">
+      <span class="hdr-title">SAVED SESSIONS</span>
+    </div>
+    <button class="hdr-btn hdr-btn--right" (click)="loadSessions()" [disabled]="isLoading">
+      {{ isLoading ? 'LOADING...' : 'REFRESH' }}
     </button>
   </div>
 
+  <!-- MAIN LAYOUT -->
   <div class="sessions-container">
-    <!-- SESSIONS LIST PANEL -->
+
+    <!-- LEFT: session list -->
     <div class="sessions-list-panel">
+
       <div class="list-header">
-        <h2>Sessions</h2>
-        <p class="session-count">
-          {{ getFilteredSessions().length }} session(s)
-        </p>
+        <span class="list-title">SESSIONS</span>
+        <span class="session-count">{{ getFilteredSessions().length }}</span>
       </div>
 
-      <!-- SEARCH BOX -->
       <input
         type="text"
         class="search-box"
-        placeholder="🔍 Search sessions..."
+        placeholder="SEARCH SESSIONS..."
         [(ngModel)]="searchQuery"
       />
 
-      <!-- SESSIONS LIST -->
-      <div
-        class="sessions-list"
-        *ngIf="getFilteredSessions().length > 0; else noSessions"
-      >
+      <div class="sessions-list" *ngIf="getFilteredSessions().length > 0; else noSessions">
         <div
           *ngFor="let session of getFilteredSessions()"
           class="session-item"
@@ -41,15 +38,10 @@
         >
           <div class="session-title">{{ session.session_name }}</div>
           <div class="session-meta">
-            <span class="meta-item"
-              >📅 {{ formatDate(session.start_time) }}</span
-            >
-            <span class="meta-item">⏱️ {{ getSessionDuration(session) }}</span>
-            <span class="meta-item"
-              >📊 {{ session.total_records }} records</span
-            >
+            <span class="meta-row">{{ formatDate(session.start_time) }}</span>
+            <span class="meta-row">{{ getSessionDuration(session) }} &nbsp;·&nbsp; {{ session.total_records }} RECORDS</span>
           </div>
-          <span class="status-badge" [ngClass]="'status-' + session.status">
+          <span class="status-tag" [ngClass]="'status-' + session.status">
             {{ session.status | uppercase }}
           </span>
         </div>
@@ -57,104 +49,91 @@
 
       <ng-template #noSessions>
         <div class="no-data">
-          <p>📂 No saved sessions yet</p>
-          <p class="hint">
-            Start recording from the dashboard and save your sessions
-          </p>
+          <p class="no-data-title">NO SESSIONS FOUND</p>
+          <p class="no-data-hint">Save sessions from the dashboard to see them here</p>
         </div>
       </ng-template>
+
     </div>
 
-    <!-- SESSION DETAILS PANEL -->
+    <!-- RIGHT: session details -->
     <div class="session-details-panel">
+
       <div *ngIf="selectedSession; else selectPrompt" class="session-details">
+
         <!-- DETAILS HEADER -->
         <div class="details-header">
-          <h2>{{ selectedSession.session_name }}</h2>
-          <div class="header-actions">
-            <button
-              class="btn btn-export"
-              (click)="exportSession()"
-              [disabled]="!sessionData"
-            >
-              💾 Export
+          <span class="details-title">{{ selectedSession.session_name }}</span>
+          <div class="details-actions">
+            <button class="act-btn act-btn--export" (click)="exportSession()" [disabled]="!sessionData">
+              EXPORT
             </button>
-            <button
-              class="btn btn-delete"
-              (click)="deleteSession(selectedSession)"
-            >
-              🗑️ Delete
+            <button class="act-btn act-btn--delete" (click)="deleteSession(selectedSession)">
+              DELETE
             </button>
           </div>
         </div>
 
-        <!-- SESSION INFO -->
+        <!-- SESSION INFO GRID -->
         <div class="session-info">
-          <div class="info-group">
-            <label>Session ID</label>
-            <code>{{ selectedSession.id }}</code>
+          <div class="info-item">
+            <span class="info-label">SESSION ID</span>
+            <code class="info-value">{{ selectedSession.id }}</code>
           </div>
-          <div class="info-group">
-            <label>Status</label>
-            <span
-              class="status-badge"
-              [ngClass]="'status-' + selectedSession.status"
-            >
+          <div class="info-item">
+            <span class="info-label">STATUS</span>
+            <span class="status-tag" [ngClass]="'status-' + selectedSession.status">
               {{ selectedSession.status | uppercase }}
             </span>
           </div>
-          <div class="info-group">
-            <label>Duration</label>
-            <span>{{ getSessionDuration(selectedSession) }}</span>
+          <div class="info-item">
+            <span class="info-label">DURATION</span>
+            <span class="info-value">{{ getSessionDuration(selectedSession) }}</span>
           </div>
-          <div class="info-group">
-            <label>Total Records</label>
-            <span>{{ selectedSession.total_records }}</span>
+          <div class="info-item">
+            <span class="info-label">TOTAL RECORDS</span>
+            <span class="info-value">{{ selectedSession.total_records }}</span>
           </div>
-          <div class="info-group">
-            <label>Start Time</label>
-            <span>{{ formatDate(selectedSession.start_time) }}</span>
+          <div class="info-item">
+            <span class="info-label">START</span>
+            <span class="info-value">{{ formatDate(selectedSession.start_time) }}</span>
           </div>
-          <div class="info-group" *ngIf="selectedSession.end_time">
-            <label>End Time</label>
-            <span>{{ formatDate(selectedSession.end_time) }}</span>
+          <div class="info-item" *ngIf="selectedSession.end_time">
+            <span class="info-label">END</span>
+            <span class="info-value">{{ formatDate(selectedSession.end_time) }}</span>
           </div>
         </div>
 
-        <!-- TELEMETRY DATA GRID -->
+        <!-- TELEMETRY DATA -->
         <div *ngIf="sessionData" class="telemetry-data-section">
-          <h3>Telemetry Data</h3>
+          <span class="section-label">TELEMETRY DATA</span>
           <div class="chart-section">
-            <app-telemetry-chart-design
-              [fullData]="sessionData.data"
-            ></app-telemetry-chart-design>
+            <app-telemetry-chart-design [fullData]="sessionData.data"></app-telemetry-chart-design>
           </div>
           <div class="data-table">
             <table>
               <thead>
                 <tr>
-                  <th>Timestamp</th>
+                  <th>TIME</th>
                   <th>RPM</th>
-                  <th>Water Temp</th>
-                  <th>Oil Temp</th>
-                  <th>Oil Press</th>
-                  <th>Fuel Press</th>
+                  <th>WATER</th>
+                  <th>OIL TEMP</th>
+                  <th>OIL PRESS</th>
+                  <th>FUEL PRESS</th>
                   <th>AFR</th>
-                  <th>Gear</th>
+                  <th>GEAR</th>
                 </tr>
               </thead>
               <tbody>
                 <tr *ngFor="let data of sessionData.data">
-                  <td class="timestamp">
-                    {{ data.timestamp | slice: 11 : 19 }}
-                  </td>
-                  <td>{{ data.rpm | number: "1.0-0" }}</td>
-                  <td>{{ data.water_temp | number: "1.0-0" }}°C</td>
-                  <td>{{ data.oil_temp | number: "1.0-0" }}°C</td>
-                  <td>{{ data.oil_press | number: "1.0-0" }}</td>
-                  <td>{{ data.fuel_press | number: "1.0-0" }}</td>
-                  <td>{{ data.sonda | number: "1.0-2" }}</td>
-                  <td>{{ data.gear }}</td>
+                  <td class="td-mono td-muted">{{ data.timestamp | slice:11:19 }}</td>
+                  <td class="td-mono">{{ data.rpm | number:'1.0-0' }}</td>
+                  <td>{{ data.water_temp | number:'1.0-0' }}°</td>
+                  <td>{{ data.oil_temp   | number:'1.0-0' }}°</td>
+                  <td>{{ data.oil_press  | number:'1.0-1' }}</td>
+                  <td>{{ data.fuel_press | number:'1.0-1' }}</td>
+                  <td>{{ data.sonda      | number:'1.0-2' }}</td>
+                  <td class="td-mono">{{ data.gear }}</td>
                 </tr>
               </tbody>
             </table>
@@ -162,15 +141,17 @@
         </div>
 
         <div *ngIf="!sessionData" class="loading-data">
-          <p>Select a session to view telemetry data</p>
+          <span>SELECT A SESSION TO VIEW TELEMETRY DATA</span>
         </div>
+
       </div>
 
       <ng-template #selectPrompt>
         <div class="select-prompt">
-          <p>👈 Select a session to view details and telemetry data</p>
+          <span>SELECT A SESSION FROM THE LIST</span>
         </div>
       </ng-template>
+
     </div>
   </div>
 </div>

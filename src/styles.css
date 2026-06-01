@@ -1,5 +1,3 @@
-/* You can add global styles to this file, and also import other style files */
-
 @font-face {
   font-family: "f1Black";
   src: url("../public/Formula1-Black.ttf") format("truetype");
@@ -37,7 +35,20 @@
   font-style: normal;
 }
 
-body {
-  background-color: rgb(112, 29, 29);
-  font-family: "f1BoldWeb";
+*, *::before, *::after {
+  box-sizing: border-box;
 }
+
+body {
+  margin: 0;
+  background-color: #000;
+  font-family: "f1BoldWeb", "Arial", sans-serif;
+  color: #fff;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Global scrollbar */
+::-webkit-scrollbar       { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: #080808; }
+::-webkit-scrollbar-thumb { background: #252525; }
+::-webkit-scrollbar-thumb:hover { background: #333; }

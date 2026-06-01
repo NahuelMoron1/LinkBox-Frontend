@@ -1,39 +1,52 @@
 <div class="main-container">
   <div class="login-card">
-    <!-- Lado Izquierdo: Branding/Imagen -->
+
+    <!-- LEFT: branding / image -->
     <div class="info-side">
-      <div class="top-nav">
-        <span class="logo">LinkBox.</span>
+      <div class="brand-block">
+        <span class="brand-name">LINKBOX</span>
+        <span class="brand-dot">.</span>
       </div>
-      <div class="welcome-text">
-        <h1>
-          Welcome <br />
-          Back!
-        </h1>
+      <div class="welcome-block">
+        <p class="welcome-label">TELEMETRY COMMAND CENTER</p>
+        <h1>WELCOME<br />BACK</h1>
       </div>
     </div>
 
-    <!-- Lado Derecho: Formulario -->
+    <!-- RIGHT: form -->
     <div class="form-side">
-      <h2>Log in</h2>
-
-      <div class="input-group">
-        <i class="icon-user"></i>
-        <input type="text" [(ngModel)]="key" placeholder="Device Key (UUID)" />
+      <div class="form-header">
+        <h2>ACCESS</h2>
+        <p class="form-subtitle">Enter your credentials to continue</p>
       </div>
 
-      <div class="input-group">
-        <i class="icon-lock"></i>
-        <input type="password" [(ngModel)]="password" placeholder="Password" />
+      <div class="field-group">
+        <label class="field-label">DEVICE KEY</label>
+        <input
+          type="text"
+          class="field-input"
+          [(ngModel)]="key"
+          placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+          autocomplete="off"
+        />
       </div>
 
-      <button class="btn-login" (click)="onLogin()">Log in</button>
-
-      <div class="divider">
-        <span>Or</span>
+      <div class="field-group">
+        <label class="field-label">PASSWORD</label>
+        <input
+          type="password"
+          class="field-input"
+          [(ngModel)]="password"
+          placeholder="••••••••"
+        />
       </div>
 
-      <button class="btn-signup">Request Access</button>
+      <button class="btn-login" (click)="onLogin()">LOG IN</button>
+
+      <div class="divider"><span>OR</span></div>
+
+      <button class="btn-access">REQUEST ACCESS</button>
     </div>
+
   </div>
 </div>

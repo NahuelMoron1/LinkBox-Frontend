@@ -1,41 +1,38 @@
 <div class="plan-toolbar">
   <div class="toolbar-info">
-    <p *ngIf="planInfo && planInfo.features.autoSave" class="feature-indicator">
-      ✓ Auto-save enabled
-    </p>
-    <p
+    <span *ngIf="planInfo && planInfo.features.autoSave" class="feature-tag feature-tag--on">
+      AUTO-SAVE ON
+    </span>
+    <span
       *ngIf="deviceInfo && deviceInfo.plan === 'pro' && planInfo"
-      class="feature-indicator"
+      class="feature-tag"
     >
-      Sessions: {{ planInfo.features.sessionsSaved }}/{{
-        planInfo.features.sessionsPerMonth
-      }}
-    </p>
+      SESSIONS {{ planInfo.features.sessionsSaved }}/{{ planInfo.features.sessionsPerMonth }}
+    </span>
   </div>
+
   <div class="toolbar-actions">
     <button
       *ngIf="deviceInfo && deviceInfo.plan !== 'basic'"
-      class="btn btn-secondary"
+      class="tb-btn"
       (click)="onViewSessions()"
     >
-      📂 View Sessions
+      VIEW SESSIONS
     </button>
     <button
-      class="btn btn-primary"
+      class="tb-btn tb-btn--save"
       [disabled]="!deviceInfo || getSaveSessionButtonInfo().disabled"
       (click)="onSaveSession()"
-      hidden="{{ !deviceInfo || deviceInfo.plan === 'ultimate' }}"
+      [hidden]="!deviceInfo || deviceInfo.plan === 'ultimate'"
     >
-      {{ deviceInfo ? getSaveSessionButtonInfo().text : "Loading..." }}
+      {{ deviceInfo ? getSaveSessionButtonInfo().text : 'LOADING...' }}
     </button>
     <button
-      *ngIf="
-        deviceInfo && (deviceInfo.plan === 'basic' || deviceInfo.plan === 'pro')
-      "
-      class="btn btn-upgrade"
+      *ngIf="deviceInfo && (deviceInfo.plan === 'basic' || deviceInfo.plan === 'pro')"
+      class="tb-btn tb-btn--upgrade"
       (click)="onUpgrade()"
     >
-      ⬆️ Upgrade
+      UPGRADE
     </button>
   </div>
 </div>

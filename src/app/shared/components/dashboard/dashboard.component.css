@@ -1,12 +1,11 @@
 :host {
   display: block;
-  background-color: #000;
-  min-height: 100vh;
+  background: #000;
   color: #fff;
+  min-height: 100vh;
 }
 
 .dashboard-wrapper {
-  padding: 10px 20px;
   max-width: 1400px;
   margin: 0 auto;
   height: 100vh;
@@ -14,91 +13,323 @@
   flex-direction: column;
   box-sizing: border-box;
   overflow: hidden;
+  background: #080808;
 }
 
-/* ========== LED STRIP ========== */
+/* ================================================
+   LED STRIP  (shared)
+   ================================================ */
 .rpm-led-strip {
   display: flex;
   justify-content: center;
-  gap: 10px;
-  padding: 15px 0;
-  background: linear-gradient(180deg, #0a0a0a 0%, #000 100%);
-  border-bottom: 2px solid #1a1a1a;
+  align-items: center;
+  gap: 7px;
+  padding: 10px 20px;
+  background: #060606;
+  border-bottom: 1px solid #181818;
   flex: 0 0 auto;
 }
 
 .led {
-  width: 35px;
-  height: 14px;
-  background-color: #1a1a1a;
-  border-radius: 3px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #131313;
+  border: 1px solid #1f1f1f;
   transition: all 0.05s ease-out;
-  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.8);
 }
 
 .led.green.active {
-  background-color: #00ff88;
-  box-shadow:
-    0 0 15px #00ff88,
-    inset 0 0 2px #fff;
+  background: #00cc44;
+  border-color: #00ff55;
+  box-shadow: 0 0 7px #00ff55, 0 0 14px rgba(0, 255, 85, 0.35);
 }
 
 .led.red.active {
-  background-color: #ff0000;
-  box-shadow:
-    0 0 15px #ff0000,
-    inset 0 0 2px #fff;
+  background: #cc1100;
+  border-color: #ff2200;
+  box-shadow: 0 0 7px #ff2200, 0 0 14px rgba(255, 34, 0, 0.35);
 }
 
 .led.blue.active {
-  background-color: #0066ff;
-  box-shadow:
-    0 0 15px #0066ff,
-    inset 0 0 5px #fff;
+  background: #0044cc;
+  border-color: #0066ff;
+  box-shadow: 0 0 7px #0066ff, 0 0 14px rgba(0, 102, 255, 0.45);
 }
 
 .led.all-blue-blink {
-  background-color: #0066ff !important;
-  box-shadow:
-    0 0 20px 5px rgba(0, 102, 255, 0.7),
-    inset 0 0 5px #fff;
-  animation: aggressive-blink 0.15s infinite ease-out;
+  background: #0055ee !important;
+  border-color: #0077ff !important;
+  box-shadow: 0 0 10px #0077ff, 0 0 22px rgba(0, 119, 255, 0.55) !important;
+  animation: blink-shift 0.15s infinite;
 }
 
-@keyframes aggressive-blink {
-  0% {
-    opacity: 1;
-  }
-  45% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0;
-    background-color: #000;
-  }
-  55% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 1;
-  }
+@keyframes blink-shift {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.08; background: #050505 !important; box-shadow: none !important; }
 }
 
-/* ========== TELEMETRY GRID ========== */
-.telemetry-grid {
-  display: grid;
-  grid-template-columns: 1fr 2fr 1fr;
-  gap: 15px;
-  margin-top: 15px;
+/* ================================================
+   STYLE SELECTOR  (shared)
+   ================================================ */
+.style-selector {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 4px;
+  padding: 5px 16px;
+  background: #050505;
+  border-bottom: 1px solid #141414;
   flex: 0 0 auto;
 }
 
-.side-panel {
+.style-btn {
+  padding: 2px 10px;
+  background: transparent;
+  border: 1px solid #252525;
+  color: #444;
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.style-btn:hover {
+  border-color: #555;
+  color: #888;
+}
+
+.style-btn.active {
+  border-color: #00cc66;
+  color: #00ff88;
+  background: rgba(0, 204, 102, 0.06);
+}
+
+/* ================================================
+   CHART  (shared)
+   ================================================ */
+.chart-section {
+  flex: 1 1 auto;
+  min-height: 0;
+  background: #040404;
+}
+
+/* ================================================
+   GT3 LAYOUT
+   ================================================ */
+
+/* -- Info bar -- */
+.gt3-info-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 24px;
+  border-bottom: 1px solid #181818;
+  flex: 0 0 auto;
+  background: #060606;
+}
+
+.gt3-info-col        { flex: 1; }
+.gt3-info-col--center {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 8px;
+}
+.gt3-info-col--right {
+  display: flex;
+  align-items: baseline;
+  justify-content: flex-end;
+  gap: 5px;
+}
+
+.gt3-speed-value {
+  font-size: 3.6rem;
+  font-weight: 900;
+  letter-spacing: -1px;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.gt3-speed-unit {
+  font-size: 0.85rem;
+  color: #3a3a3a;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.gt3-rpm-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #aaaaaa;
+  font-variant-numeric: tabular-nums;
+}
+
+.gt3-rpm-label {
+  font-size: 0.7rem;
+  color: #333;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+}
+
+/* Status badge */
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 4px 12px;
+  border: 1px solid #2a2a2a;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+}
+
+.status-dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #333;
+}
+
+.status-badge.live {
+  border-color: #00cc66;
+  color: #00ff88;
+}
+.status-badge.live .status-dot {
+  background: #00ff88;
+  box-shadow: 0 0 6px #00ff88;
+  animation: pulse-dot 1.2s infinite;
+}
+.status-badge.offline {
+  border-color: #551111;
+  color: #ff4455;
+}
+.status-badge.offline .status-dot {
+  background: #ff4455;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; box-shadow: 0 0 6px #00ff88; }
+  50% { opacity: 0.3; box-shadow: none; }
+}
+
+/* -- Main grid -- */
+.gt3-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.5fr 1fr;
+  flex: 0 0 auto;
+  border-bottom: 1px solid #181818;
+}
+
+.gt3-side-panel {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 18px 16px;
+}
+
+.gt3-side-panel--left  { border-right: 1px solid #181818; }
+.gt3-side-panel--right { border-left:  1px solid #181818; }
+
+/* Sensor table */
+.sensor-table {
+  border: 1px solid #1c1c1c;
+  background: #050505;
+  overflow: hidden;
+}
+
+.sensor-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 9px 14px;
+  border-bottom: 1px solid #121212;
+}
+.sensor-row:last-child { border-bottom: none; }
+
+.sensor-label {
+  font-size: 0.65rem;
+  color: #555;
+  font-weight: 600;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+}
+
+.sensor-value {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #cccccc;
+  font-variant-numeric: tabular-nums;
+}
+
+.sensor-value small {
+  font-size: 0.6rem;
+  margin-left: 2px;
+  color: #666;
+  font-weight: 500;
+}
+
+/* Sensor status colors */
+.sensor-row.cold     .sensor-value { color: #00e5f5; }
+.sensor-row.warm     .sensor-value { color: #ffcc00; }
+.sensor-row.optimum  .sensor-value { color: #00e64d; }
+.sensor-row.warning  .sensor-value { color: #ff6600; }
+.sensor-row.danger   .sensor-value { color: #ff1133; animation: blink-danger 0.4s infinite; }
+
+.sensor-row.sensor-row--yellow .sensor-value { color: #f5ee00; }
+.sensor-row.sensor-row--pink   .sensor-value { color: #ff0080; }
+.sensor-row.status-ok          .sensor-value { color: #00ff88; }
+.sensor-row.status-stopped     .sensor-value { color: #ff4455; }
+
+@keyframes blink-danger {
+  0%, 100% { color: #ff1133; }
+  50% { color: #3a0008; }
+}
+
+/* -- Center panel -- */
+.gt3-center-panel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #050505;
+  padding: 10px 20px;
+  min-height: 240px;
+}
+
+.gt3-gear-container { line-height: 1; }
+
+.gt3-gear-value {
+  font-size: 11rem;
+  font-weight: 900;
+  line-height: 0.85;
+  color: #ffffff;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -4px;
+}
+
+/* ================================================
+   CLASSIC LAYOUT
+   ================================================ */
+.classic-grid {
+  display: grid;
+  grid-template-columns: 1fr 2fr 1fr;
+  gap: 15px;
+  padding: 15px 20px;
+  flex: 0 0 auto;
+}
+
+.classic-side-panel {
   display: flex;
   flex-direction: column;
   gap: 12px;
 }
 
+/* Data box (card) */
 .data-box {
   background-color: rgba(10, 10, 10, 0.8);
   border: 1px solid #222;
@@ -130,7 +361,8 @@
   color: inherit;
 }
 
-.center-panel {
+/* Classic center */
+.classic-center-panel {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -141,20 +373,17 @@
   position: relative;
 }
 
-.gear-container {
-  text-align: center;
-}
+.classic-gear-container { text-align: center; }
 
-.gear-container .label {
+.classic-gear-container .label {
   display: block;
   color: #444;
   font-size: 1.1rem;
   font-weight: bold;
-
   letter-spacing: 6px;
 }
 
-.gear-container .value {
+.classic-gear-container .value {
   font-size: 9.5rem;
   font-weight: 900;
   line-height: 0.85;
@@ -162,24 +391,24 @@
   text-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
 }
 
-.speed-container {
+.classic-speed-container {
   display: flex;
   align-items: baseline;
   margin-top: -5px;
 }
 
-.speed-container .value {
+.classic-speed-container .value {
   font-size: 4.5rem;
   font-weight: 800;
 }
 
-.speed-container .label {
+.classic-speed-container .label {
   font-size: 1.2rem;
   color: #555;
   margin-left: 8px;
 }
 
-.rpm-digital {
+.classic-rpm-digital {
   width: 100%;
   text-align: center;
   border-top: 1px solid #1a1a1a;
@@ -187,120 +416,71 @@
   margin-top: 5px;
 }
 
-.rpm-digital .value {
+.classic-rpm-digital .value {
   font-size: 2rem;
   color: #ccc;
 }
 
-.rpm-digital .label {
+.classic-rpm-digital .label {
   font-size: 0.9rem;
   color: #444;
   margin-left: 5px;
 }
 
-.chart-section {
-  flex: 1 1 auto;
-  margin-top: 15px;
-  background: #050505;
-  border: 1px solid #111;
-  border-radius: 4px;
-  min-height: 0;
-}
+/* Classic color states on data-box */
+.data-box.yellow       { border-color: #f2ff00; color: #f2ff00; box-shadow: inset 0 0 10px rgba(242,255,0,0.1); }
+.data-box.pink         { border-color: #ff007f; color: #ff007f; box-shadow: inset 0 0 10px rgba(255,0,127,0.1); }
+.data-box.status-ok    { border-color: #00ff95; color: #00ff95; text-shadow: 0 0 5px rgba(0,255,149,0.5); }
+.data-box.status-stopped { border-color: #ff007f; color: #ff007f; }
 
-.yellow {
-  border-color: #f2ff00;
-  color: #f2ff00;
-  box-shadow: inset 0 0 10px rgba(242, 255, 0, 0.1);
-}
-
-.pink {
-  border-color: #ff007f;
-  color: #ff007f;
-  box-shadow: inset 0 0 10px rgba(255, 0, 127, 0.1);
-}
-
-.status-ok {
-  border-color: #00ff95;
-  color: #00ff95;
-  text-shadow: 0 0 5px rgba(0, 255, 149, 0.5);
-}
-
-.status-stopped {
-  border-color: #ff007f;
-  color: #ff007f;
-  text-shadow: 0 0 5px rgba(0, 255, 149, 0.5);
-}
-
-.data-box.cold {
-  border-color: #00f2ff;
-  color: #00f2ff;
-  box-shadow: inset 0 0 10px rgba(0, 242, 255, 0.15);
-}
-
-.data-box.warm {
-  border-color: #ffcc00;
-  color: #ffcc00;
-}
-
-.data-box.optimum {
-  border-color: #33ff00;
-  color: #33ff00;
-  box-shadow: inset 0 0 15px rgba(51, 255, 0, 0.1);
-}
-
-.data-box.warning {
-  border-color: #ff5e00;
-  color: #ff5e00;
-}
-
-.data-box.danger {
+.data-box.cold    { border-color: #00f2ff; color: #00f2ff; box-shadow: inset 0 0 10px rgba(0,242,255,0.15); }
+.data-box.warm    { border-color: #ffcc00; color: #ffcc00; }
+.data-box.optimum { border-color: #33ff00; color: #33ff00; box-shadow: inset 0 0 15px rgba(51,255,0,0.1); }
+.data-box.warning { border-color: #ff5e00; color: #ff5e00; }
+.data-box.danger  {
   border-color: #ff0033;
   color: #ff0033;
-  animation: blink-danger 0.4s infinite;
-  box-shadow: 0 0 20px rgba(255, 0, 51, 0.3);
+  animation: blink-card-danger 0.4s infinite;
+  box-shadow: 0 0 20px rgba(255,0,51,0.3);
 }
 
-@keyframes blink-danger {
-  0%,
-  100% {
-    background-color: rgba(255, 0, 51, 0.25);
-    border-color: #ff0033;
-  }
-  50% {
-    background-color: transparent;
-    border-color: #440000;
-  }
+@keyframes blink-card-danger {
+  0%, 100% { background-color: rgba(255,0,51,0.25); border-color: #ff0033; }
+  50%       { background-color: transparent; border-color: #440000; }
 }
 
-@media (max-width: 1024px) {
-  .gear-container .value {
-    font-size: 7rem;
-  }
-  .speed-container .value {
-    font-size: 3.5rem;
-  }
-  .led {
-    width: 25px;
-    gap: 5px;
-  }
+/* ================================================
+   RESPONSIVE
+   ================================================ */
+@media (max-width: 960px) {
+  .gt3-gear-value       { font-size: 8rem; }
+  .gt3-speed-value      { font-size: 2.8rem; }
+  .gt3-center-panel     { min-height: 200px; }
+  .classic-gear-container .value { font-size: 7rem; }
+  .classic-speed-container .value { font-size: 3.5rem; }
 }
 
-@media (max-width: 850px) {
-  .telemetry-grid {
+@media (max-width: 680px) {
+  .gt3-grid {
+    grid-template-columns: 1fr;
+  }
+  .gt3-center-panel {
+    order: -1;
+    border-bottom: 1px solid #181818;
+    min-height: 180px;
+  }
+  .gt3-side-panel--left  { border-right: none; border-bottom: 1px solid #181818; }
+  .gt3-side-panel--right { border-left: none; border-top: 1px solid #181818; }
+
+  .classic-grid {
     grid-template-columns: 1fr;
     overflow-y: auto;
   }
+  .classic-center-panel { order: -1; padding: 15px; }
+  .classic-side-panel   { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
   .dashboard-wrapper {
-    overflow-y: auto;
     height: auto;
-  }
-  .center-panel {
-    order: -1;
-    padding: 15px;
-  }
-  .side-panel {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
+    overflow-y: auto;
   }
 }

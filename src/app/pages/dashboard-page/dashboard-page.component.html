@@ -1,25 +1,18 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Dashboard</title>
-  </head>
-  <body>
-    <!-- HEADER WITH PLAN INFO -->
-    <app-dashboard-header [deviceInfo]="deviceInfo"></app-dashboard-header>
+<div class="page-wrapper">
 
-    <!-- PLAN INFO TOOLBAR -->
+  <div class="page-header-bar">
+    <app-dashboard-header [deviceInfo]="deviceInfo"></app-dashboard-header>
     <app-plan-info-toolbar
       [deviceInfo]="deviceInfo"
       [planInfo]="planInfo"
       [key]="key"
     ></app-plan-info-toolbar>
+  </div>
 
-    <app-dashboard
-      [key]="key"
-      [plan]="deviceInfo?.plan || null"
-      [deviceId]="deviceInfo?.id || null"
-    ></app-dashboard>
-  </body>
-</html>
+  <app-dashboard
+    [key]="key"
+    [plan]="deviceInfo?.plan || null"
+    [deviceId]="deviceInfo?.id || null"
+  ></app-dashboard>
+
+</div>
