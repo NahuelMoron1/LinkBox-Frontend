@@ -1,45 +1,34 @@
 <div class="sessions-wrapper">
-
-  <!-- HEADER -->
   <div class="sessions-header">
-    <button class="hdr-btn" (click)="backToDashboard()">BACK</button>
+    <button class="hdr-btn" (click)="backToDashboard()">{{ 'sess.back' | translate }}</button>
     <div class="hdr-title-block">
-      <span class="hdr-title">SAVED SESSIONS</span>
+      <span class="hdr-title">{{ 'sess.title' | translate }}</span>
     </div>
     <button class="hdr-btn hdr-btn--right" (click)="loadSessions()" [disabled]="isLoading">
-      {{ isLoading ? 'LOADING...' : 'REFRESH' }}
+      {{ isLoading ? ('sess.loading' | translate) : ('sess.refresh' | translate) }}
     </button>
   </div>
 
-  <!-- MAIN LAYOUT -->
   <div class="sessions-container">
-
-    <!-- LEFT: session list -->
+    <!-- LIST PANEL -->
     <div class="sessions-list-panel">
-
       <div class="list-header">
-        <span class="list-title">SESSIONS</span>
+        <span class="list-title">{{ 'sess.listTitle' | translate }}</span>
         <span class="session-count">{{ getFilteredSessions().length }}</span>
       </div>
-
-      <input
-        type="text"
-        class="search-box"
-        placeholder="SEARCH SESSIONS..."
-        [(ngModel)]="searchQuery"
-      />
+      <input type="text" class="search-box"
+             [placeholder]="'sess.search' | translate"
+             [(ngModel)]="searchQuery" />
 
       <div class="sessions-list" *ngIf="getFilteredSessions().length > 0; else noSessions">
-        <div
-          *ngFor="let session of getFilteredSessions()"
-          class="session-item"
-          [class.active]="selectedSession?.id === session.id"
-          (click)="selectSession(session)"
-        >
+        <div *ngFor="let session of getFilteredSessions()"
+             class="session-item"
+             [class.active]="selectedSession?.id === session.id"
+             (click)="selectSession(session)">
           <div class="session-title">{{ session.session_name }}</div>
           <div class="session-meta">
             <span class="meta-row">{{ formatDate(session.start_time) }}</span>
-            <span class="meta-row">{{ getSessionDuration(session) }} &nbsp;·&nbsp; {{ session.total_records }} RECORDS</span>
+            <span class="meta-row">{{ getSessionDuration(session) }} &nbsp;·&nbsp; {{ session.total_records }} REC</span>
           </div>
           <span class="status-tag" [ngClass]="'status-' + session.status">
             {{ session.status | uppercase }}
@@ -49,64 +38,58 @@
 
       <ng-template #noSessions>
         <div class="no-data">
-          <p class="no-data-title">NO SESSIONS FOUND</p>
-          <p class="no-data-hint">Save sessions from the dashboard to see them here</p>
+          <p class="no-data-title">{{ 'sess.noData' | translate }}</p>
+          <p class="no-data-hint">{{ 'sess.noDataHint' | translate }}</p>
         </div>
       </ng-template>
-
     </div>
 
-    <!-- RIGHT: session details -->
+    <!-- DETAILS PANEL -->
     <div class="session-details-panel">
-
       <div *ngIf="selectedSession; else selectPrompt" class="session-details">
-
-        <!-- DETAILS HEADER -->
         <div class="details-header">
           <span class="details-title">{{ selectedSession.session_name }}</span>
           <div class="details-actions">
             <button class="act-btn act-btn--export" (click)="exportSession()" [disabled]="!sessionData">
-              EXPORT
+              {{ 'sess.export' | translate }}
             </button>
             <button class="act-btn act-btn--delete" (click)="deleteSession(selectedSession)">
-              DELETE
+              {{ 'sess.delete' | translate }}
             </button>
           </div>
         </div>
 
-        <!-- SESSION INFO GRID -->
         <div class="session-info">
           <div class="info-item">
-            <span class="info-label">SESSION ID</span>
+            <span class="info-label">{{ 'sess.id' | translate }}</span>
             <code class="info-value">{{ selectedSession.id }}</code>
           </div>
           <div class="info-item">
-            <span class="info-label">STATUS</span>
+            <span class="info-label">{{ 'sess.status' | translate }}</span>
             <span class="status-tag" [ngClass]="'status-' + selectedSession.status">
               {{ selectedSession.status | uppercase }}
             </span>
           </div>
           <div class="info-item">
-            <span class="info-label">DURATION</span>
+            <span class="info-label">{{ 'sess.duration' | translate }}</span>
             <span class="info-value">{{ getSessionDuration(selectedSession) }}</span>
           </div>
           <div class="info-item">
-            <span class="info-label">TOTAL RECORDS</span>
+            <span class="info-label">{{ 'sess.records' | translate }}</span>
             <span class="info-value">{{ selectedSession.total_records }}</span>
           </div>
           <div class="info-item">
-            <span class="info-label">START</span>
+            <span class="info-label">{{ 'sess.start' | translate }}</span>
             <span class="info-value">{{ formatDate(selectedSession.start_time) }}</span>
           </div>
           <div class="info-item" *ngIf="selectedSession.end_time">
-            <span class="info-label">END</span>
+            <span class="info-label">{{ 'sess.end' | translate }}</span>
             <span class="info-value">{{ formatDate(selectedSession.end_time) }}</span>
           </div>
         </div>
 
-        <!-- TELEMETRY DATA -->
         <div *ngIf="sessionData" class="telemetry-data-section">
-          <span class="section-label">TELEMETRY DATA</span>
+          <span class="section-label">{{ 'sess.telemetry' | translate }}</span>
           <div class="chart-section">
             <app-telemetry-chart-design [fullData]="sessionData.data"></app-telemetry-chart-design>
           </div>
@@ -114,14 +97,14 @@
             <table>
               <thead>
                 <tr>
-                  <th>TIME</th>
-                  <th>RPM</th>
-                  <th>WATER</th>
-                  <th>OIL TEMP</th>
-                  <th>OIL PRESS</th>
-                  <th>FUEL PRESS</th>
-                  <th>AFR</th>
-                  <th>GEAR</th>
+                  <th>{{ 'tbl.time' | translate }}</th>
+                  <th>{{ 'tbl.rpm' | translate }}</th>
+                  <th>{{ 'tbl.water' | translate }}</th>
+                  <th>{{ 'tbl.oilTemp' | translate }}</th>
+                  <th>{{ 'tbl.oilPress' | translate }}</th>
+                  <th>{{ 'tbl.fuelPress' | translate }}</th>
+                  <th>{{ 'tbl.afr' | translate }}</th>
+                  <th>{{ 'tbl.gear' | translate }}</th>
                 </tr>
               </thead>
               <tbody>
@@ -141,17 +124,15 @@
         </div>
 
         <div *ngIf="!sessionData" class="loading-data">
-          <span>SELECT A SESSION TO VIEW TELEMETRY DATA</span>
+          <span>{{ 'sess.loadData' | translate }}</span>
         </div>
-
       </div>
 
       <ng-template #selectPrompt>
         <div class="select-prompt">
-          <span>SELECT A SESSION FROM THE LIST</span>
+          <span>{{ 'sess.select' | translate }}</span>
         </div>
       </ng-template>
-
     </div>
   </div>
 </div>

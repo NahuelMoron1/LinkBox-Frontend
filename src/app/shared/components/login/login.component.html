@@ -1,57 +1,37 @@
 <div class="main-container">
-
-  <!-- Theme toggle (top-right floating) -->
-  <button class="floating-theme-btn" (click)="themeService.toggle()" [title]="themeService.isDark ? 'Light mode' : 'Dark mode'">
+  <button class="floating-theme-btn" (click)="i18n.toggle()">{{ 'nav.langToggle' | translate }}</button>
+  <button class="floating-theme-btn floating-theme-btn--right" (click)="themeService.toggle()">
     {{ themeService.isDark ? '◻ LIGHT' : '◼ DARK' }}
   </button>
 
   <div class="login-card">
-
-    <!-- LEFT: branding / image -->
     <div class="info-side">
       <div class="brand-block">
         <span class="brand-name">LINKBOX</span><span class="brand-dot">.</span>
       </div>
       <div class="welcome-block">
-        <p class="welcome-label">TELEMETRY COMMAND CENTER</p>
-        <h1>WELCOME<br />BACK</h1>
+        <p class="welcome-label">{{ 'login.eyebrow' | translate }}</p>
+        <h1>{{ 'login.welcome1' | translate }}<br />{{ 'login.welcome2' | translate }}</h1>
       </div>
     </div>
 
-    <!-- RIGHT: form -->
     <div class="form-side">
       <div class="form-header">
-        <h2>ACCESS</h2>
-        <p class="form-subtitle">Enter your credentials to continue</p>
+        <h2>{{ 'login.heading' | translate }}</h2>
+        <p class="form-subtitle">{{ 'login.subtitle' | translate }}</p>
       </div>
-
       <div class="field-group">
-        <label class="field-label">DEVICE KEY</label>
-        <input
-          type="text"
-          class="field-input"
-          [(ngModel)]="key"
-          placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
-          autocomplete="off"
-        />
+        <label class="field-label">{{ 'login.keyLabel' | translate }}</label>
+        <input type="text" class="field-input" [(ngModel)]="key"
+               placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" autocomplete="off" />
       </div>
-
       <div class="field-group">
-        <label class="field-label">PASSWORD</label>
-        <input
-          type="password"
-          class="field-input"
-          [(ngModel)]="password"
-          placeholder="••••••••"
-        />
+        <label class="field-label">{{ 'login.passLabel' | translate }}</label>
+        <input type="password" class="field-input" [(ngModel)]="password" placeholder="••••••••" />
       </div>
-
-      <button class="btn-login" (click)="onLogin()">LOG IN</button>
-
-      <div class="divider"><span>OR</span></div>
-
-      <button class="btn-access">REQUEST ACCESS</button>
+      <button class="btn-login" (click)="onLogin()">{{ 'login.submit' | translate }}</button>
+      <div class="divider"><span>{{ 'login.or' | translate }}</span></div>
+      <button class="btn-access">{{ 'login.request' | translate }}</button>
     </div>
-
   </div>
 </div>

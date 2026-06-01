@@ -1,12 +1,14 @@
 import { CommonModule } from '@angular/common';
 import { Component, HostListener, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { TranslatePipe } from '../../shared/pipes/translate.pipe';
 import { AuthService } from '../../shared/services/auth.service';
+import { I18nService } from '../../shared/services/i18n.service';
 import { ThemeService } from '../../shared/services/theme.service';
 
 @Component({
   selector: 'app-main-menu-page',
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, TranslatePipe],
   templateUrl: './main-menu-page.component.html',
   styleUrl: './main-menu-page.component.css',
 })
@@ -15,66 +17,35 @@ export class MainMenuPageComponent implements OnInit {
   navScrolled = false;
 
   features = [
-    {
-      icon: '◈',
-      title: 'REAL-TIME MONITORING',
-      desc: 'Live RPM, water temperature, oil pressure, fuel pressure and more — updated every millisecond your engine is running.',
-    },
-    {
-      icon: '◎',
-      title: 'SESSION RECORDING',
-      desc: 'Capture every run automatically. Review historical data, compare sessions and identify performance trends over time.',
-    },
-    {
-      icon: '◇',
-      title: 'TELEMETRY CHARTS',
-      desc: 'Interactive multi-channel charts with zoom and pan. Correlate metrics across time and spot anomalies before they cost you a race.',
-    },
-    {
-      icon: '◉',
-      title: 'GT3 DISPLAY MODE',
-      desc: 'Professional dashboard inspired by the Porsche GT3 DDU. Switch between GT3 and Classic layouts on the fly.',
-    },
+    { icon: '◈', titleKey: 'feat.1.title', descKey: 'feat.1.desc' },
+    { icon: '◎', titleKey: 'feat.2.title', descKey: 'feat.2.desc' },
+    { icon: '◇', titleKey: 'feat.3.title', descKey: 'feat.3.desc' },
+    { icon: '◉', titleKey: 'feat.4.title', descKey: 'feat.4.desc' },
   ];
 
   plans = [
     {
       name: 'BASIC',
       badgeClass: 'plan-basic',
-      tagline: 'Monitor your car',
-      features: [
-        'Live dashboard',
-        'Real-time telemetry',
-        'GT3 & Classic display',
-        'Dark & Light mode',
-      ],
-      cta: 'GET STARTED',
+      taglineKey: 'plan.basic.tagline',
+      featureKeys: ['plan.basic.f1', 'plan.basic.f2', 'plan.basic.f3', 'plan.basic.f4'],
+      ctaKey: 'plan.basic.cta',
       highlight: false,
     },
     {
       name: 'PRO',
       badgeClass: 'plan-pro',
-      tagline: 'Record & analyse',
-      features: [
-        'Everything in Basic',
-        'Session recording',
-        '2 saved sessions / month',
-        'Export to JSON',
-      ],
-      cta: 'GET PRO',
+      taglineKey: 'plan.pro.tagline',
+      featureKeys: ['plan.pro.f1', 'plan.pro.f2', 'plan.pro.f3', 'plan.pro.f4'],
+      ctaKey: 'plan.pro.cta',
       highlight: false,
     },
     {
       name: 'ULTIMATE',
       badgeClass: 'plan-ultimate',
-      tagline: 'No limits',
-      features: [
-        'Everything in Pro',
-        'Unlimited sessions',
-        'Auto-save on connect',
-        'Priority support',
-      ],
-      cta: 'GET ULTIMATE',
+      taglineKey: 'plan.ult.tagline',
+      featureKeys: ['plan.ult.f1', 'plan.ult.f2', 'plan.ult.f3', 'plan.ult.f4'],
+      ctaKey: 'plan.ult.cta',
       highlight: true,
     },
   ];
@@ -82,6 +53,7 @@ export class MainMenuPageComponent implements OnInit {
   constructor(
     private authService: AuthService,
     public themeService: ThemeService,
+    public i18n: I18nService,
   ) {}
 
   ngOnInit(): void {

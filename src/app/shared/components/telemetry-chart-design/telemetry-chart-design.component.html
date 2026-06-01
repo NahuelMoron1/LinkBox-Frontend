@@ -1,13 +1,13 @@
 <div class="chart-container">
   <div class="chart-header">
-    <button (click)="prevMetric()"><</button>
-    <span class="active-metric">{{ metrics[currentIndex].label }}</span>
-    <button (click)="nextMetric()">></button>
-    <button class="reset-btn" (click)="resetZoom()">RESET ZOOM</button>
+    <button (click)="prevMetric()">&lt;</button>
+    <span class="active-metric">{{ currentMetricLabel }}</span>
+    <button (click)="nextMetric()">&gt;</button>
+    <button class="reset-btn" (click)="resetZoom()">{{ 'chart.reset' | translate }}</button>
   </div>
 
   <div *ngIf="!hasData" class="placeholder">
-    <span>Your data will appear here once telemetry logger starts</span>
+    <span>{{ 'chart.noData' | translate }}</span>
   </div>
 
   <canvas
@@ -17,6 +17,5 @@
     (mouseup)="handleMouseUp()"
     (mouseleave)="handleMouseLeave()"
     (wheel)="handleMouseWheel($event)"
-  >
-  </canvas>
+  ></canvas>
 </div>

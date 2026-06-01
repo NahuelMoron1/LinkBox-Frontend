@@ -1,52 +1,33 @@
-<!-- ================================================
-     NAVBAR
-     ================================================ -->
 <nav class="navbar" [class.navbar--scrolled]="navScrolled">
   <div class="navbar-inner">
-    <a class="nav-brand" routerLink="/">
-      LINKBOX<span class="brand-dot">.</span>
-    </a>
+    <a class="nav-brand" routerLink="/">LINKBOX<span class="brand-dot">.</span></a>
 
     <div class="nav-links">
-      <button class="nav-link" (click)="scrollTo('features')">FEATURES</button>
-      <button class="nav-link" (click)="scrollTo('plans')">PLANS</button>
-      <button class="nav-link" (click)="scrollTo('about')">ABOUT</button>
-      <a class="nav-link" routerLink="/dashboard" *ngIf="isLoggedIn"
-        >DASHBOARD</a
-      >
+      <button class="nav-link" (click)="scrollTo('features')">{{ 'nav.features' | translate }}</button>
+      <button class="nav-link" (click)="scrollTo('plans')">{{ 'nav.plans' | translate }}</button>
+      <button class="nav-link" (click)="scrollTo('about')">{{ 'nav.about' | translate }}</button>
+      <a class="nav-link" routerLink="/dashboard" *ngIf="isLoggedIn">{{ 'nav.live' | translate }}</a>
     </div>
 
     <div class="nav-actions">
-      <button
-        class="nav-theme-btn"
-        (click)="themeService.toggle()"
-        [title]="themeService.isDark ? 'Light mode' : 'Dark mode'"
-      >
-        {{ themeService.isDark ? "◻ LIGHT" : "◼ DARK" }}
+      <button class="nav-theme-btn" (click)="i18n.toggle()">{{ 'nav.langToggle' | translate }}</button>
+      <button class="nav-theme-btn" (click)="themeService.toggle()"
+              [title]="themeService.isDark ? 'Light mode' : 'Dark mode'">
+        {{ themeService.isDark ? '◻ LIGHT' : '◼ DARK' }}
       </button>
-
       <ng-container *ngIf="isLoggedIn">
-        <a class="nav-btn nav-btn--primary" routerLink="/dashboard"
-          >LIVE DASHBOARD</a
-        >
-        <button class="nav-btn nav-btn--ghost" (click)="logout()">
-          LOGOUT
-        </button>
+        <a class="nav-btn nav-btn--primary" routerLink="/dashboard">{{ 'nav.live' | translate }}</a>
+        <button class="nav-btn nav-btn--ghost" (click)="logout()">{{ 'nav.logout' | translate }}</button>
       </ng-container>
-
       <ng-container *ngIf="!isLoggedIn">
-        <a class="nav-btn nav-btn--ghost" routerLink="/login">LOGIN</a>
-        <button class="nav-btn nav-btn--primary" (click)="scrollTo('plans')">
-          GET ACCESS
-        </button>
+        <a class="nav-btn nav-btn--ghost" routerLink="/login">{{ 'nav.login' | translate }}</a>
+        <button class="nav-btn nav-btn--primary" (click)="scrollTo('plans')">{{ 'nav.getAccess' | translate }}</button>
       </ng-container>
     </div>
   </div>
 </nav>
 
-<!-- ================================================
-     HERO
-     ================================================ -->
+<!-- HERO -->
 <section class="hero">
   <div class="hero-media">
     <video autoplay muted loop playsinline class="hero-video">
@@ -54,109 +35,82 @@
     </video>
     <div class="hero-overlay"></div>
   </div>
-
   <div class="hero-content">
-    <p class="hero-eyebrow">MOTORSPORT TELEMETRY SYSTEM</p>
+    <p class="hero-eyebrow">{{ 'hero.eyebrow' | translate }}</p>
     <h1 class="hero-title">
-      Your Car.<br />
-      Your Data.<br />
-      Your Edge.
+      {{ 'hero.title1' | translate }}<br />
+      {{ 'hero.title2' | translate }}<br />
+      {{ 'hero.title3' | translate }}
     </h1>
-    <p class="hero-subtitle">
-      LinkBox connects your vehicle's ECU to a professional live telemetry
-      dashboard — monitoring engine performance in real time, wherever you race.
-    </p>
+    <p class="hero-subtitle">{{ 'hero.subtitle' | translate }}</p>
     <div class="hero-cta">
-      <a class="cta-btn cta-btn--primary" routerLink="/login">GET STARTED</a>
-      <button class="cta-btn cta-btn--ghost" (click)="scrollTo('features')">
-        LEARN MORE
-      </button>
+      <a class="cta-btn cta-btn--primary" routerLink="/login">{{ 'hero.getStarted' | translate }}</a>
+      <button class="cta-btn cta-btn--ghost" (click)="scrollTo('features')">{{ 'hero.learnMore' | translate }}</button>
     </div>
   </div>
-
   <button class="hero-scroll-hint" (click)="scrollTo('features')">
-    <span class="scroll-label">SCROLL</span>
+    <span class="scroll-label">{{ 'hero.scroll' | translate }}</span>
     <div class="scroll-line"></div>
   </button>
 </section>
 
-<!-- ================================================
-     FEATURES
-     ================================================ -->
+<!-- FEATURES -->
 <section class="features-section" id="features">
   <div class="section-inner">
     <div class="section-header">
-      <p class="section-eyebrow">WHAT YOU GET</p>
-      <h2 class="section-title">Professional telemetry, simplified.</h2>
+      <p class="section-eyebrow">{{ 'features.eyebrow' | translate }}</p>
+      <h2 class="section-title">{{ 'features.title' | translate }}</h2>
     </div>
     <div class="features-grid">
       <div class="feature-card" *ngFor="let f of features">
         <span class="feature-icon">{{ f.icon }}</span>
-        <h3 class="feature-name">{{ f.title }}</h3>
-        <p class="feature-desc">{{ f.desc }}</p>
+        <h3 class="feature-name">{{ f.titleKey | translate }}</h3>
+        <p class="feature-desc">{{ f.descKey | translate }}</p>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ================================================
-     PLANS
-     ================================================ -->
+<!-- PLANS -->
 <section class="plans-section" id="plans">
   <div class="section-inner">
     <div class="section-header">
-      <p class="section-eyebrow">PRICING</p>
-      <h2 class="section-title">Choose your plan.</h2>
+      <p class="section-eyebrow">{{ 'plans.eyebrow' | translate }}</p>
+      <h2 class="section-title">{{ 'plans.title' | translate }}</h2>
     </div>
     <div class="plans-grid">
-      <div
-        class="plan-card"
-        *ngFor="let p of plans"
-        [class.plan-card--highlight]="p.highlight"
-      >
+      <div class="plan-card" *ngFor="let p of plans" [class.plan-card--highlight]="p.highlight">
         <div class="plan-top">
           <span class="plan-badge" [ngClass]="p.badgeClass">{{ p.name }}</span>
-          <p class="plan-tagline">{{ p.tagline }}</p>
+          <p class="plan-tagline">{{ p.taglineKey | translate }}</p>
           <div class="plan-sep"></div>
         </div>
         <ul class="plan-features">
-          <li *ngFor="let feat of p.features">
-            <span class="feat-check">—</span>{{ feat }}
+          <li *ngFor="let key of p.featureKeys">
+            <span class="feat-check">—</span>{{ key | translate }}
           </li>
         </ul>
-        <a
-          class="plan-cta"
-          routerLink="/login"
-          [class.plan-cta--highlight]="p.highlight"
-        >
-          {{ p.cta }}
+        <a class="plan-cta" routerLink="/login" [class.plan-cta--highlight]="p.highlight">
+          {{ p.ctaKey | translate }}
         </a>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ================================================
-     FOOTER / ABOUT
-     ================================================ -->
+<!-- FOOTER -->
 <footer class="site-footer" id="about">
   <div class="footer-inner">
     <div class="footer-brand">
       <span class="footer-logo">LINKBOX<span class="brand-dot">.</span></span>
-      <p class="footer-tagline">
-        Professional motorsport telemetry for every driver.
-      </p>
+      <p class="footer-tagline">{{ 'footer.tagline' | translate }}</p>
     </div>
     <nav class="footer-nav">
-      <button class="footer-link" (click)="scrollTo('features')">
-        Features
-      </button>
-      <button class="footer-link" (click)="scrollTo('plans')">Plans</button>
-      <a class="footer-link" routerLink="/login">Login</a>
-      <a class="footer-link" routerLink="/dashboard" *ngIf="isLoggedIn"
-        >Dashboard</a
-      >
+      <button class="footer-link" (click)="scrollTo('features')">{{ 'footer.features' | translate }}</button>
+      <button class="footer-link" (click)="scrollTo('plans')">{{ 'footer.plans' | translate }}</button>
+      <a class="footer-link" routerLink="/login">{{ 'footer.login' | translate }}</a>
+      <a class="footer-link" routerLink="/dashboard" *ngIf="isLoggedIn">{{ 'footer.dash' | translate }}</a>
     </nav>
-    <p class="footer-copy">© 2025 LinkBox. All rights reserved.</p>
+    <p class="footer-copy">{{ 'footer.copy' | translate }}</p>
   </div>
 </footer>

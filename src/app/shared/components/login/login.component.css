@@ -21,6 +21,14 @@
   position: fixed;
   top: 16px;
   right: 20px;
+}
+
+.floating-theme-btn--right {
+  right: 20px;
+}
+
+.floating-theme-btn:not(.floating-theme-btn--right) {
+  right: 108px;
   padding: 4px 12px;
   background: transparent;
   border: 1px solid var(--brd-4);

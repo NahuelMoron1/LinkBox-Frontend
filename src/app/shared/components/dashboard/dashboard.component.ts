@@ -3,6 +3,7 @@ import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { TranslatePipe } from '../../pipes/translate.pipe';
 import { DeviceInfo } from '../../models/Device';
 import { TelemetryDataPoint } from '../../models/Session';
 import { AlertService } from '../../services/alert.service';
@@ -13,7 +14,7 @@ import { TelemetryChartDesignComponent } from '../telemetry-chart-design/telemet
 
 @Component({
   selector: 'app-dashboard',
-  imports: [CommonModule, FormsModule, TelemetryChartDesignComponent],
+  imports: [CommonModule, FormsModule, TelemetryChartDesignComponent, TranslatePipe],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css',
 })

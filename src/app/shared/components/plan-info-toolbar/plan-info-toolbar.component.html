@@ -1,38 +1,25 @@
 <div class="plan-toolbar">
   <div class="toolbar-info">
     <span *ngIf="planInfo && planInfo.features.autoSave" class="feature-tag feature-tag--on">
-      AUTO-SAVE ON
+      {{ 'toolbar.autoSave' | translate }}
     </span>
-    <span
-      *ngIf="deviceInfo && deviceInfo.plan === 'pro' && planInfo"
-      class="feature-tag"
-    >
-      SESSIONS {{ planInfo.features.sessionsSaved }}/{{ planInfo.features.sessionsPerMonth }}
+    <span *ngIf="deviceInfo && deviceInfo.plan === 'pro' && planInfo" class="feature-tag">
+      {{ 'toolbar.sessions' | translate }} {{ planInfo.features.sessionsSaved }}/{{ planInfo.features.sessionsPerMonth }}
     </span>
   </div>
-
   <div class="toolbar-actions">
-    <button
-      *ngIf="deviceInfo && deviceInfo.plan !== 'basic'"
-      class="tb-btn"
-      (click)="onViewSessions()"
-    >
-      VIEW SESSIONS
+    <button *ngIf="deviceInfo && deviceInfo.plan !== 'basic'" class="tb-btn" (click)="onViewSessions()">
+      {{ 'toolbar.viewSessions' | translate }}
     </button>
-    <button
-      class="tb-btn tb-btn--save"
-      [disabled]="!deviceInfo || getSaveSessionButtonInfo().disabled"
-      (click)="onSaveSession()"
-      [hidden]="!deviceInfo || deviceInfo.plan === 'ultimate'"
-    >
-      {{ deviceInfo ? getSaveSessionButtonInfo().text : 'LOADING...' }}
+    <button class="tb-btn tb-btn--save"
+            [disabled]="!deviceInfo || getSaveSessionButtonInfo().disabled"
+            (click)="onSaveSession()"
+            [hidden]="!deviceInfo || deviceInfo.plan === 'ultimate'">
+      {{ deviceInfo ? getSaveSessionButtonInfo().text : ('toolbar.loading' | translate) }}
     </button>
-    <button
-      *ngIf="deviceInfo && (deviceInfo.plan === 'basic' || deviceInfo.plan === 'pro')"
-      class="tb-btn tb-btn--upgrade"
-      (click)="onUpgrade()"
-    >
-      UPGRADE
+    <button *ngIf="deviceInfo && (deviceInfo.plan === 'basic' || deviceInfo.plan === 'pro')"
+            class="tb-btn tb-btn--upgrade" (click)="onUpgrade()">
+      {{ 'toolbar.upgrade' | translate }}
     </button>
   </div>
 </div>

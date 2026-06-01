@@ -1,6 +1,6 @@
 <div class="dashboard-wrapper">
 
-  <!-- LED STRIP - shared -->
+  <!-- LED STRIP -->
   <div class="rpm-led-strip">
     <div
       *ngFor="let led of [].constructor(15); let i = index"
@@ -12,143 +12,126 @@
 
   <!-- STYLE SELECTOR -->
   <div class="style-selector">
-    <button class="style-btn" [class.active]="selectedStyle === 'gt3'"     (click)="setStyle('gt3')">GT3</button>
-    <button class="style-btn" [class.active]="selectedStyle === 'classic'" (click)="setStyle('classic')">CLASSIC</button>
+    <button class="style-btn" [class.active]="selectedStyle === 'gt3'"     (click)="setStyle('gt3')">{{ 'dash.gt3' | translate }}</button>
+    <button class="style-btn" [class.active]="selectedStyle === 'classic'" (click)="setStyle('classic')">{{ 'dash.classic' | translate }}</button>
   </div>
 
-  <!-- ========================
-       GT3 LAYOUT
-       ======================== -->
+  <!-- GT3 LAYOUT -->
   <ng-container *ngIf="selectedStyle === 'gt3'">
-
-    <!-- INFO BAR: status / speed / rpm -->
     <div class="gt3-info-bar">
       <div class="gt3-info-col gt3-info-col--left">
         <span class="status-badge" [ngClass]="isLive ? 'live' : 'offline'">
-          <span class="status-dot"></span>{{ isLive ? 'LIVE' : 'OFFLINE' }}
+          <span class="status-dot"></span>{{ isLive ? ('dash.live' | translate) : ('dash.offline' | translate) }}
         </span>
       </div>
       <div class="gt3-info-col gt3-info-col--center">
         <span class="gt3-speed-value">{{ data.speed || 0 }}</span>
-        <span class="gt3-speed-unit">km/h</span>
+        <span class="gt3-speed-unit">{{ 'dash.kmh' | translate }}</span>
       </div>
       <div class="gt3-info-col gt3-info-col--right">
         <span class="gt3-rpm-value">{{ data.rpm || 0 | number:'1.0-0' }}</span>
-        <span class="gt3-rpm-label">RPM</span>
+        <span class="gt3-rpm-label">{{ 'dash.rpm' | translate }}</span>
       </div>
     </div>
 
-    <!-- MAIN PANEL: sensors | gear | sensors -->
     <div class="gt3-grid">
-
-      <!-- LEFT: sensor rows -->
       <div class="gt3-side-panel gt3-side-panel--left">
         <div class="sensor-table">
           <div class="sensor-row" [ngClass]="getTempStatus(data.oil_temp)">
-            <span class="sensor-label">Oil Temp</span>
+            <span class="sensor-label">{{ 'dash.oilTemp' | translate }}</span>
             <span class="sensor-value">{{ data.oil_temp || 0 | number:'1.0-0' }}<small>°C</small></span>
           </div>
           <div class="sensor-row sensor-row--yellow">
-            <span class="sensor-label">Oil Press</span>
+            <span class="sensor-label">{{ 'dash.oilPress' | translate }}</span>
             <span class="sensor-value">{{ data.oil_press || 0 | number:'1.0-1' }}</span>
           </div>
           <div class="sensor-row" [ngClass]="getTempStatus(data.water_temp)">
-            <span class="sensor-label">Water Temp</span>
+            <span class="sensor-label">{{ 'dash.waterTemp' | translate }}</span>
             <span class="sensor-value">{{ data.water_temp || 0 | number:'1.0-0' }}<small>°C</small></span>
           </div>
           <div class="sensor-row sensor-row--pink">
-            <span class="sensor-label">Fuel Press</span>
+            <span class="sensor-label">{{ 'dash.fuelPress' | translate }}</span>
             <span class="sensor-value">{{ data.fuel_press || '0.0' }}</span>
           </div>
         </div>
       </div>
 
-      <!-- CENTER: gear (dominant) -->
       <div class="gt3-center-panel">
         <div class="gt3-gear-container">
           <span class="gt3-gear-value">{{ data.gear || 'N' }}</span>
         </div>
       </div>
 
-      <!-- RIGHT: sonda + system -->
       <div class="gt3-side-panel gt3-side-panel--right">
         <div class="sensor-table">
           <div class="sensor-row">
-            <span class="sensor-label">Sonda (AFR)</span>
+            <span class="sensor-label">{{ 'dash.sonda' | translate }}</span>
             <span class="sensor-value">{{ data.sonda || '0.00' }}</span>
           </div>
           <div class="sensor-row" [ngClass]="isLive ? 'status-ok' : 'status-stopped'">
-            <span class="sensor-label">System</span>
-            <span class="sensor-value">{{ isLive ? 'LIVE' : 'STOPPED' }}</span>
+            <span class="sensor-label">{{ 'dash.system' | translate }}</span>
+            <span class="sensor-value">{{ isLive ? ('dash.live' | translate) : ('dash.stopped' | translate) }}</span>
           </div>
         </div>
       </div>
-
     </div>
   </ng-container>
 
-  <!-- ========================
-       CLASSIC LAYOUT
-       ======================== -->
+  <!-- CLASSIC LAYOUT -->
   <ng-container *ngIf="selectedStyle === 'classic'">
     <div class="classic-grid">
-
-      <!-- LEFT -->
       <div class="classic-side-panel">
         <div class="data-box yellow">
-          <span class="label">OIL PRESS</span>
+          <span class="label">{{ 'dash.oilPress' | translate }}</span>
           <span class="value">{{ data.oil_press || 0 | number:'1.0-0' }}</span>
         </div>
         <div class="data-box" [ngClass]="getTempStatus(data.water_temp)">
-          <span class="label">WATER TEMP</span>
+          <span class="label">{{ 'dash.waterTemp' | translate }}</span>
           <span class="value">{{ data.water_temp || 0 | number:'1.0-0' }}<small>°C</small></span>
         </div>
         <div class="data-box" [ngClass]="getTempStatus(data.oil_temp)">
-          <span class="label">OIL TEMP</span>
+          <span class="label">{{ 'dash.oilTemp' | translate }}</span>
           <span class="value">{{ data.oil_temp || 0 | number:'1.0-0' }}<small>°C</small></span>
         </div>
       </div>
 
-      <!-- CENTER -->
       <div class="classic-center-panel">
         <div class="classic-gear-container">
-          <span class="label">GEAR</span>
+          <span class="label">{{ 'dash.gear' | translate }}</span>
           <span class="value">{{ data.gear || 'N' }}</span>
         </div>
         <div class="classic-speed-container">
           <span class="value">{{ data.speed || '0' }}</span>
-          <span class="label">KM/H</span>
+          <span class="label">{{ 'dash.kmh' | translate | uppercase }}</span>
         </div>
         <div class="classic-rpm-digital">
           <span class="value">{{ data.rpm || '0' }}</span>
-          <span class="label">/ 7000 RPM</span>
+          <span class="label">{{ 'dash.maxRpm' | translate }}</span>
         </div>
       </div>
 
-      <!-- RIGHT -->
       <div class="classic-side-panel">
         <div class="data-box pink">
-          <span class="label">FUEL PRESS</span>
+          <span class="label">{{ 'dash.fuelPress' | translate }}</span>
           <span class="value">{{ data.fuel_press || '0.0' }}</span>
         </div>
         <div class="data-box">
-          <span class="label">SONDA (AFR)</span>
+          <span class="label">{{ 'dash.sonda' | translate }}</span>
           <span class="value">{{ data.sonda || '0.00' }}</span>
         </div>
         <div *ngIf="isLive"  class="data-box status-ok">
-          <span class="label">SYSTEM</span>
-          <span class="value">LIVE</span>
+          <span class="label">{{ 'dash.system' | translate }}</span>
+          <span class="value">{{ 'dash.live' | translate }}</span>
         </div>
         <div *ngIf="!isLive" class="data-box status-stopped">
-          <span class="label">SYSTEM</span>
-          <span class="value">STOPPED</span>
+          <span class="label">{{ 'dash.system' | translate }}</span>
+          <span class="value">{{ 'dash.stopped' | translate }}</span>
         </div>
       </div>
-
     </div>
   </ng-container>
 
-  <!-- CHART - shared -->
+  <!-- CHART -->
   <div class="chart-section">
     <app-telemetry-chart-design [fullData]="history"></app-telemetry-chart-design>
   </div>

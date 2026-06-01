@@ -2,21 +2,18 @@
   <div class="header-left">
     <span class="header-title">LINKBOX</span>
     <span class="header-sep">·</span>
-    <span class="header-subtitle">DASHBOARD</span>
+    <span class="header-subtitle">{{ 'header.sub' | translate }}</span>
     <span *ngIf="deviceInfo && deviceInfo.clientName" class="client-name">
       {{ deviceInfo.clientName }}
     </span>
   </div>
 
   <div class="header-right">
-    <button class="theme-toggle" (click)="themeService.toggle()" [title]="themeService.isDark ? 'Switch to light mode' : 'Switch to dark mode'">
+    <button class="theme-toggle" (click)="i18n.toggle()">{{ 'nav.langToggle' | translate }}</button>
+    <button class="theme-toggle" (click)="themeService.toggle()">
       {{ themeService.isDark ? '◻ LIGHT' : '◼ DARK' }}
     </button>
-
-    <span class="plan-badge" [ngClass]="getPlanBadgeColor()">
-      {{ getPlanBadgeText() }}
-    </span>
-
+    <span class="plan-badge" [ngClass]="getPlanBadgeColor()">{{ getPlanBadgeText() }}</span>
     <span
       *ngIf="deviceInfo && deviceInfo.subscriptionStatus !== 'active'"
       class="status-badge"
@@ -25,7 +22,7 @@
         'status-suspended': deviceInfo.subscriptionStatus === 'suspended'
       }"
     >
-      {{ deviceInfo.subscriptionStatus | uppercase }}
+      {{ deviceInfo.subscriptionStatus === 'expired' ? ('header.expired' | translate) : ('header.suspended' | translate) }}
     </span>
   </div>
 </div>
