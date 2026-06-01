@@ -14,9 +14,9 @@
 }
 
 .header-title {
-  font-size: 1rem;
-  font-weight: 900;
-  letter-spacing: 5px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: 6px;
   color: var(--tx-1);
 }
 
