@@ -4,22 +4,27 @@
   align-items: center;
   padding: 9px 0;
   border-bottom: 1px solid var(--brd-1);
+  /* Allow wrapping so Spanish text doesn't overflow */
+  flex-wrap: wrap;
+  row-gap: 6px;
 }
 
 /* Info side */
 .toolbar-info {
   display: flex;
-  gap: 16px;
+  gap: 12px;
   align-items: center;
+  flex-wrap: wrap;
 }
 
 .feature-tag {
-  font-size: 0.58rem;
+  font-size: 0.57rem;
   font-weight: 700;
-  letter-spacing: 2px;
+  letter-spacing: 1.5px;
   color: var(--tx-5);
   border: 1px solid var(--brd-3);
   padding: 2px 8px;
+  white-space: nowrap;
 }
 
 .feature-tag--on {
@@ -30,18 +35,20 @@
 /* Actions side */
 .toolbar-actions {
   display: flex;
-  gap: 8px;
+  gap: 6px;
   align-items: center;
+  flex-wrap: wrap;
 }
 
 .tb-btn {
-  padding: 5px 14px;
+  padding: 5px 12px;
   background: transparent;
   border: 1px solid var(--brd-4);
   color: var(--tx-4);
-  font-size: 0.6rem;
+  font-size: 0.58rem;
   font-weight: 700;
-  letter-spacing: 2px;
+  /* Reduced: "MEJORAR PLAN" / "VER SESIONES" fit comfortably */
+  letter-spacing: 1.5px;
   cursor: pointer;
   font-family: inherit;
   white-space: nowrap;

@@ -79,8 +79,10 @@
 /* Right */
 .header-right {
   display: flex;
-  gap: 8px;
+  gap: 6px;
   align-items: center;
+  flex-wrap: wrap;
+  justify-content: flex-end;
 }
 
 /* Theme toggle */

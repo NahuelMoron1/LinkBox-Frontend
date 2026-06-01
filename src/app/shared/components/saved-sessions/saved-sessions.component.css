@@ -25,6 +25,8 @@
   padding: 14px 0;
   border-bottom: 1px solid var(--brd-2);
   margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
 .hdr-left {
