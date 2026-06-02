@@ -171,6 +171,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
       this.telemetrySub = this.telemetryService
         .listenTelemetry()
         .subscribe((newData) => {
+          if (!this.isLive) {
+            // Reconnected after a stop — discard old session history
+            this.history = [];
+          }
           this.isLive = true;
           this.data = newData;
           this.history = [...this.history, newData];
