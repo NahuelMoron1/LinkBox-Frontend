@@ -78,6 +78,16 @@
       </div>
 
       <div class="gt3-side-panel gt3-side-panel--right">
+
+        <!-- ═ OIL PRESS ALARM BOX (danger when too low OR too high) ═ -->
+        <div class="gt3-alarm-box" *ngIf="alertThresholds.isDanger(data.oil_press, 'oil_press')">
+          <span class="alarm-icon">⚠</span>
+          <div class="alarm-body">
+            <span class="alarm-label">{{ 'dash.alarm' | translate }}</span>
+            <span class="alarm-sensor">{{ 'dash.oilPress' | translate }}</span>
+          </div>
+        </div>
+
         <div class="sensor-table">
           <div class="sensor-row">
             <span class="sensor-label">{{ 'dash.sonda' | translate }}</span>

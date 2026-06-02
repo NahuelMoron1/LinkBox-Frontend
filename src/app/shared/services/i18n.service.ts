@@ -135,6 +135,7 @@ const translations: Record<'en' | 'es', Record<string, string>> = {
     'tbl.gear':      'GEAR',
 
     // ── DASHBOARD ──
+    'dash.alarm':    'ALARM',
     'dash.gt3':      'GT3',
     'dash.classic':  'CLASSIC',
     'dash.live':     'LIVE',
@@ -368,6 +369,7 @@ const translations: Record<'en' | 'es', Record<string, string>> = {
     'tbl.gear':      'MARCHA',
 
     // ── DASHBOARD ──
+    'dash.alarm':    'ALARMA',
     'dash.gt3':      'GT3',
     'dash.classic':  'CLÁSICO',
     'dash.live':     'EN VIVO',

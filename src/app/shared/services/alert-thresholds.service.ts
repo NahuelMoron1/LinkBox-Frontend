@@ -53,14 +53,22 @@ export class AlertThresholdsService {
     localStorage.setItem(this.KEY, JSON.stringify(this.data));
   }
 
-  /** Returns CSS class name based on value + current thresholds */
+  /** Returns CSS class name based on value + current thresholds.
+   *  Danger fires in BOTH directions:
+   *    value < cold threshold  → danger (too low, e.g. very low oil pressure)
+   *    value > warning threshold → danger (too high, e.g. overheating)
+   */
   getStatus(value: number, sensor: string): string {
     if (!value || value <= 0) return 'cold';
     const t = this.get(sensor);
-    if (value < t.cold)    return 'cold';
-    if (value < t.warm)    return 'warm';
-    if (value < t.optimum) return 'optimum';
-    if (value < t.warning) return 'warning';
-    return 'danger';
+    if (value < t.cold)    return 'danger';   // ← too low = danger
+    if (value < t.warm)    return 'cold';
+    if (value < t.optimum) return 'warm';
+    if (value < t.warning) return 'optimum';
+    return 'danger';                           // ← too high = danger
+  }
+
+  isDanger(value: number, sensor: string): boolean {
+    return this.getStatus(value, sensor) === 'danger';
   }
 }

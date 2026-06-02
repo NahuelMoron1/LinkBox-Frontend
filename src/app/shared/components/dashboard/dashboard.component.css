@@ -240,6 +240,53 @@
 .gt3-side-panel--left  { border-right: 1px solid var(--brd-2); }
 .gt3-side-panel--right { border-left:  1px solid var(--brd-2); }
 
+/* ── ALARM BOX (Porsche GT3 style) ──────────────────────────── */
+.gt3-alarm-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 14px 10px;
+  background: #cc0000;
+  border: 1px solid #ff2222;
+  margin-bottom: 6px;
+  animation: alarm-blink 0.55s infinite;
+  cursor: default;
+}
+
+@keyframes alarm-blink {
+  0%, 100% { background: #cc0000; border-color: #ff3333; }
+  50%       { background: #880000; border-color: #aa0000; }
+}
+
+.alarm-icon {
+  font-size: 1.6rem;
+  line-height: 1;
+  color: #ffee00;
+  filter: drop-shadow(0 0 4px #ffee00);
+}
+
+.alarm-body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.alarm-label {
+  font-size: 0.7rem;
+  font-weight: 900;
+  letter-spacing: 4px;
+  color: #ffffff;
+}
+
+.alarm-sensor {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  color: rgba(255, 255, 255, 0.82);
+}
+/* ─────────────────────────────────────────────────────────────── */
+
 /* Sensor table */
 .sensor-table {
   border: 1px solid var(--brd-3);
