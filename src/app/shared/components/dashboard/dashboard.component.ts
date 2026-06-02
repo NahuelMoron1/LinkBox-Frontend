@@ -7,7 +7,9 @@ import { TranslatePipe } from '../../pipes/translate.pipe';
 import { DeviceInfo } from '../../models/Device';
 import { TelemetryDataPoint } from '../../models/Session';
 import { AlertService } from '../../services/alert.service';
+import { AlertThresholdsService, SensorThresholds, SENSOR_UNIT } from '../../services/alert-thresholds.service';
 import { AuthService } from '../../services/auth.service';
+import { I18nService } from '../../services/i18n.service';
 import { SessionsService } from '../../services/sessions.service';
 import { TelemetryService } from '../../services/telemetry.service';
 import { TelemetryChartDesignComponent } from '../telemetry-chart-design/telemetry-chart-design.component';
@@ -15,6 +17,7 @@ import { TelemetryChartDesignComponent } from '../telemetry-chart-design/telemet
 @Component({
   selector: 'app-dashboard',
   imports: [CommonModule, FormsModule, TelemetryChartDesignComponent, TranslatePipe],
+
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css',
 })
@@ -38,6 +41,84 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   selectedStyle: 'gt3' | 'classic' = 'gt3';
 
+  // ── Alert thresholds config (Ultimate plan) ────────────────
+  editingSensor: string | null = null;
+  editValues: SensorThresholds = { cold: 0, warm: 0, optimum: 0, warning: 0 };
+  readonly configSensors = [
+    { key: 'oil_temp',   labelKey: 'dash.oilTemp'   },
+    { key: 'water_temp', labelKey: 'dash.waterTemp'  },
+    { key: 'oil_press',  labelKey: 'dash.oilPress'   },
+  ];
+
+  getSensorUnit(sensor: string): string {
+    return SENSOR_UNIT[sensor] ?? '';
+  }
+
+  /** Translation key for the currently edited sensor */
+  get editingSensorLabelKey(): string {
+    return this.configSensors.find(s => s.key === this.editingSensor)?.labelKey ?? '';
+  }
+
+  toggleSensorConfig(sensor: string): void {
+    if (this.editingSensor === sensor) {
+      this.editingSensor = null;
+    } else {
+      this.editingSensor = sensor;
+      this.editValues = { ...this.alertThresholds.get(sensor) };
+    }
+  }
+
+  /** Sanitize a threshold input in real-time: strip non-numeric chars, enforce >= 0 */
+  sanitizeInput(field: keyof SensorThresholds, event: Event): void {
+    const raw   = (event.target as HTMLInputElement).value;
+    const clean = raw.replace(/[^0-9.]/g, '');         // allow digits + one dot
+    const num   = parseFloat(clean);
+    const safe  = isNaN(num) || num < 0 ? 0 : num;
+    this.editValues[field] = safe;
+    (event.target as HTMLInputElement).value = String(safe);
+  }
+
+  saveSensorConfig(): void {
+    if (!this.editingSensor) return;
+
+    const v = this.editValues;
+
+    // All must be finite positive numbers
+    const ok = (n: number) => typeof n === 'number' && isFinite(n) && n > 0;
+    if (!ok(v.cold) || !ok(v.warm) || !ok(v.optimum) || !ok(v.warning)) {
+      this.alertService.error(
+        this.i18n.t('dash.cfg.title'),
+        this.i18n.t('dash.cfg.errNeg'),
+      );
+      return;
+    }
+
+    // Must be strictly ascending
+    if (!(v.cold < v.warm && v.warm < v.optimum && v.optimum < v.warning)) {
+      this.alertService.error(
+        this.i18n.t('dash.cfg.title'),
+        this.i18n.t('dash.cfg.errOrder'),
+      );
+      return;
+    }
+
+    this.alertThresholds.save(this.editingSensor, {
+      cold:    v.cold,
+      warm:    v.warm,
+      optimum: v.optimum,
+      warning: v.warning,
+    });
+    this.editingSensor = null;
+  }
+
+  resetSensorConfig(): void {
+    if (this.editingSensor) {
+      this.alertThresholds.reset(this.editingSensor);
+      this.editValues = { ...this.alertThresholds.get(this.editingSensor) };
+    }
+  }
+  // ──────────────────────────────────────────────────────────
+
   setStyle(style: 'gt3' | 'classic'): void {
     this.selectedStyle = style;
     localStorage.setItem('linkbox-dashboard-style', style);
@@ -49,6 +130,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
     private alertService: AlertService,
     private router: Router,
     private sessionsService: SessionsService,
+    public alertThresholds: AlertThresholdsService,
+    public i18n: I18nService,
   ) {}
 
   async ngOnInit() {
@@ -176,13 +259,14 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
   }
 
+  /** Used by the template for all three configurable sensors */
+  getSensorStatus(value: number, sensor: string): string {
+    return this.alertThresholds.getStatus(value, sensor);
+  }
+
+  /** Legacy alias kept for backward compat */
   getTempStatus(temp: number): string {
-    if (!temp || temp <= 0) return 'cold';
-    if (temp < 70) return 'cold';
-    if (temp >= 70 && temp < 85) return 'warm';
-    if (temp >= 85 && temp <= 98) return 'optimum';
-    if (temp > 98 && temp <= 105) return 'warning';
-    return 'danger';
+    return this.alertThresholds.getStatus(temp, 'oil_temp');
   }
 
   getLedColor(index: number): string {

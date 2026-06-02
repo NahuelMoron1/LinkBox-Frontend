@@ -51,7 +51,23 @@
     <div class="session-details-panel">
       <div *ngIf="selectedSession; else selectPrompt" class="session-details">
         <div class="details-header">
-          <span class="details-title">{{ selectedSession.session_name }}</span>
+          <!-- Normal view -->
+          <div class="details-title-group" *ngIf="!isEditingName">
+            <span class="details-title">{{ selectedSession.session_name }}</span>
+            <button class="rename-btn" (click)="startEditingName()" [title]="'sess.rename' | translate">✏</button>
+          </div>
+          <!-- Edit mode -->
+          <div class="details-title-group details-title-group--editing" *ngIf="isEditingName">
+            <input class="name-edit-input" type="text"
+                   [(ngModel)]="editedName"
+                   [placeholder]="'sess.renamePh' | translate"
+                   (keyup.enter)="saveSessionName()"
+                   (keyup.escape)="cancelEditingName()"
+                   maxlength="80" />
+            <button class="act-btn act-btn--confirm" (click)="saveSessionName()">{{ 'sess.renameSave' | translate }}</button>
+            <button class="act-btn act-btn--cancel-edit" (click)="cancelEditingName()">{{ 'sess.renameCancel' | translate }}</button>
+          </div>
+
           <div class="details-actions">
             <button class="act-btn act-btn--export" (click)="exportSession()" [disabled]="!sessionData">
               {{ 'sess.export' | translate }}

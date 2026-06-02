@@ -25,6 +25,10 @@ export class SavedSessionsComponent implements OnInit, OnDestroy {
   searchQuery = '';
   key: string | null = null;
 
+  // Rename state
+  isEditingName = false;
+  editedName    = '';
+
   private sessionsSub?: Subscription;
 
   constructor(
@@ -51,8 +55,38 @@ export class SavedSessionsComponent implements OnInit, OnDestroy {
   }
 
   selectSession(session: SessionInfo): void {
+    this.isEditingName = false;
     this.selectedSession = session;
     this.loadSessionData(session.id);
+  }
+
+  startEditingName(): void {
+    if (!this.selectedSession) return;
+    this.editedName    = this.selectedSession.session_name;
+    this.isEditingName = true;
+    setTimeout(() => {
+      (document.querySelector('.name-edit-input') as HTMLInputElement)?.select();
+    }, 30);
+  }
+
+  saveSessionName(): void {
+    if (!this.selectedSession || !this.editedName.trim()) return;
+    const newName = this.editedName.trim();
+    if (newName === this.selectedSession.session_name) { this.isEditingName = false; return; }
+
+    this.sessionsService.renameSession(this.selectedSession.id, newName).subscribe({
+      next: () => {
+        this.selectedSession!.session_name = newName;
+        const inList = this.sessions.find(s => s.id === this.selectedSession!.id);
+        if (inList) inList.session_name = newName;
+        this.isEditingName = false;
+      },
+      error: () => this.alertService.error('Error', 'Failed to rename session'),
+    });
+  }
+
+  cancelEditingName(): void {
+    this.isEditingName = false;
   }
 
   loadSessionData(sessionId: string): void {

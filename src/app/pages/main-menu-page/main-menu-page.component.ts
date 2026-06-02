@@ -21,6 +21,7 @@ export class MainMenuPageComponent implements OnInit {
     { icon: '◎', titleKey: 'feat.2.title', descKey: 'feat.2.desc' },
     { icon: '◇', titleKey: 'feat.3.title', descKey: 'feat.3.desc' },
     { icon: '◉', titleKey: 'feat.4.title', descKey: 'feat.4.desc' },
+    { icon: '◐', titleKey: 'feat.5.title', descKey: 'feat.5.desc' },
   ];
 
   plans = [
@@ -47,7 +48,7 @@ export class MainMenuPageComponent implements OnInit {
       name: 'ULTIMATE',
       badgeClass: 'plan-ultimate',
       taglineKey: 'plan.ult.tagline',
-      featureKeys: ['plan.ult.f1', 'plan.ult.f2', 'plan.ult.f3', 'plan.ult.f4'],
+      featureKeys: ['plan.ult.f1', 'plan.ult.f2', 'plan.ult.f3', 'plan.ult.f4', 'plan.ult.f5'],
       ctaKey: 'plan.ult.cta',
       highlight: true,
     },

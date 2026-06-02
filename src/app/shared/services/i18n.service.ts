@@ -34,6 +34,8 @@ const translations: Record<'en' | 'es', Record<string, string>> = {
     'feat.3.desc':  'Interactive multi-channel charts with zoom and pan. Correlate metrics across time and spot anomalies before they cost you a race.',
     'feat.4.title': 'GT3 DISPLAY MODE',
     'feat.4.desc':  'Professional dashboard inspired by the Porsche GT3 DDU. Switch between GT3 and Classic layouts on the fly.',
+    'feat.5.title': 'CUSTOM ALERT THRESHOLDS',
+    'feat.5.desc':  'Ultimate plan users can personalise the colour zones for oil temperature, water temperature and oil pressure — define exactly when each sensor turns blue, green, orange or red.',
 
     // ── PLANS SECTION ──
     'plans.eyebrow':        'PRICING',
@@ -55,7 +57,8 @@ const translations: Record<'en' | 'es', Record<string, string>> = {
     'plan.ult.f1':   'Everything in Pro',
     'plan.ult.f2':   'Unlimited sessions',
     'plan.ult.f3':   'Auto-save on connect',
-    'plan.ult.f4':   'Priority support',
+    'plan.ult.f4':   'Custom alert thresholds',
+    'plan.ult.f5':   'Priority support',
     'plans.popular': 'MOST POPULAR',
 
     // ── FOOTER ──
@@ -94,6 +97,10 @@ const translations: Record<'en' | 'es', Record<string, string>> = {
     'toolbar.saveUpgrade': 'UPGRADE TO SAVE',
 
     // ── SAVED SESSIONS ──
+    'sess.rename':        'RENAME',
+    'sess.renameSave':    '✓',
+    'sess.renameCancel':  '✕',
+    'sess.renamePh':      'Session name...',
     'sess.title':     'SAVED SESSIONS',
     'sess.back':      'BACK',
     'sess.refresh':   'REFRESH',
@@ -147,6 +154,20 @@ const translations: Record<'en' | 'es', Record<string, string>> = {
     // ── CHART ──
     'chart.reset':   'RESET ZOOM',
     'chart.noData':  'Your data will appear here once the telemetry logger starts',
+
+    // ── ALERT THRESHOLD CONFIG ──
+    'dash.cfg.title':     'ALERT THRESHOLDS',
+    'dash.cfg.cold':      'COLD',
+    'dash.cfg.warm':      'WARM',
+    'dash.cfg.optimum':   'OPTIMUM',
+    'dash.cfg.warning':   'WARNING',
+    'dash.cfg.danger':    'DANGER',
+    'dash.cfg.below':     'below',
+    'dash.cfg.aboveWarn': 'above WARNING threshold',
+    'dash.cfg.reset':     'RESET DEFAULTS',
+    'dash.cfg.save':      'SAVE',
+    'dash.cfg.errOrder':  'Values must be in ascending order: cold < warm < optimum < warning.',
+    'dash.cfg.errNeg':    'All thresholds must be positive numbers greater than zero.',
 
     // ── PRICING PAGE ──
     'pricing.billing':      'BILLED ANNUALLY · CANCEL ANYTIME',
@@ -246,6 +267,8 @@ const translations: Record<'en' | 'es', Record<string, string>> = {
     'feat.3.desc':  'Gráficos interactivos multicanal con zoom y paneo. Correlacioná métricas en el tiempo y detectá anomalías antes de que te cuesten una carrera.',
     'feat.4.title': 'MODO DISPLAY GT3',
     'feat.4.desc':  'Panel profesional inspirado en el DDU del Porsche GT3. Cambiá entre layouts GT3 y Clásico al instante.',
+    'feat.5.title': 'UMBRALES DE ALERTA PERSONALIZABLES',
+    'feat.5.desc':  'Los usuarios del plan Ultimate pueden personalizar las zonas de color para temperatura de aceite, temperatura de agua y presión de aceite — definí exactamente cuándo cada sensor se vuelve azul, verde, naranja o rojo.',
 
     // ── PLANS SECTION ──
     'plans.eyebrow':       'PRECIOS',
@@ -267,7 +290,8 @@ const translations: Record<'en' | 'es', Record<string, string>> = {
     'plan.ult.f1':   'Todo lo de Pro',
     'plan.ult.f2':   'Sesiones ilimitadas',
     'plan.ult.f3':   'Auto-guardado al conectar',
-    'plan.ult.f4':   'Soporte prioritario',
+    'plan.ult.f4':   'Umbrales de alerta personalizables',
+    'plan.ult.f5':   'Soporte prioritario',
     'plans.popular': 'MÁS POPULAR',
 
     // ── FOOTER ──
@@ -306,6 +330,10 @@ const translations: Record<'en' | 'es', Record<string, string>> = {
     'toolbar.saveUpgrade':  'MEJORAR PARA GUARDAR',
 
     // ── SAVED SESSIONS ──
+    'sess.rename':        'RENOMBRAR',
+    'sess.renameSave':    '✓',
+    'sess.renameCancel':  '✕',
+    'sess.renamePh':      'Nombre de la sesión...',
     'sess.title':     'SESIONES GUARDADAS',
     'sess.back':      'VOLVER',
     'sess.refresh':   'ACTUALIZAR',
@@ -359,6 +387,20 @@ const translations: Record<'en' | 'es', Record<string, string>> = {
     // ── CHART ──
     'chart.reset':  'RESET ZOOM',
     'chart.noData': 'Los datos aparecerán aquí cuando el logger de telemetría inicie',
+
+    // ── ALERT THRESHOLD CONFIG ──
+    'dash.cfg.title':     'UMBRALES DE ALERTA',
+    'dash.cfg.cold':      'FRÍO',
+    'dash.cfg.warm':      'CÁLIDO',
+    'dash.cfg.optimum':   'ÓPTIMO',
+    'dash.cfg.warning':   'ALERTA',
+    'dash.cfg.danger':    'PELIGRO',
+    'dash.cfg.below':     'menor a',
+    'dash.cfg.aboveWarn': 'por encima del umbral de alerta',
+    'dash.cfg.reset':     'RESTAURAR',
+    'dash.cfg.save':      'GUARDAR',
+    'dash.cfg.errOrder':  'Los valores deben estar en orden ascendente: frío < cálido < óptimo < alerta.',
+    'dash.cfg.errNeg':    'Todos los umbrales deben ser números positivos mayores que cero.',
 
     // ── PRICING PAGE ──
     'pricing.billing':      'FACTURACIÓN ANUAL · CANCELÁ CUANDO QUIERAS',

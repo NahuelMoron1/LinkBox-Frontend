@@ -75,6 +75,14 @@ export class SessionsService {
     );
   }
 
+  renameSession(sessionId: string, name: string): Observable<any> {
+    return this.http.patch<any>(
+      `${this.apiUrl}/sessions/${sessionId}/rename`,
+      { name },
+      this.httpOptions,
+    );
+  }
+
   deleteSession(sessionId: string): Observable<any> {
     const deviceId = this.authService.getDeviceId();
     if (!deviceId) throw new Error('Device ID not found');
