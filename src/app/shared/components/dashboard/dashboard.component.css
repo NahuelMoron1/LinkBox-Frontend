@@ -237,11 +237,15 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: 18px 16px;
+  padding: 16px;
 }
 
-.gt3-side-panel--left  { border-right: 1px solid var(--brd-2); }
-.gt3-side-panel--right { border-left:  1px solid var(--brd-2); }
+.gt3-side-panel--left  {
+  border-right: 1px solid var(--brd-2);
+  justify-content: flex-start;  /* tyre widget + sensors stack from top */
+}
+
+.gt3-side-panel--right { border-left: 1px solid var(--brd-2); }
 
 /* ── ALARM BOX (Porsche GT3 style) ──────────────────────────── */
 .gt3-alarm-box {
@@ -352,7 +356,6 @@
   justify-content: center;
   background: var(--bg-4);
   padding: 10px 20px;
-  min-height: 240px;
 }
 
 .gt3-gear-container { line-height: 1; }
@@ -381,6 +384,7 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
+  align-items: stretch;
 }
 
 /* Data box (card) */
@@ -717,21 +721,12 @@
 /* ================================================
    TYRE WIDGET
    ================================================ */
-.tyre-section {
-  flex: 0 0 auto;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 10px 20px;
-  background: var(--bg-1);
-  border-bottom: 1px solid var(--brd-2);
-}
-
 .tyre-widget {
   border: 1px solid var(--brd-3);
   background: var(--bg-2);
   overflow: hidden;
-  width: 260px;
+  width: 100%;
+  margin-bottom: 10px;
 }
 
 .tyre-widget-header {
