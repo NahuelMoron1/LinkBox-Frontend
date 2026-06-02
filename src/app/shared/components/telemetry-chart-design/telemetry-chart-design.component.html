@@ -6,6 +6,14 @@
     <button class="reset-btn" (click)="resetZoom()">{{ 'chart.reset' | translate }}</button>
   </div>
 
+  <!-- Color legend for multi-line metrics (tyre temp / tyre press) -->
+  <div class="chart-legend" *ngIf="currentMetricMultiKeys">
+    <span class="legend-item" *ngFor="let mk of currentMetricMultiKeys">
+      <span class="legend-dot" [style.background]="mk.color"></span>
+      {{ mk.label }}
+    </span>
+  </div>
+
   <div *ngIf="!hasData" class="placeholder">
     <span>{{ 'chart.noData' | translate }}</span>
   </div>

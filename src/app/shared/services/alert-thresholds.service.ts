@@ -10,20 +10,24 @@ export interface SensorThresholds {
 
 // Default thresholds — match the previous hardcoded getTempStatus() logic
 const DEFAULTS: Record<string, SensorThresholds> = {
-  oil_temp:   { cold: 70,  warm: 85,  optimum: 98,  warning: 105 },
-  water_temp: { cold: 70,  warm: 80,  optimum: 98,  warning: 102 },
-  oil_press:  { cold: 1.5, warm: 2.5, optimum: 7.0, warning: 8.5 },
+  oil_temp:   { cold: 70,  warm: 85,  optimum: 98,  warning: 105  },
+  water_temp: { cold: 70,  warm: 80,  optimum: 98,  warning: 102  },
+  oil_press:  { cold: 22,  warm: 36,  optimum: 102, warning: 124  }, // PSI
+  tyre_temp:  { cold: 45,  warm: 65,  optimum: 75,  warning: 108  },
+  tyre_press: { cold: 22,  warm: 26,  optimum: 30,  warning: 38   }, // PSI
 };
 
 export const SENSOR_UNIT: Record<string, string> = {
   oil_temp:   '°C',
   water_temp: '°C',
-  oil_press:  'bar',
+  oil_press:  'PSI',
+  tyre_temp:  '°C',
+  tyre_press: 'PSI',
 };
 
 @Injectable({ providedIn: 'root' })
 export class AlertThresholdsService {
-  private readonly KEY = 'linkbox-sensor-thresholds';
+  private readonly KEY = 'linkbox-sensor-thresholds-v2';
   private data: Record<string, SensorThresholds>;
 
   constructor() {

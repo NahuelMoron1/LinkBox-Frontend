@@ -61,6 +61,30 @@ canvas {
   image-rendering: crisp-edges;
 }
 
+.chart-legend {
+  display: flex;
+  justify-content: center;
+  gap: 18px;
+  padding: 4px 0 6px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  color: var(--tx-4);
+}
+
+.legend-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
 .placeholder {
   flex-grow: 1;
   width: 100%;

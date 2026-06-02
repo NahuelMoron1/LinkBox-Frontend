@@ -48,6 +48,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
     { key: 'oil_temp',   labelKey: 'dash.oilTemp'   },
     { key: 'water_temp', labelKey: 'dash.waterTemp'  },
     { key: 'oil_press',  labelKey: 'dash.oilPress'   },
+    { key: 'tyre_temp',  labelKey: 'dash.tyreTemp'   },
+    { key: 'tyre_press', labelKey: 'dash.tyrePress'  },
   ];
 
   getSensorUnit(sensor: string): string {
@@ -247,7 +249,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
           );
         }
       }
-    }, 3000); // 3 segundos sin datos
+    }, 30_000); // 30 s without data → mark as stopped and complete session
   }
 
   ngOnDestroy() {
@@ -262,6 +264,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
   /** Used by the template for all three configurable sensors */
   getSensorStatus(value: number, sensor: string): string {
     return this.alertThresholds.getStatus(value, sensor);
+  }
+
+  barToPsi(bar: any): number {
+    return ((+bar) || 0) * 14.504;
   }
 
   /** Legacy alias kept for backward compat */

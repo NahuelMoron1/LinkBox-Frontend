@@ -10,20 +10,83 @@
     ></div>
   </div>
 
-  <!-- STYLE SELECTOR -->
+  <!-- STYLE SELECTOR + LIVE BADGE -->
   <div class="style-selector">
-    <button class="style-btn" [class.active]="selectedStyle === 'gt3'"     (click)="setStyle('gt3')">{{ 'dash.gt3' | translate }}</button>
-    <button class="style-btn" [class.active]="selectedStyle === 'classic'" (click)="setStyle('classic')">{{ 'dash.classic' | translate }}</button>
+    <span class="status-badge" [ngClass]="isLive ? 'live' : 'offline'">
+      <span class="status-dot"></span>{{ isLive ? ('dash.live' | translate) : ('dash.offline' | translate) }}
+    </span>
+    <div class="style-btns">
+      <button class="style-btn" [class.active]="selectedStyle === 'gt3'"     (click)="setStyle('gt3')">{{ 'dash.gt3' | translate }}</button>
+      <button class="style-btn" [class.active]="selectedStyle === 'classic'" (click)="setStyle('classic')">{{ 'dash.classic' | translate }}</button>
+    </div>
   </div>
+
+  <!-- ══ TYRE WIDGET (shared template, used in both layouts) ══ -->
+  <ng-template #tyreWidgetTpl>
+    <div class="tyre-section">
+      <div class="tyre-widget">
+        <div class="tyre-widget-header">
+          <span class="tyre-widget-title">{{ 'dash.tyres' | translate }}</span>
+          <div class="tyre-cfg-btns" *ngIf="plan === 'ultimate'">
+            <button class="cfg-btn tyre-cfg-btn"
+                    [class.cfg-btn--active]="editingSensor === 'tyre_temp'"
+                    (click)="toggleSensorConfig('tyre_temp')"
+                    title="Configure tyre temp thresholds">T° ⚙</button>
+            <button class="cfg-btn tyre-cfg-btn"
+                    [class.cfg-btn--active]="editingSensor === 'tyre_press'"
+                    (click)="toggleSensorConfig('tyre_press')"
+                    title="Configure tyre pressure thresholds">P ⚙</button>
+          </div>
+        </div>
+        <div class="tyre-grid">
+          <!-- FL -->
+          <div class="tyre-cell">
+            <span class="tyre-pos">{{ 'dash.fl' | translate }}</span>
+            <span class="tyre-temp-val" [ngClass]="getSensorStatus(data.tyre_temp_fl, 'tyre_temp')">
+              {{ data.tyre_temp_fl || 0 | number:'1.0-0' }}<small>°</small>
+            </span>
+            <span class="tyre-press-val" [ngClass]="getSensorStatus(barToPsi(data.tyre_press_fl), 'tyre_press')">
+              {{ barToPsi(data.tyre_press_fl) | number:'1.0-0' }}<small> PSI</small>
+            </span>
+          </div>
+          <!-- FR -->
+          <div class="tyre-cell">
+            <span class="tyre-pos">{{ 'dash.fr' | translate }}</span>
+            <span class="tyre-temp-val" [ngClass]="getSensorStatus(data.tyre_temp_fr, 'tyre_temp')">
+              {{ data.tyre_temp_fr || 0 | number:'1.0-0' }}<small>°</small>
+            </span>
+            <span class="tyre-press-val" [ngClass]="getSensorStatus(barToPsi(data.tyre_press_fr), 'tyre_press')">
+              {{ barToPsi(data.tyre_press_fr) | number:'1.0-0' }}<small> PSI</small>
+            </span>
+          </div>
+          <!-- RL -->
+          <div class="tyre-cell">
+            <span class="tyre-pos">{{ 'dash.rl' | translate }}</span>
+            <span class="tyre-temp-val" [ngClass]="getSensorStatus(data.tyre_temp_rl, 'tyre_temp')">
+              {{ data.tyre_temp_rl || 0 | number:'1.0-0' }}<small>°</small>
+            </span>
+            <span class="tyre-press-val" [ngClass]="getSensorStatus(barToPsi(data.tyre_press_rl), 'tyre_press')">
+              {{ barToPsi(data.tyre_press_rl) | number:'1.0-0' }}<small> PSI</small>
+            </span>
+          </div>
+          <!-- RR -->
+          <div class="tyre-cell">
+            <span class="tyre-pos">{{ 'dash.rr' | translate }}</span>
+            <span class="tyre-temp-val" [ngClass]="getSensorStatus(data.tyre_temp_rr, 'tyre_temp')">
+              {{ data.tyre_temp_rr || 0 | number:'1.0-0' }}<small>°</small>
+            </span>
+            <span class="tyre-press-val" [ngClass]="getSensorStatus(barToPsi(data.tyre_press_rr), 'tyre_press')">
+              {{ barToPsi(data.tyre_press_rr) | number:'1.0-0' }}<small> PSI</small>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-template>
 
   <!-- GT3 LAYOUT -->
   <ng-container *ngIf="selectedStyle === 'gt3'">
     <div class="gt3-info-bar">
-      <div class="gt3-info-col gt3-info-col--left">
-        <span class="status-badge" [ngClass]="isLive ? 'live' : 'offline'">
-          <span class="status-dot"></span>{{ isLive ? ('dash.live' | translate) : ('dash.offline' | translate) }}
-        </span>
-      </div>
       <div class="gt3-info-col gt3-info-col--center">
         <span class="gt3-speed-value">{{ data.speed || 0 }}</span>
         <span class="gt3-speed-unit">{{ 'dash.kmh' | translate }}</span>
@@ -33,6 +96,9 @@
         <span class="gt3-rpm-label">{{ 'dash.rpm' | translate }}</span>
       </div>
     </div>
+
+    <!-- TYRE WIDGET — above motor sensor tables -->
+    <ng-container *ngTemplateOutlet="tyreWidgetTpl"></ng-container>
 
     <div class="gt3-grid">
       <div class="gt3-side-panel gt3-side-panel--left">
@@ -46,14 +112,14 @@
             </span>
             <span class="sensor-value">{{ data.oil_temp || 0 | number:'1.0-0' }}<small>°C</small></span>
           </div>
-          <div class="sensor-row" [ngClass]="getSensorStatus(data.oil_press, 'oil_press')">
+          <div class="sensor-row" [ngClass]="getSensorStatus(barToPsi(data.oil_press), 'oil_press')">
             <span class="sensor-label">
               {{ 'dash.oilPress' | translate }}
               <button *ngIf="plan === 'ultimate'" class="cfg-btn"
                       [class.cfg-btn--active]="editingSensor === 'oil_press'"
                       (click)="toggleSensorConfig('oil_press')" title="Configure alert thresholds">⚙</button>
             </span>
-            <span class="sensor-value">{{ data.oil_press || 0 | number:'1.0-1' }}</span>
+            <span class="sensor-value">{{ barToPsi(data.oil_press) | number:'1.0-0' }}<small> PSI</small></span>
           </div>
           <div class="sensor-row" [ngClass]="getSensorStatus(data.water_temp, 'water_temp')">
             <span class="sensor-label">
@@ -79,8 +145,8 @@
 
       <div class="gt3-side-panel gt3-side-panel--right">
 
-        <!-- ═ OIL PRESS ALARM BOX (danger when too low OR too high) ═ -->
-        <div class="gt3-alarm-box" *ngIf="alertThresholds.isDanger(data.oil_press, 'oil_press')">
+        <!-- ═ OIL PRESS ALARM BOX ═ -->
+        <div class="gt3-alarm-box" *ngIf="alertThresholds.isDanger(barToPsi(data.oil_press), 'oil_press')">
           <span class="alarm-icon">⚠</span>
           <div class="alarm-body">
             <span class="alarm-label">{{ 'dash.alarm' | translate }}</span>
@@ -104,16 +170,20 @@
 
   <!-- CLASSIC LAYOUT -->
   <ng-container *ngIf="selectedStyle === 'classic'">
+
+    <!-- TYRE WIDGET — above motor sensor tables -->
+    <ng-container *ngTemplateOutlet="tyreWidgetTpl"></ng-container>
+
     <div class="classic-grid">
       <div class="classic-side-panel">
-        <div class="data-box" [ngClass]="getSensorStatus(data.oil_press, 'oil_press')">
+        <div class="data-box" [ngClass]="getSensorStatus(barToPsi(data.oil_press), 'oil_press')">
           <span class="label">
             {{ 'dash.oilPress' | translate }}
             <button *ngIf="plan === 'ultimate'" class="cfg-btn"
                     [class.cfg-btn--active]="editingSensor === 'oil_press'"
                     (click)="toggleSensorConfig('oil_press')">⚙</button>
           </span>
-          <span class="value">{{ data.oil_press || 0 | number:'1.0-0' }}</span>
+          <span class="value">{{ barToPsi(data.oil_press) | number:'1.0-0' }}<small> PSI</small></span>
         </div>
         <div class="data-box" [ngClass]="getSensorStatus(data.water_temp, 'water_temp')">
           <span class="label">

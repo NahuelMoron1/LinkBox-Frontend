@@ -16,6 +16,18 @@ import { TranslatePipe } from '../../pipes/translate.pipe';
 import { I18nService } from '../../services/i18n.service';
 import { ThemeService } from '../../services/theme.service';
 
+interface MultiKey { key: string; color: string; label: string; }
+
+interface ChartMetric {
+  key: string;
+  labelKey: string;
+  color: string;
+  unit: string;
+  max: number;
+  scale?: number;             // multiply raw value before plotting (e.g. bar→PSI)
+  multiKeys?: MultiKey[];     // when set, draw one line per entry instead of one
+}
+
 @Component({
   selector: 'app-telemetry-chart-design',
   imports: [FormsModule, CommonModule, TranslatePipe],
@@ -28,11 +40,29 @@ export class TelemetryChartDesignComponent
   @Input() fullData: any[] = [];
   @ViewChild('chartCanvas') canvasRef!: ElementRef<HTMLCanvasElement>;
 
-  metrics = [
+  metrics: ChartMetric[] = [
     { key: 'rpm',        labelKey: 'tbl.rpm',       color: '#ff2244', unit: 'RPM', max: 9000 },
     { key: 'water_temp', labelKey: 'tbl.water',      color: '#ff6600', unit: '°C',  max: 120  },
     { key: 'oil_temp',   labelKey: 'tbl.oilTemp',    color: '#00e64d', unit: '°C',  max: 150  },
-    { key: 'oil_press',  labelKey: 'tbl.oilPress',   color: '#ffcc00', unit: 'PSI', max: 100  },
+    { key: 'oil_press',  labelKey: 'tbl.oilPress',   color: '#ffcc00', unit: 'PSI', max: 150, scale: 14.504 },
+    {
+      key: 'tyre_temp', labelKey: 'tbl.tyreTemp', color: '#00aaff', unit: '°C', max: 140,
+      multiKeys: [
+        { key: 'tyre_temp_fl', color: '#ffcc00', label: 'FL' },
+        { key: 'tyre_temp_fr', color: '#00e5f5', label: 'FR' },
+        { key: 'tyre_temp_rl', color: '#ff6600', label: 'RL' },
+        { key: 'tyre_temp_rr', color: '#ff2244', label: 'RR' },
+      ],
+    },
+    {
+      key: 'tyre_press', labelKey: 'tbl.tyrePress', color: '#aa44ff', unit: 'PSI', max: 50, scale: 14.504,
+      multiKeys: [
+        { key: 'tyre_press_fl', color: '#ffcc00', label: 'FL' },
+        { key: 'tyre_press_fr', color: '#00e5f5', label: 'FR' },
+        { key: 'tyre_press_rl', color: '#ff6600', label: 'RL' },
+        { key: 'tyre_press_rr', color: '#ff2244', label: 'RR' },
+      ],
+    },
   ];
 
   currentIndex = 0;
@@ -53,8 +83,14 @@ export class TelemetryChartDesignComponent
     private i18n: I18nService,
   ) {}
 
+  get currentMetric(): ChartMetric { return this.metrics[this.currentIndex]; }
+
   get currentMetricLabel(): string {
-    return this.i18n.t(this.metrics[this.currentIndex].labelKey);
+    return this.i18n.t(this.currentMetric.labelKey);
+  }
+
+  get currentMetricMultiKeys(): MultiKey[] | undefined {
+    return this.currentMetric.multiKeys;
   }
 
   ngAfterViewInit() {
@@ -73,12 +109,10 @@ export class TelemetryChartDesignComponent
   ngOnChanges(changes: SimpleChanges) {
     if (changes['fullData'] && this.fullData.length > 0) {
       if (!this.isInitialized) {
-        // First data: anchor from the very beginning
         this.xMin = 0;
         this.xMax = this.fullData.length;
         this.isInitialized = true;
       } else {
-        // New data: extend xMax only — xMin never moves, old data stays anchored
         this.xMax = this.fullData.length;
       }
       this.render();
@@ -156,22 +190,14 @@ export class TelemetryChartDesignComponent
     const { l, r } = this.config.margin;
     const plotWidth = rect.width - l - r;
 
-    // Mouse position as [0–1] fraction of the plot area
     const mouseRel = Math.max(0, Math.min(1, (e.clientX - rect.left - l) / plotWidth));
-
     const range = this.xMax - this.xMin;
-
-    // Scroll UP = zoom in (see less data, more detail)
-    // Scroll DOWN = zoom out — gentle 5% change per tick
     const scaleFactor = e.deltaY < 0 ? 0.95 : 1.05;
     const newRange    = Math.max(10, Math.min(this.fullData.length, range * scaleFactor));
-
-    // Keep the data point under the cursor stationary
     const pivotIdx = this.xMin + mouseRel * range;
     let newXMin    = pivotIdx - mouseRel * newRange;
     let newXMax    = newXMin + newRange;
 
-    // Clamp to data bounds
     if (newXMin < 0)                       { newXMin = 0; newXMax = newRange; }
     if (newXMax > this.fullData.length)    { newXMax = this.fullData.length; newXMin = Math.max(0, newXMax - newRange); }
 
@@ -197,14 +223,15 @@ export class TelemetryChartDesignComponent
     const ctx    = canvas.getContext('2d');
     if (!ctx || this.fullData.length < 2) return;
 
-    const dpr   = window.devicePixelRatio || 1;
-    const w     = canvas.width / dpr;
-    const h     = canvas.height / dpr;
+    const dpr    = window.devicePixelRatio || 1;
+    const w      = canvas.width / dpr;
+    const h      = canvas.height / dpr;
     const { l, r, t, b } = this.config.margin;
-    const plotW = w - l - r;
-    const plotH = h - t - b;
-    const c     = this.colors();
-    const metric = this.metrics[this.currentIndex];
+    const plotW  = w - l - r;
+    const plotH  = h - t - b;
+    const c      = this.colors();
+    const metric = this.currentMetric;
+    const sc     = metric.scale ?? 1;
 
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -223,19 +250,86 @@ export class TelemetryChartDesignComponent
       ctx.fillText(val.toString(), l - 10, y + 3);
     }
 
-    // Data line
-    ctx.beginPath();
-    ctx.strokeStyle = metric.color;
-    ctx.lineWidth   = 2;
-    ctx.lineJoin    = 'round';
-    for (let i = 0; i < this.fullData.length; i++) {
-      const x   = l + ((i - this.xMin) / (this.xMax - this.xMin)) * plotW;
-      const val = this.fullData[i][metric.key] || 0;
-      const y   = h - b - (val / metric.max) * plotH;
-      if (x < l - 10 || x > w - r + 10) { if (i !== 0) ctx.moveTo(x, y); continue; }
-      if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+    if (metric.multiKeys && metric.multiKeys.length > 0) {
+      // ── Multi-line mode ──
+      for (const mk of metric.multiKeys) {
+        ctx.beginPath();
+        ctx.strokeStyle = mk.color;
+        ctx.lineWidth   = 1.8;
+        ctx.lineJoin    = 'round';
+        for (let i = 0; i < this.fullData.length; i++) {
+          const x   = l + ((i - this.xMin) / (this.xMax - this.xMin)) * plotW;
+          const val = (this.fullData[i][mk.key] || 0) * sc;
+          const y   = h - b - (val / metric.max) * plotH;
+          if (x < l - 10 || x > w - r + 10) { ctx.moveTo(x, y); continue; }
+          if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+        }
+        ctx.stroke();
+      }
+
+      // Hover tooltip — multi-line
+      if (this.hoverIndex !== null) {
+        const dp = this.fullData[this.hoverIndex];
+        if (dp) {
+          const x = l + ((this.hoverIndex - this.xMin) / (this.xMax - this.xMin)) * plotW;
+
+          ctx.strokeStyle = c.crosshair; ctx.lineWidth = 1;
+          ctx.beginPath(); ctx.moveTo(x, t); ctx.lineTo(x, h - b); ctx.stroke();
+
+          let ty = t + 18;
+          for (const mk of metric.multiKeys) {
+            const rawVal = dp[mk.key] || 0;
+            const val    = rawVal * sc;
+            const y      = h - b - (val / metric.max) * plotH;
+
+            ctx.fillStyle = mk.color;
+            ctx.beginPath(); ctx.arc(x, y, 3, 0, Math.PI * 2); ctx.fill();
+
+            ctx.fillStyle = mk.color;
+            ctx.font = 'bold 11px sans-serif'; ctx.textAlign = 'left';
+            ctx.fillText(`${mk.label}: ${val.toFixed(1)} ${metric.unit}`, x + 12, ty);
+            ty += 16;
+          }
+
+          ctx.fillStyle = c.tooltipTime;
+          ctx.font = '10px "JetBrains Mono", monospace';
+          ctx.fillText(this.formatTime(this.hoverIndex), x + 12, ty);
+        }
+      }
+
+    } else {
+      // ── Single-line mode ──
+      ctx.beginPath();
+      ctx.strokeStyle = metric.color;
+      ctx.lineWidth   = 2;
+      ctx.lineJoin    = 'round';
+      for (let i = 0; i < this.fullData.length; i++) {
+        const x   = l + ((i - this.xMin) / (this.xMax - this.xMin)) * plotW;
+        const val = (this.fullData[i][metric.key] || 0) * sc;
+        const y   = h - b - (val / metric.max) * plotH;
+        if (x < l - 10 || x > w - r + 10) { if (i !== 0) ctx.moveTo(x, y); continue; }
+        if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+      }
+      ctx.stroke();
+
+      // Hover tooltip — single-line
+      if (this.hoverIndex !== null) {
+        const dp = this.fullData[this.hoverIndex];
+        if (dp) {
+          const x   = l + ((this.hoverIndex - this.xMin) / (this.xMax - this.xMin)) * plotW;
+          const val = (dp[metric.key] || 0) * sc;
+          const y   = h - b - (val / metric.max) * plotH;
+          ctx.strokeStyle = c.crosshair; ctx.lineWidth = 1;
+          ctx.beginPath(); ctx.moveTo(x, t); ctx.lineTo(x, h - b); ctx.stroke();
+          ctx.fillStyle = metric.color;
+          ctx.beginPath(); ctx.arc(x, y, 4, 0, Math.PI * 2); ctx.fill();
+          ctx.fillStyle = c.tooltipVal; ctx.font = 'bold 12px sans-serif'; ctx.textAlign = 'left';
+          ctx.fillText(`${val.toFixed(1)} ${metric.unit}`, x + 10, y - 20);
+          ctx.fillStyle = c.tooltipTime; ctx.font = '10px "JetBrains Mono", monospace';
+          ctx.fillText(this.formatTime(this.hoverIndex), x + 10, y - 5);
+        }
+      }
     }
-    ctx.stroke();
 
     // X labels
     ctx.fillStyle = c.axisLabel;
@@ -246,24 +340,6 @@ export class TelemetryChartDesignComponent
       const x       = l + (i / (numTicks - 1)) * plotW;
       if (tickIdx >= 0 && tickIdx < this.fullData.length)
         ctx.fillText(this.formatTime(tickIdx), x, h - 10);
-    }
-
-    // Hover tooltip
-    if (this.hoverIndex !== null) {
-      const dp  = this.fullData[this.hoverIndex];
-      if (dp) {
-        const x   = l + ((this.hoverIndex - this.xMin) / (this.xMax - this.xMin)) * plotW;
-        const val = dp[metric.key] || 0;
-        const y   = h - b - (val / metric.max) * plotH;
-        ctx.strokeStyle = c.crosshair; ctx.lineWidth = 1;
-        ctx.beginPath(); ctx.moveTo(x, t); ctx.lineTo(x, h - b); ctx.stroke();
-        ctx.fillStyle = metric.color;
-        ctx.beginPath(); ctx.arc(x, y, 4, 0, Math.PI * 2); ctx.fill();
-        ctx.fillStyle = c.tooltipVal; ctx.font = 'bold 12px sans-serif'; ctx.textAlign = 'left';
-        ctx.fillText(`${val} ${metric.unit}`, x + 10, y - 20);
-        ctx.fillStyle = c.tooltipTime; ctx.font = '10px "JetBrains Mono", monospace';
-        ctx.fillText(this.formatTime(this.hoverIndex), x + 10, y - 5);
-      }
     }
   }
 
