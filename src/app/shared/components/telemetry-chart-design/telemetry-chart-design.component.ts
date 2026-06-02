@@ -39,7 +39,8 @@ export class TelemetryChartDesignComponent
   private config = { margin: { t: 20, l: 60, r: 20, b: 50 } };
 
   private xMin = 0;
-  private xMax = 100;
+  private xMax = 0;
+  private isInitialized = false;
   private isPanning = false;
   private lastMouseX = 0;
   private hoverIndex: number | null = null;
@@ -71,9 +72,14 @@ export class TelemetryChartDesignComponent
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['fullData'] && this.fullData.length > 0) {
-      if (this.xMax >= this.fullData.length - 2) {
+      if (!this.isInitialized) {
+        // First data: anchor from the very beginning
+        this.xMin = 0;
         this.xMax = this.fullData.length;
-        this.xMin = Math.max(0, this.xMax - (this.xMax - this.xMin));
+        this.isInitialized = true;
+      } else {
+        // New data: extend xMax only — xMin never moves, old data stays anchored
+        this.xMax = this.fullData.length;
       }
       this.render();
     }
@@ -105,7 +111,6 @@ export class TelemetryChartDesignComponent
     const dpr = window.devicePixelRatio || 1;
     canvas.width  = canvas.clientWidth * dpr;
     canvas.height = 800;
-    if (this.fullData.length > 0 && this.xMax === 100) this.resetZoom();
     this.render();
   }
 
@@ -115,18 +120,29 @@ export class TelemetryChartDesignComponent
   handleMouseMove(e: MouseEvent) {
     const rect = this.canvasRef.nativeElement.getBoundingClientRect();
     const currentX = e.clientX - rect.left;
+    const { l, r } = this.config.margin;
+    const plotWidth = rect.width - l - r;
+
     if (this.isPanning) {
       const deltaX = e.clientX - this.lastMouseX;
       this.lastMouseX = e.clientX;
-      const scale = (this.xMax - this.xMin) / rect.width;
-      this.xMin -= deltaX * scale;
-      this.xMax -= deltaX * scale;
+      const scale = (this.xMax - this.xMin) / plotWidth;
+      const delta = deltaX * scale;
+      const range = this.xMax - this.xMin;
+
+      this.xMin = Math.max(0, this.xMin - delta);
+      this.xMax = this.xMin + range;
+      if (this.xMax > this.fullData.length) {
+        this.xMax = this.fullData.length;
+        this.xMin = Math.max(0, this.xMax - range);
+      }
       this.render();
     } else {
-      const plotWidth = rect.width - this.config.margin.l - this.config.margin.r;
-      const relativeX = currentX - this.config.margin.l;
+      const relativeX = currentX - l;
       if (relativeX >= 0 && relativeX <= plotWidth) {
-        this.hoverIndex = Math.round(this.xMin + (relativeX / plotWidth) * (this.xMax - this.xMin));
+        this.hoverIndex = Math.round(
+          this.xMin + (relativeX / plotWidth) * (this.xMax - this.xMin)
+        );
         this.render();
       }
     }
@@ -134,17 +150,43 @@ export class TelemetryChartDesignComponent
 
   handleMouseWheel(e: WheelEvent) {
     e.preventDefault();
-    const factor = 0.01;
-    const dir    = e.deltaY > 0 ? 1 : -1;
-    const range  = this.xMax - this.xMin;
-    this.xMin += range * factor * dir;
-    this.xMax -= range * factor * dir;
+    if (this.fullData.length < 2) return;
+
+    const rect = this.canvasRef.nativeElement.getBoundingClientRect();
+    const { l, r } = this.config.margin;
+    const plotWidth = rect.width - l - r;
+
+    // Mouse position as [0–1] fraction of the plot area
+    const mouseRel = Math.max(0, Math.min(1, (e.clientX - rect.left - l) / plotWidth));
+
+    const range = this.xMax - this.xMin;
+
+    // Scroll UP = zoom in (see less data, more detail)
+    // Scroll DOWN = zoom out — gentle 5% change per tick
+    const scaleFactor = e.deltaY < 0 ? 0.95 : 1.05;
+    const newRange    = Math.max(10, Math.min(this.fullData.length, range * scaleFactor));
+
+    // Keep the data point under the cursor stationary
+    const pivotIdx = this.xMin + mouseRel * range;
+    let newXMin    = pivotIdx - mouseRel * newRange;
+    let newXMax    = newXMin + newRange;
+
+    // Clamp to data bounds
+    if (newXMin < 0)                       { newXMin = 0; newXMax = newRange; }
+    if (newXMax > this.fullData.length)    { newXMax = this.fullData.length; newXMin = Math.max(0, newXMax - newRange); }
+
+    this.xMin = newXMin;
+    this.xMax = newXMax;
     this.render();
   }
 
   handleMouseLeave() { this.isPanning = false; this.hoverIndex = null; this.render(); }
 
-  resetZoom() { this.xMin = 0; this.xMax = this.fullData.length; this.render(); }
+  resetZoom() {
+    this.xMin = 0;
+    this.xMax = this.fullData.length;
+    this.render();
+  }
 
   private render() {
     this.ngZone.runOutsideAngular(() => requestAnimationFrame(() => this.draw()));

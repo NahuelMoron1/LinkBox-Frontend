@@ -89,7 +89,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
           this.isLive = true;
           this.data = newData;
           this.history = [...this.history, newData];
-          if (this.history.length > 500) this.history.shift();
 
           // Reset inactivity timeout cuando llegan datos
           this.resetInactivityTimeout();
