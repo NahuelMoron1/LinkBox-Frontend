@@ -249,7 +249,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
           );
         }
       }
-    }, 30_000); // 30 s without data → mark as stopped and complete session
+    }, 3_000); // 3 s without data → mark as stopped and complete session
   }
 
   ngOnDestroy() {
