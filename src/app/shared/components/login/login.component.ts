@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import Swal from 'sweetalert2';
 import { TranslatePipe } from '../../pipes/translate.pipe';
 import { AuthService } from '../../services/auth.service';
@@ -20,6 +20,8 @@ export class LoginComponent {
 
   constructor(
     private authService: AuthService,
+    private route: ActivatedRoute,
+    private router: Router,
     public themeService: ThemeService,
     public i18n: I18nService,
   ) {}
@@ -36,13 +38,14 @@ export class LoginComponent {
     }
     this.authService.login(this.key, this.password).subscribe({
       next: () => {
+        const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl') || '/dashboard';
         Swal.fire({
           icon: 'success',
           title: 'Conectado',
           text: 'Entrando al panel de LinkBox...',
           timer: 1500,
           showConfirmButton: false,
-        });
+        }).then(() => this.router.navigateByUrl(returnUrl));
       },
       error: (err) => {
         Swal.fire({

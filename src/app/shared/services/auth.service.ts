@@ -31,11 +31,8 @@ export class AuthService {
       )
       .pipe(
         tap((res: any) => {
-          // El servidor ya puso las cookies automáticamente
-          // Solo actualizar el BehaviorSubject con los datos
           const deviceInfo: DeviceInfo = res.device;
           this.deviceSubject.next(deviceInfo);
-          this.router.navigate(['/dashboard']);
         }),
       );
   }
