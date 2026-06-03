@@ -1,20 +1,19 @@
 import { Injectable } from '@angular/core';
 
 export interface SensorThresholds {
-  cold:    number; // below → cold (blue)
-  warm:    number; // cold→this → warm (yellow)
-  optimum: number; // warm→this → optimum (green)
-  warning: number; // optimum→this → warning (orange)
-  // above warning → danger (red, blinking)
+  cold:    number; // below cold  → danger (too low)
+  warm:    number; // [cold, warm)    → cold (blue)
+  optimum: number; // [warm, optimum) → warm (yellow)
+  warning: number; // [optimum, warning) → optimum (green)
+  danger:  number; // [warning, danger) → warning (orange) | >=danger → danger (red)
 }
 
-// Default thresholds — match the previous hardcoded getTempStatus() logic
 const DEFAULTS: Record<string, SensorThresholds> = {
-  oil_temp:   { cold: 70,  warm: 85,  optimum: 98,  warning: 105  },
-  water_temp: { cold: 70,  warm: 80,  optimum: 98,  warning: 102  },
-  oil_press:  { cold: 22,  warm: 36,  optimum: 102, warning: 124  }, // PSI
-  tyre_temp:  { cold: 45,  warm: 65,  optimum: 75,  warning: 108  },
-  tyre_press: { cold: 22,  warm: 26,  optimum: 30,  warning: 38   }, // PSI
+  oil_temp:   { cold: 70,  warm: 80,  optimum: 90,  warning: 105, danger: 120  },
+  water_temp: { cold: 70,  warm: 78,  optimum: 85,  warning: 98,  danger: 105  },
+  oil_press:  { cold: 22,  warm: 36,  optimum: 51,  warning: 90,  danger: 116  }, // PSI
+  tyre_temp:  { cold: 45,  warm: 65,  optimum: 75,  warning: 100, danger: 110  },
+  tyre_press: { cold: 22,  warm: 26,  optimum: 30,  warning: 36,  danger: 40   }, // PSI
 };
 
 export const SENSOR_UNIT: Record<string, string> = {
@@ -27,13 +26,18 @@ export const SENSOR_UNIT: Record<string, string> = {
 
 @Injectable({ providedIn: 'root' })
 export class AlertThresholdsService {
-  private readonly KEY = 'linkbox-sensor-thresholds-v2';
+  private readonly KEY = 'linkbox-sensor-thresholds-v3';
   private data: Record<string, SensorThresholds>;
 
   constructor() {
     try {
       const saved = localStorage.getItem(this.KEY);
-      this.data = saved ? { ...DEFAULTS, ...JSON.parse(saved) } : { ...DEFAULTS };
+      const parsed: Record<string, Partial<SensorThresholds>> = saved ? JSON.parse(saved) : {};
+      // Deep-merge: each saved sensor is merged with its defaults so new fields get fallbacks
+      this.data = {} as Record<string, SensorThresholds>;
+      for (const sensor of Object.keys(DEFAULTS)) {
+        this.data[sensor] = { ...DEFAULTS[sensor], ...(parsed[sensor] ?? {}) };
+      }
     } catch {
       this.data = { ...DEFAULTS };
     }
@@ -57,22 +61,27 @@ export class AlertThresholdsService {
     localStorage.setItem(this.KEY, JSON.stringify(this.data));
   }
 
-  /** Returns CSS class name based on value + current thresholds.
-   *  Danger fires in BOTH directions:
-   *    value < cold threshold  → danger (too low, e.g. very low oil pressure)
-   *    value > warning threshold → danger (too high, e.g. overheating)
+  /**
+   * 5-zone color scale:
+   *   value < cold              → danger  (red blink — too low)
+   *   [cold,    warm)           → cold    (blue)
+   *   [warm,    optimum)        → warm    (yellow)
+   *   [optimum, warning)        → optimum (green)
+   *   [warning, danger)         → warning (orange)
+   *   value >= danger           → danger  (red blink — too high)
    */
-  getStatus(value: number, sensor: string): string {
-    if (!value || value <= 0) return 'cold';
+  getStatus(value: number | null | undefined, sensor: string): string {
+    if (value == null) return 'cold';
     const t = this.get(sensor);
-    if (value < t.cold)    return 'danger';   // ← too low = danger
+    if (value < t.cold)    return 'danger';
     if (value < t.warm)    return 'cold';
     if (value < t.optimum) return 'warm';
     if (value < t.warning) return 'optimum';
-    return 'danger';                           // ← too high = danger
+    if (value < t.danger)  return 'warning';
+    return 'danger';
   }
 
-  isDanger(value: number, sensor: string): boolean {
+  isDanger(value: number | null | undefined, sensor: string): boolean {
     return this.getStatus(value, sensor) === 'danger';
   }
 }

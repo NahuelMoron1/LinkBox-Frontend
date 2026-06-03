@@ -173,10 +173,11 @@ const translations: Record<'en' | 'es', Record<string, string>> = {
     'dash.cfg.warning':   'WARNING',
     'dash.cfg.danger':    'DANGER',
     'dash.cfg.below':     'below',
-    'dash.cfg.aboveWarn': 'above WARNING threshold',
+    'dash.cfg.aboveWarn':   'above WARNING threshold',
+    'dash.cfg.aboveDanger': 'above DANGER threshold',
     'dash.cfg.reset':     'RESET DEFAULTS',
     'dash.cfg.save':      'SAVE',
-    'dash.cfg.errOrder':  'Values must be in ascending order: cold < warm < optimum < warning.',
+    'dash.cfg.errOrder':  'Values must be in ascending order: cold < warm < optimum < warning < danger.',
     'dash.cfg.errNeg':    'All thresholds must be positive numbers greater than zero.',
 
     // ── PRICING PAGE ──
@@ -416,10 +417,11 @@ const translations: Record<'en' | 'es', Record<string, string>> = {
     'dash.cfg.warning':   'ALERTA',
     'dash.cfg.danger':    'PELIGRO',
     'dash.cfg.below':     'menor a',
-    'dash.cfg.aboveWarn': 'por encima del umbral de alerta',
+    'dash.cfg.aboveWarn':   'por encima del umbral de alerta',
+    'dash.cfg.aboveDanger': 'por encima del umbral de peligro',
     'dash.cfg.reset':     'RESTAURAR',
     'dash.cfg.save':      'GUARDAR',
-    'dash.cfg.errOrder':  'Los valores deben estar en orden ascendente: frío < cálido < óptimo < alerta.',
+    'dash.cfg.errOrder':  'Los valores deben estar en orden ascendente: frío < cálido < óptimo < alerta < peligro.',
     'dash.cfg.errNeg':    'Todos los umbrales deben ser números positivos mayores que cero.',
 
     // ── PRICING PAGE ──

@@ -43,7 +43,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   // ── Alert thresholds config (Ultimate plan) ────────────────
   editingSensor: string | null = null;
-  editValues: SensorThresholds = { cold: 0, warm: 0, optimum: 0, warning: 0 };
+  editValues: SensorThresholds = { cold: 0, warm: 0, optimum: 0, warning: 0, danger: 0 };
   readonly configSensors = [
     { key: 'oil_temp',   labelKey: 'dash.oilTemp'   },
     { key: 'water_temp', labelKey: 'dash.waterTemp'  },
@@ -87,7 +87,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     // All must be finite positive numbers
     const ok = (n: number) => typeof n === 'number' && isFinite(n) && n > 0;
-    if (!ok(v.cold) || !ok(v.warm) || !ok(v.optimum) || !ok(v.warning)) {
+    if (!ok(v.cold) || !ok(v.warm) || !ok(v.optimum) || !ok(v.warning) || !ok(v.danger)) {
       this.alertService.error(
         this.i18n.t('dash.cfg.title'),
         this.i18n.t('dash.cfg.errNeg'),
@@ -96,7 +96,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
 
     // Must be strictly ascending
-    if (!(v.cold < v.warm && v.warm < v.optimum && v.optimum < v.warning)) {
+    if (!(v.cold < v.warm && v.warm < v.optimum && v.optimum < v.warning && v.warning < v.danger)) {
       this.alertService.error(
         this.i18n.t('dash.cfg.title'),
         this.i18n.t('dash.cfg.errOrder'),
@@ -109,6 +109,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
       warm:    v.warm,
       optimum: v.optimum,
       warning: v.warning,
+      danger:  v.danger,
     });
     this.editingSensor = null;
   }
@@ -270,8 +271,20 @@ export class DashboardComponent implements OnInit, OnDestroy {
     return this.alertThresholds.getStatus(value, sensor);
   }
 
+  /** For display: always returns a number (0 when no data). */
   barToPsi(bar: any): number {
-    return ((+bar) || 0) * 14.504;
+    return bar != null ? (+bar) * 14.504 : 0;
+  }
+
+  /** For status/color: returns null when there is no sensor data,
+   *  so getStatus can distinguish "no data" from "value is 0". */
+  pressStatus(bar: any, sensor: string): string {
+    const psi = bar != null ? (+bar) * 14.504 : null;
+    return this.alertThresholds.getStatus(psi, sensor);
+  }
+
+  pressIsDanger(bar: any, sensor: string): boolean {
+    return this.pressStatus(bar, sensor) === 'danger';
   }
 
   /** Legacy alias kept for backward compat */

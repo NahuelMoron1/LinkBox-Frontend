@@ -44,7 +44,7 @@
           <span class="tyre-temp-val" [ngClass]="getSensorStatus(data.tyre_temp_fl, 'tyre_temp')">
             {{ data.tyre_temp_fl || 0 | number:'1.0-0' }}<small>°</small>
           </span>
-          <span class="tyre-press-val" [ngClass]="getSensorStatus(barToPsi(data.tyre_press_fl), 'tyre_press')">
+          <span class="tyre-press-val" [ngClass]="pressStatus(data.tyre_press_fl, 'tyre_press')">
             {{ barToPsi(data.tyre_press_fl) | number:'1.0-0' }}<small> PSI</small>
           </span>
         </div>
@@ -54,7 +54,7 @@
           <span class="tyre-temp-val" [ngClass]="getSensorStatus(data.tyre_temp_fr, 'tyre_temp')">
             {{ data.tyre_temp_fr || 0 | number:'1.0-0' }}<small>°</small>
           </span>
-          <span class="tyre-press-val" [ngClass]="getSensorStatus(barToPsi(data.tyre_press_fr), 'tyre_press')">
+          <span class="tyre-press-val" [ngClass]="pressStatus(data.tyre_press_fr, 'tyre_press')">
             {{ barToPsi(data.tyre_press_fr) | number:'1.0-0' }}<small> PSI</small>
           </span>
         </div>
@@ -64,7 +64,7 @@
           <span class="tyre-temp-val" [ngClass]="getSensorStatus(data.tyre_temp_rl, 'tyre_temp')">
             {{ data.tyre_temp_rl || 0 | number:'1.0-0' }}<small>°</small>
           </span>
-          <span class="tyre-press-val" [ngClass]="getSensorStatus(barToPsi(data.tyre_press_rl), 'tyre_press')">
+          <span class="tyre-press-val" [ngClass]="pressStatus(data.tyre_press_rl, 'tyre_press')">
             {{ barToPsi(data.tyre_press_rl) | number:'1.0-0' }}<small> PSI</small>
           </span>
         </div>
@@ -74,7 +74,7 @@
           <span class="tyre-temp-val" [ngClass]="getSensorStatus(data.tyre_temp_rr, 'tyre_temp')">
             {{ data.tyre_temp_rr || 0 | number:'1.0-0' }}<small>°</small>
           </span>
-          <span class="tyre-press-val" [ngClass]="getSensorStatus(barToPsi(data.tyre_press_rr), 'tyre_press')">
+          <span class="tyre-press-val" [ngClass]="pressStatus(data.tyre_press_rr, 'tyre_press')">
             {{ barToPsi(data.tyre_press_rr) | number:'1.0-0' }}<small> PSI</small>
           </span>
         </div>
@@ -110,7 +110,7 @@
             </span>
             <span class="sensor-value">{{ data.oil_temp || 0 | number:'1.0-0' }}<small>°C</small></span>
           </div>
-          <div class="sensor-row" [ngClass]="getSensorStatus(barToPsi(data.oil_press), 'oil_press')">
+          <div class="sensor-row" [ngClass]="pressStatus(data.oil_press, 'oil_press')">
             <span class="sensor-label">
               {{ 'dash.oilPress' | translate }}
               <button *ngIf="plan === 'ultimate'" class="cfg-btn"
@@ -144,7 +144,7 @@
 
       <!-- RIGHT: alarma + sensores -->
       <div class="gt3-side-panel gt3-side-panel--right">
-        <div class="gt3-alarm-box" *ngIf="alertThresholds.isDanger(barToPsi(data.oil_press), 'oil_press')">
+        <div class="gt3-alarm-box" *ngIf="pressIsDanger(data.oil_press, 'oil_press')">
           <span class="alarm-icon">⚠</span>
           <div class="alarm-body">
             <span class="alarm-label">{{ 'dash.alarm' | translate }}</span>
@@ -172,7 +172,7 @@
       <!-- LEFT: neumáticos arriba + sensores motor abajo -->
       <div class="classic-side-panel">
         <ng-container *ngTemplateOutlet="tyreWidgetTpl"></ng-container>
-        <div class="data-box" [ngClass]="getSensorStatus(barToPsi(data.oil_press), 'oil_press')">
+        <div class="data-box" [ngClass]="pressStatus(data.oil_press, 'oil_press')">
           <span class="label">
             {{ 'dash.oilPress' | translate }}
             <button *ngIf="plan === 'ultimate'" class="cfg-btn"
@@ -292,7 +292,17 @@
       <div class="acfg-zone acfg-zone--danger">
         <span class="acfg-dot"></span>
         <span class="acfg-zone-label">{{ 'dash.cfg.danger' | translate }}</span>
-        <span class="acfg-op acfg-op--implicit">{{ 'dash.cfg.aboveWarn' | translate }}</span>
+        <span class="acfg-op">{{ 'dash.cfg.below' | translate }}</span>
+        <input type="number" class="acfg-input" min="0"
+               [ngModel]="editValues.danger"
+               (input)="sanitizeInput('danger', $event)" />
+        <span class="acfg-unit">{{ getSensorUnit(editingSensor) }}</span>
+      </div>
+      <div class="acfg-arrow">↓</div>
+      <div class="acfg-zone acfg-zone--danger">
+        <span class="acfg-dot"></span>
+        <span class="acfg-zone-label">{{ 'dash.cfg.danger' | translate }}</span>
+        <span class="acfg-op acfg-op--implicit">{{ 'dash.cfg.aboveDanger' | translate }}</span>
       </div>
     </div>
 
