@@ -23,9 +23,11 @@
         class="plan-tab"
         [class.active]="selectedPlan.id === p.id"
         [class.tab-popular]="p.popular"
+        [class.tab-current]="p.id === currentPlan"
         (click)="selectPlan(p.id)"
       >
         <span class="tab-mark" *ngIf="p.popular">{{ 'pricing.mostPopular' | translate }}</span>
+        <span class="tab-current-mark" *ngIf="p.id === currentPlan">Plan actual</span>
         <span class="tab-badge" [ngClass]="p.badgeClass">{{ p.name }}</span>
         <span class="tab-price">
           ${{ p.monthlyPrice | number:'1.2-2' }}<small>{{ '/mo' }}</small>
@@ -70,6 +72,21 @@
     <!-- RIGHT: order summary + checkout -->
     <div class="checkout-panel">
 
+      <!-- Device info banner -->
+      <div class="device-banner" *ngIf="deviceInfo">
+        <span class="device-banner-icon">⚙</span>
+        <div class="device-banner-info">
+          <span class="device-banner-name">{{ deviceInfo.clientName }}</span>
+          <span class="device-banner-plan">
+            Plan actual:
+            <span class="device-banner-badge" [ngClass]="'plan-' + deviceInfo.plan">
+              {{ deviceInfo.plan | uppercase }}
+            </span>
+          </span>
+        </div>
+        <a class="device-banner-dash" routerLink="/dashboard">← Dashboard</a>
+      </div>
+
       <!-- Order summary -->
       <div class="order-summary">
         <div class="summary-title">{{ 'pricing.orderSummary' | translate }}</div>
@@ -83,72 +100,61 @@
         <div class="summary-breakdown">
           ${{ selectedPlan.monthlyPrice | number:'1.2-2' }}/mo × 12 months
         </div>
+
+        <!-- Downgrade notice -->
+        <div class="summary-notice summary-notice--warn" *ngIf="isDowngrade">
+          El cambio se aplicará al finalizar tu período actual. Mantenés acceso a tu plan hasta entonces.
+        </div>
+
+        <!-- Upgrade notice -->
+        <div class="summary-notice summary-notice--info" *ngIf="isUpgrade && currentPlan !== 'basic'">
+          Se te cobrará la diferencia prorrateada inmediatamente.
+        </div>
+
+        <!-- Already current -->
+        <div class="summary-notice summary-notice--ok" *ngIf="isCurrentPlan">
+          Ya tenés este plan activo.
+        </div>
+
         <div class="summary-sep"></div>
-        <div class="summary-total-row">
+        <div class="summary-total-row" *ngIf="!isCurrentPlan && selectedPlan.id !== 'basic'">
           <span>{{ 'pricing.totalToday' | translate }}</span>
           <span class="summary-total-amount">${{ selectedPlan.yearlyPrice | number:'1.2-2' }}</span>
         </div>
       </div>
 
-      <!-- Contact -->
-      <div class="form-block">
-        <div class="form-block-title">{{ 'pricing.contact' | translate }}</div>
-        <div class="field-group">
-          <label class="field-label">{{ 'pricing.emailLabel' | translate }}</label>
-          <input type="email" class="field-input" [(ngModel)]="form.email"
-                 [placeholder]="'pricing.emailPh' | translate" />
-        </div>
-        <div class="field-group">
-          <label class="field-label">{{ 'pricing.nameLabel' | translate }}</label>
-          <input type="text" class="field-input" [(ngModel)]="form.name"
-                 [placeholder]="'pricing.namePh' | translate" />
-        </div>
-      </div>
+      <!-- Stripe Checkout CTA -->
+      <div class="stripe-checkout-block" *ngIf="selectedPlan.id !== 'basic'">
+        <button
+          class="subscribe-btn"
+          [ngClass]="selectedPlan.badgeClass + '-btn'"
+          [disabled]="ctaDisabled"
+          (click)="onSubscribe()"
+        >
+          <span *ngIf="!loading">{{ ctaLabel }}</span>
+          <span *ngIf="loading" class="subscribe-btn-loading">Procesando…</span>
+        </button>
 
-      <!-- Payment -->
-      <div class="form-block">
-        <div class="form-block-title">{{ 'pricing.payment' | translate }}</div>
-        <div class="field-group">
-          <label class="field-label">{{ 'pricing.cardNumber' | translate }}</label>
-          <input type="text" class="field-input field-input--mono"
-                 [value]="form.cardNumber" (input)="formatCard($event)"
-                 [placeholder]="'pricing.cardPh' | translate" maxlength="19" />
-        </div>
-        <div class="field-row">
-          <div class="field-group">
-            <label class="field-label">{{ 'pricing.expiry' | translate }}</label>
-            <input type="text" class="field-input field-input--mono"
-                   [value]="form.expiry" (input)="formatExpiry($event)"
-                   [placeholder]="'pricing.expiryPh' | translate" maxlength="5" />
-          </div>
-          <div class="field-group">
-            <label class="field-label">{{ 'pricing.cvv' | translate }}</label>
-            <input type="text" class="field-input field-input--mono"
-                   [(ngModel)]="form.cvv"
-                   [placeholder]="'pricing.cvvPh' | translate" maxlength="4" />
-          </div>
-        </div>
-        <div class="field-group">
-          <label class="field-label">{{ 'pricing.cardHolder' | translate }}</label>
-          <input type="text" class="field-input" [(ngModel)]="form.cardName"
-                 [placeholder]="'pricing.cardNamePh' | translate" />
-        </div>
-        <div class="payment-security">
+        <div class="payment-security" *ngIf="!isCurrentPlan">
           <span class="lock-icon">🔒</span>
-          {{ 'pricing.security' | translate }}
+          Pago seguro procesado por Stripe
         </div>
+
+        <p class="legal-note" *ngIf="!isCurrentPlan && !isDowngrade">
+          {{ 'pricing.legalPaid1' | translate }}
+          ${{ selectedPlan.yearlyPrice | number:'1.2-2' }}
+          {{ 'pricing.legalPaid2' | translate }}
+        </p>
       </div>
 
-      <!-- CTA -->
-      <button class="subscribe-btn" [ngClass]="selectedPlan.badgeClass + '-btn'" (click)="onSubscribe()">
-        {{ ('pricing.subscribeBtn' | translate) + ' ' + selectedPlan.name }}
-      </button>
+      <!-- Basic plan info block -->
+      <div class="basic-info-block" *ngIf="selectedPlan.id === 'basic'">
+        <p class="basic-info-text">
+          El plan Basic está incluido automáticamente con tu controlador. No requiere suscripción adicional.
+        </p>
+        <a class="subscribe-btn plan-basic-btn" routerLink="/dashboard">Ir al Dashboard</a>
+      </div>
 
-      <p class="legal-note">
-        {{ 'pricing.legalPaid1' | translate }}
-        ${{ selectedPlan.yearlyPrice | number:'1.2-2' }}
-        {{ 'pricing.legalPaid2' | translate }}
-      </p>
     </div>
 
   </div>

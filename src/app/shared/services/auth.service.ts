@@ -109,15 +109,23 @@ export class AuthService {
     return this.deviceSubject.value?.plan || null;
   }
 
-  getSubscriptionStatus(): 'active' | 'suspended' | 'expired' | null {
+  getSubscriptionStatus(): 'inactive' | 'active' | 'suspended' | 'expired' | null {
     return this.deviceSubject.value?.subscriptionStatus || null;
   }
 
   // ========== SUBSCRIPTION & SESSION ==========
+  isSubscriptionInactive(): boolean {
+    return this.deviceSubject.value?.subscriptionStatus === 'inactive';
+  }
+
   isSubscriptionExpired(): boolean {
     const info = this.deviceSubject.value;
     if (!info?.subscriptionEndDate) return false;
     return new Date(info.subscriptionEndDate) < new Date();
+  }
+
+  hasActivePlan(): boolean {
+    return this.deviceSubject.value?.subscriptionStatus === 'active';
   }
 
   updateSessionsCount(count: number): void {

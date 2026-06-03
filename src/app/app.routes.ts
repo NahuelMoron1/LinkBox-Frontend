@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { loggedGuard } from './shared/guards/loggedGuard';
 import { loginGuard } from './shared/guards/loginGuard';
+import { subscriptionGuard } from './shared/guards/subscriptionGuard';
 
 export const routes: Routes = [
   {
@@ -24,6 +25,7 @@ export const routes: Routes = [
       import('./pages/pricing-page/pricing-page.component').then(
         (m) => m.PricingPageComponent,
       ),
+    canActivate: [loggedGuard],
   },
   {
     path: 'sessions',
@@ -31,7 +33,7 @@ export const routes: Routes = [
       import('./pages/sessions-page/sessions-page.component').then(
         (m) => m.SessionsPageComponent,
       ),
-    canActivate: [loggedGuard],
+    canActivate: [loggedGuard, subscriptionGuard],
   },
   {
     path: 'dashboard',
@@ -39,7 +41,7 @@ export const routes: Routes = [
       import('./pages/dashboard-page/dashboard-page.component').then(
         (m) => m.DashboardPageComponent,
       ),
-    canActivate: [loggedGuard],
+    canActivate: [loggedGuard, subscriptionGuard],
   },
   { path: '**', redirectTo: '' },
 ];

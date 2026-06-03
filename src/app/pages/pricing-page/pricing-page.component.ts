@@ -1,11 +1,13 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import Swal from 'sweetalert2';
 import { TranslatePipe } from '../../shared/pipes/translate.pipe';
+import { AuthService } from '../../shared/services/auth.service';
 import { I18nService } from '../../shared/services/i18n.service';
+import { SubscriptionService } from '../../shared/services/subscription.service';
 import { ThemeService } from '../../shared/services/theme.service';
+import { DeviceInfo } from '../../shared/models/Device';
 
 export interface PlanFeature {
   labelKey: string;
@@ -98,9 +100,11 @@ const FAQ_KEYS = [
   { qKey: 'pricing.faq4.q', aKey: 'pricing.faq4.a' },
 ];
 
+const PLAN_RANK: Record<string, number> = { basic: 0, pro: 1, ultimate: 2 };
+
 @Component({
   selector: 'app-pricing-page',
-  imports: [CommonModule, FormsModule, RouterLink, TranslatePipe],
+  imports: [CommonModule, RouterLink, TranslatePipe],
   templateUrl: './pricing-page.component.html',
   styleUrl: './pricing-page.component.css',
 })
@@ -110,22 +114,83 @@ export class PricingPageComponent implements OnInit {
   faqItems = FAQ_KEYS;
   openFaqIndex: number | null = null;
 
-  form = {
-    email: '', name: '',
-    cardNumber: '', expiry: '', cvv: '', cardName: '',
-  };
+  deviceInfo: DeviceInfo | null = null;
+  loading = false;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     public themeService: ThemeService,
     public i18n: I18nService,
+    private authService: AuthService,
+    private subscriptionService: SubscriptionService,
   ) {}
 
   ngOnInit(): void {
     this.route.params.subscribe(params => {
       this.selectedPlan = PLANS[params['planId']] ?? PLANS['pro'];
     });
+
+    this.authService.device$.subscribe(device => {
+      this.deviceInfo = device;
+    });
+
+    // Verificar si se vuelve de Stripe con éxito
+    this.route.queryParams.subscribe(params => {
+      if (params['subscription'] === 'success') {
+        const plan = params['plan'] ?? '';
+        Swal.fire({
+          icon: 'success',
+          title: '¡Suscripción activada!',
+          html: `Tu plan <strong>${plan.toUpperCase()}</strong> ya está activo. Redirigiendo al dashboard...`,
+          background: '#0a0a0a',
+          color: '#fff',
+          confirmButtonColor: '#00cc66',
+          timer: 3000,
+          timerProgressBar: true,
+        }).then(() => {
+          this.router.navigate(['/dashboard']);
+        });
+      }
+      if (params['subscription'] === 'cancelled') {
+        Swal.fire({
+          icon: 'info',
+          title: 'Pago cancelado',
+          text: 'No se realizó ningún cargo. Podés intentarlo de nuevo cuando quieras.',
+          background: '#0a0a0a',
+          color: '#fff',
+          confirmButtonColor: '#00cc66',
+        });
+      }
+    });
+  }
+
+  get currentPlan(): string {
+    return this.deviceInfo?.plan ?? 'basic';
+  }
+
+  get isCurrentPlan(): boolean {
+    return this.selectedPlan.id === this.currentPlan;
+  }
+
+  get isUpgrade(): boolean {
+    return PLAN_RANK[this.selectedPlan.id] > PLAN_RANK[this.currentPlan];
+  }
+
+  get isDowngrade(): boolean {
+    return PLAN_RANK[this.selectedPlan.id] < PLAN_RANK[this.currentPlan];
+  }
+
+  get ctaLabel(): string {
+    if (this.isCurrentPlan) return 'Plan actual';
+    if (this.selectedPlan.id === 'basic') return 'Plan incluido con el controlador';
+    if (this.isUpgrade && this.currentPlan !== 'basic') return `Mejorar a ${this.selectedPlan.name}`;
+    if (this.isDowngrade) return `Cambiar a ${this.selectedPlan.name}`;
+    return `Suscribirse a ${this.selectedPlan.name}`;
+  }
+
+  get ctaDisabled(): boolean {
+    return this.isCurrentPlan || this.selectedPlan.id === 'basic' || this.loading;
   }
 
   selectPlan(id: string): void {
@@ -137,33 +202,78 @@ export class PricingPageComponent implements OnInit {
     this.openFaqIndex = this.openFaqIndex === index ? null : index;
   }
 
-  formatCard(event: Event): void {
-    const raw = (event.target as HTMLInputElement).value.replace(/\D/g, '').slice(0, 16);
-    this.form.cardNumber = raw.replace(/(.{4})/g, '$1 ').trim();
-  }
-
-  formatExpiry(event: Event): void {
-    const raw = (event.target as HTMLInputElement).value.replace(/\D/g, '').slice(0, 4);
-    this.form.expiry = raw.length > 2 ? raw.slice(0, 2) + '/' + raw.slice(2) : raw;
-  }
-
   onSubscribe(): void {
-    if (!this.form.email || !this.form.name) {
-      Swal.fire({ icon: 'warning', title: 'Missing info', text: 'Please fill in your email and name.', background: '#0a0a0a', color: '#fff', confirmButtonColor: '#00cc66' });
-      return;
+    if (this.ctaDisabled) return;
+
+    const plan = this.selectedPlan.id as 'pro' | 'ultimate';
+    const hasActiveSub = this.currentPlan !== 'basic';
+
+    if (hasActiveSub) {
+      // Cambio de plan
+      const isUpgrade = PLAN_RANK[plan] > PLAN_RANK[this.currentPlan];
+      const msg = isUpgrade
+        ? `Se te cobrará la diferencia prorrateada ahora y tu plan cambiará inmediatamente.`
+        : `Tu plan actual se mantiene hasta el vencimiento, luego cambia a ${this.selectedPlan.name}.`;
+
+      Swal.fire({
+        icon: 'question',
+        title: `${isUpgrade ? 'Mejorar' : 'Cambiar'} a ${this.selectedPlan.name}`,
+        html: `<p style="color:#aaa;font-size:0.9rem">${msg}</p>`,
+        background: '#0a0a0a',
+        color: '#fff',
+        showCancelButton: true,
+        confirmButtonColor: '#00cc66',
+        cancelButtonColor: '#555',
+        confirmButtonText: 'Confirmar',
+        cancelButtonText: 'Cancelar',
+      }).then(result => {
+        if (result.isConfirmed) this.doChangePlan(plan);
+      });
+    } else {
+      // Primera suscripción → Stripe Checkout
+      this.doCheckout(plan);
     }
-    if (this.selectedPlan.monthlyPrice > 0 && (!this.form.cardNumber || !this.form.expiry || !this.form.cvv)) {
-      Swal.fire({ icon: 'warning', title: 'Missing payment info', text: 'Please complete all card fields.', background: '#0a0a0a', color: '#fff', confirmButtonColor: '#00cc66' });
-      return;
-    }
-    Swal.fire({
-      icon: 'info',
-      title: 'Payment Processing',
-      html: `<p style="color:#888;font-size:0.9rem">Online payment via Stripe is coming soon.<br>Contact us to activate your <strong style="color:#fff">${this.selectedPlan.name}</strong> plan.</p>`,
-      background: '#0a0a0a',
-      color: '#fff',
-      confirmButtonColor: '#00cc66',
-      confirmButtonText: 'Got it',
+  }
+
+  private doCheckout(plan: 'pro' | 'ultimate'): void {
+    this.loading = true;
+    this.subscriptionService.createCheckoutSession(plan).subscribe({
+      next: ({ checkoutUrl }) => {
+        window.location.href = checkoutUrl;
+      },
+      error: (err) => {
+        this.loading = false;
+        const code = err.error?.code;
+        if (code === 'PLAN_ALREADY_ACTIVE') {
+          Swal.fire({ icon: 'info', title: 'Plan ya activo', text: 'Ya tenés este plan activo.', background: '#0a0a0a', color: '#fff', confirmButtonColor: '#00cc66' });
+        } else {
+          Swal.fire({ icon: 'error', title: 'Error', text: 'No se pudo iniciar el proceso de pago. Intentá de nuevo.', background: '#0a0a0a', color: '#fff', confirmButtonColor: '#00cc66' });
+        }
+      },
+    });
+  }
+
+  private doChangePlan(plan: 'pro' | 'ultimate'): void {
+    this.loading = true;
+    this.subscriptionService.changePlan(plan).subscribe({
+      next: (res) => {
+        this.loading = false;
+        const isUpgrade = res.type === 'upgrade';
+        Swal.fire({
+          icon: 'success',
+          title: isUpgrade ? '¡Plan mejorado!' : 'Cambio programado',
+          html: `<p style="color:#aaa;font-size:0.9rem">${res.message}</p>`,
+          background: '#0a0a0a',
+          color: '#fff',
+          confirmButtonColor: '#00cc66',
+        }).then(() => {
+          if (isUpgrade) this.router.navigate(['/dashboard']);
+        });
+      },
+      error: () => {
+        this.loading = false;
+        Swal.fire({ icon: 'error', title: 'Error', text: 'No se pudo cambiar el plan. Intentá de nuevo.', background: '#0a0a0a', color: '#fff', confirmButtonColor: '#00cc66' });
+      },
     });
   }
 }
