@@ -71,11 +71,15 @@ export class TelemetryChartDesignComponent
   private xMin = 0;
   private xMax = 0;
   private isInitialized = false;
-  private isPanning = false;
-  private lastMouseX = 0;
   private hoverIndex: number | null = null;
   private themeSub?: Subscription;
   private langSub?: Subscription;
+
+  // Drag-to-zoom state
+  isDragging = false;
+  private dragStartPx = 0;   // px dentro del área de plot
+  private dragCurrentPx = 0;
+  readonly DRAG_THRESHOLD = 5; // px mínimos para considerar que es selección
 
   constructor(
     private ngZone: NgZone,
@@ -148,37 +152,59 @@ export class TelemetryChartDesignComponent
     this.render();
   }
 
-  handleMouseDown(e: MouseEvent) { this.isPanning = true; this.lastMouseX = e.clientX; }
-  handleMouseUp()                { this.isPanning = false; }
+  handleMouseDown(e: MouseEvent) {
+    if (e.button !== 0) return; // solo click izquierdo
+    const rect = this.canvasRef.nativeElement.getBoundingClientRect();
+    const { l } = this.config.margin;
+    this.isDragging = true;
+    this.dragStartPx   = e.clientX - rect.left - l;
+    this.dragCurrentPx = this.dragStartPx;
+  }
+
+  handleMouseUp(e: MouseEvent) {
+    if (!this.isDragging) return;
+    const { l, r } = this.config.margin;
+    const rect = this.canvasRef.nativeElement.getBoundingClientRect();
+    const plotWidth = rect.width - l - r;
+
+    const dragDelta = Math.abs(this.dragCurrentPx - this.dragStartPx);
+
+    if (dragDelta >= this.DRAG_THRESHOLD) {
+      const pxA = Math.max(0, Math.min(this.dragStartPx,   plotWidth));
+      const pxB = Math.max(0, Math.min(this.dragCurrentPx, plotWidth));
+      const lo  = Math.min(pxA, pxB);
+      const hi  = Math.max(pxA, pxB);
+
+      const newXMin = this.xMin + (lo / plotWidth) * (this.xMax - this.xMin);
+      const newXMax = this.xMin + (hi / plotWidth) * (this.xMax - this.xMin);
+
+      if (newXMax - newXMin >= 2) {
+        this.xMin = newXMin;
+        this.xMax = newXMax;
+      }
+    }
+
+    this.isDragging = false;
+    this.render();
+  }
 
   handleMouseMove(e: MouseEvent) {
     const rect = this.canvasRef.nativeElement.getBoundingClientRect();
-    const currentX = e.clientX - rect.left;
     const { l, r } = this.config.margin;
     const plotWidth = rect.width - l - r;
+    const relativeX = e.clientX - rect.left - l;
 
-    if (this.isPanning) {
-      const deltaX = e.clientX - this.lastMouseX;
-      this.lastMouseX = e.clientX;
-      const scale = (this.xMax - this.xMin) / plotWidth;
-      const delta = deltaX * scale;
-      const range = this.xMax - this.xMin;
+    if (this.isDragging) {
+      this.dragCurrentPx = relativeX;
+      this.render(); // redibuja con el rectángulo de selección
+      return;
+    }
 
-      this.xMin = Math.max(0, this.xMin - delta);
-      this.xMax = this.xMin + range;
-      if (this.xMax > this.fullData.length) {
-        this.xMax = this.fullData.length;
-        this.xMin = Math.max(0, this.xMax - range);
-      }
+    if (relativeX >= 0 && relativeX <= plotWidth) {
+      this.hoverIndex = Math.round(
+        this.xMin + (relativeX / plotWidth) * (this.xMax - this.xMin)
+      );
       this.render();
-    } else {
-      const relativeX = currentX - l;
-      if (relativeX >= 0 && relativeX <= plotWidth) {
-        this.hoverIndex = Math.round(
-          this.xMin + (relativeX / plotWidth) * (this.xMax - this.xMin)
-        );
-        this.render();
-      }
     }
   }
 
@@ -206,7 +232,7 @@ export class TelemetryChartDesignComponent
     this.render();
   }
 
-  handleMouseLeave() { this.isPanning = false; this.hoverIndex = null; this.render(); }
+  handleMouseLeave() { this.isDragging = false; this.hoverIndex = null; this.render(); }
 
   resetZoom() {
     this.xMin = 0;
@@ -340,6 +366,42 @@ export class TelemetryChartDesignComponent
       const x       = l + (i / (numTicks - 1)) * plotW;
       if (tickIdx >= 0 && tickIdx < this.fullData.length)
         ctx.fillText(this.formatTime(tickIdx), x, h - 10);
+    }
+
+    // Drag-to-zoom selection overlay
+    if (this.isDragging && Math.abs(this.dragCurrentPx - this.dragStartPx) >= this.DRAG_THRESHOLD) {
+      const pxA = Math.max(0, Math.min(this.dragStartPx,   plotW));
+      const pxB = Math.max(0, Math.min(this.dragCurrentPx, plotW));
+      const lo  = Math.min(pxA, pxB);
+      const hi  = Math.max(pxA, pxB);
+      const selX = l + lo;
+      const selW = hi - lo;
+
+      // Área oscurecida fuera de la selección
+      ctx.fillStyle = 'rgba(0,0,0,0.35)';
+      ctx.fillRect(l, t, lo, plotH);
+      ctx.fillRect(l + hi, t, plotW - hi, plotH);
+
+      // Relleno de la selección
+      ctx.fillStyle = 'rgba(255,255,255,0.06)';
+      ctx.fillRect(selX, t, selW, plotH);
+
+      // Bordes verticales de la selección
+      ctx.strokeStyle = 'rgba(255,255,255,0.7)';
+      ctx.lineWidth   = 1;
+      ctx.setLineDash([4, 3]);
+      ctx.beginPath(); ctx.moveTo(selX,        t); ctx.lineTo(selX,        t + plotH); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(selX + selW, t); ctx.lineTo(selX + selW, t + plotH); ctx.stroke();
+      ctx.setLineDash([]);
+
+      // Etiqueta de tiempo sobre cada borde
+      const idxA = this.xMin + (lo / plotW) * (this.xMax - this.xMin);
+      const idxB = this.xMin + (hi / plotW) * (this.xMax - this.xMin);
+      ctx.fillStyle = 'rgba(255,255,255,0.85)';
+      ctx.font      = '10px "JetBrains Mono", monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText(this.formatTime(idxA), selX,        t - 6);
+      ctx.fillText(this.formatTime(idxB), selX + selW, t - 6);
     }
   }
 

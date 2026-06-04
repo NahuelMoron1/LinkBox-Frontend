@@ -20,9 +20,10 @@
 
   <canvas
     #chartCanvas
+    [style.cursor]="isDragging ? 'col-resize' : 'crosshair'"
     (mousedown)="handleMouseDown($event)"
     (mousemove)="handleMouseMove($event)"
-    (mouseup)="handleMouseUp()"
+    (mouseup)="handleMouseUp($event)"
     (mouseleave)="handleMouseLeave()"
     (wheel)="handleMouseWheel($event)"
   ></canvas>
