@@ -1,6 +1,5 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { TranslatePipe } from '../../pipes/translate.pipe';
@@ -13,11 +12,22 @@ import { I18nService } from '../../services/i18n.service';
 import { SessionsService } from '../../services/sessions.service';
 import { TelemetryService } from '../../services/telemetry.service';
 import { TelemetryChartDesignComponent } from '../telemetry-chart-design/telemetry-chart-design.component';
+import { RpmLedStripComponent } from './sub-components/rpm-led-strip/rpm-led-strip.component';
+import { Gt3LayoutComponent } from './sub-components/gt3-layout/gt3-layout.component';
+import { ClassicLayoutComponent } from './sub-components/classic-layout/classic-layout.component';
+import { AlertThresholdConfigComponent } from './sub-components/alert-threshold-config/alert-threshold-config.component';
 
 @Component({
   selector: 'app-dashboard',
-  imports: [CommonModule, FormsModule, TelemetryChartDesignComponent, TranslatePipe],
-
+  imports: [
+    CommonModule,
+    TranslatePipe,
+    TelemetryChartDesignComponent,
+    RpmLedStripComponent,
+    Gt3LayoutComponent,
+    ClassicLayoutComponent,
+    AlertThresholdConfigComponent,
+  ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css',
 })
@@ -36,7 +46,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   public history: any[] = [];
   private inactivityTimeout?: ReturnType<typeof setTimeout>;
 
-  readonly MAX_RPM = 7000;
+  readonly MAX_RPM   = 7000;
   readonly SHIFT_RPM = 6500;
 
   selectedStyle: 'gt3' | 'classic' = 'gt3';
@@ -44,21 +54,21 @@ export class DashboardComponent implements OnInit, OnDestroy {
   // ── Alert thresholds config (Ultimate plan) ────────────────
   editingSensor: string | null = null;
   editValues: SensorThresholds = { cold: 0, warm: 0, optimum: 0, warning: 0, danger: 0 };
-  readonly configSensors = [
-    { key: 'oil_temp',   labelKey: 'dash.oilTemp'   },
-    { key: 'water_temp', labelKey: 'dash.waterTemp'  },
-    { key: 'oil_press',  labelKey: 'dash.oilPress'   },
-    { key: 'tyre_temp',  labelKey: 'dash.tyreTemp'   },
-    { key: 'tyre_press', labelKey: 'dash.tyrePress'  },
+
+  private readonly configSensors = [
+    { key: 'oil_temp',   labelKey: 'dash.oilTemp'  },
+    { key: 'water_temp', labelKey: 'dash.waterTemp' },
+    { key: 'oil_press',  labelKey: 'dash.oilPress'  },
+    { key: 'tyre_temp',  labelKey: 'dash.tyreTemp'  },
+    { key: 'tyre_press', labelKey: 'dash.tyrePress' },
   ];
+
+  get editingSensorLabelKey(): string {
+    return this.configSensors.find(s => s.key === this.editingSensor)?.labelKey ?? '';
+  }
 
   getSensorUnit(sensor: string): string {
     return SENSOR_UNIT[sensor] ?? '';
-  }
-
-  /** Translation key for the currently edited sensor */
-  get editingSensorLabelKey(): string {
-    return this.configSensors.find(s => s.key === this.editingSensor)?.labelKey ?? '';
   }
 
   toggleSensorConfig(sensor: string): void {
@@ -70,47 +80,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
   }
 
-  /** Sanitize a threshold input in real-time: strip non-numeric chars, enforce >= 0 */
-  sanitizeInput(field: keyof SensorThresholds, event: Event): void {
-    const raw   = (event.target as HTMLInputElement).value;
-    const clean = raw.replace(/[^0-9.]/g, '');         // allow digits + one dot
-    const num   = parseFloat(clean);
-    const safe  = isNaN(num) || num < 0 ? 0 : num;
-    this.editValues[field] = safe;
-    (event.target as HTMLInputElement).value = String(safe);
-  }
-
-  saveSensorConfig(): void {
+  onThresholdSaved(values: SensorThresholds): void {
     if (!this.editingSensor) return;
-
-    const v = this.editValues;
-
-    // All must be finite positive numbers
-    const ok = (n: number) => typeof n === 'number' && isFinite(n) && n > 0;
-    if (!ok(v.cold) || !ok(v.warm) || !ok(v.optimum) || !ok(v.warning) || !ok(v.danger)) {
-      this.alertService.error(
-        this.i18n.t('dash.cfg.title'),
-        this.i18n.t('dash.cfg.errNeg'),
-      );
-      return;
-    }
-
-    // Must be strictly ascending
-    if (!(v.cold < v.warm && v.warm < v.optimum && v.optimum < v.warning && v.warning < v.danger)) {
-      this.alertService.error(
-        this.i18n.t('dash.cfg.title'),
-        this.i18n.t('dash.cfg.errOrder'),
-      );
-      return;
-    }
-
-    this.alertThresholds.save(this.editingSensor, {
-      cold:    v.cold,
-      warm:    v.warm,
-      optimum: v.optimum,
-      warning: v.warning,
-      danger:  v.danger,
-    });
+    this.alertThresholds.save(this.editingSensor, values);
     this.editingSensor = null;
   }
 
@@ -143,14 +115,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     this.deviceInfo = await this.authService.getDeviceInfoFromServer();
 
-    // Si no hay sesión activa, redirigir a login
     if (!this.deviceInfo) {
       this.router.navigate(['/login']);
       return;
     }
 
-    // Subscribe to device changes (actualizaciones posteriores)
-    this.deviceSub = this.authService.device$.subscribe((info) => {
+    this.deviceSub = this.authService.device$.subscribe(info => {
       this.deviceInfo = info;
     });
 
@@ -159,7 +129,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
       return;
     }
 
-    // Para plan ULTIMATE: Cargar histórico de sesión recording actual
     if (this.plan === 'ultimate' && this.deviceId) {
       await this.loadUltimateRecordingSession();
     }
@@ -171,130 +140,60 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
       this.telemetrySub = this.telemetryService
         .listenTelemetry()
-        .subscribe((newData) => {
-          if (!this.isLive) {
-            // Reconnected after a stop — discard old session history
-            this.history = [];
-          }
+        .subscribe(newData => {
+          if (!this.isLive) this.history = [];
           this.isLive = true;
           this.data = newData;
           this.history = [...this.history, newData];
-
-          // Reset inactivity timeout cuando llegan datos
           this.resetInactivityTimeout();
         });
 
-      // Iniciar timeout de inactividad
       this.resetInactivityTimeout();
     }
   }
 
-  /**
-   * Para plan Ultimate: Cargar datos históricos de la sesión recording actual
-   */
   private async loadUltimateRecordingSession(): Promise<void> {
     try {
-      const recordingData = await this.sessionsService.loadRecordingSession(
-        this.deviceId!,
-      );
+      const recordingData = await this.sessionsService.loadRecordingSession(this.deviceId!);
 
       if (recordingData?.session && recordingData.data.length > 0) {
-        // Cargar histórico de la sesión
         this.history = recordingData.data.map((point: TelemetryDataPoint) => ({
-          rpm: point.rpm,
+          rpm:        point.rpm,
           water_temp: point.water_temp,
-          oil_temp: point.oil_temp,
-          oil_press: point.oil_press,
+          oil_temp:   point.oil_temp,
+          oil_press:  point.oil_press,
           fuel_press: point.fuel_press,
-          sonda: point.sonda,
-          gear: point.gear,
-          timestamp: new Date(point.timestamp).getTime(),
+          sonda:      point.sonda,
+          gear:       point.gear,
+          timestamp:  new Date(point.timestamp).getTime(),
         }));
 
-        // Usar el último registro como datos actuales
         if (this.history.length > 0) {
-          this.data = this.history[this.history.length - 1];
+          this.data   = this.history[this.history.length - 1];
           this.isLive = true;
         }
-
-        console.log(
-          `[DASHBOARD-ULTIMATE] Loaded ${this.history.length} historical records`,
-        );
       }
     } catch (error) {
-      console.error(
-        '[DASHBOARD-ULTIMATE] Error loading recording session:',
-        error,
-      );
+      console.error('[DASHBOARD-ULTIMATE] Error loading recording session:', error);
     }
   }
 
-  /**
-   * Resetear timeout de inactividad (3 segundos sin datos = stopped)
-   */
   private resetInactivityTimeout(): void {
-    // Limpiar timeout anterior
-    if (this.inactivityTimeout) {
-      clearTimeout(this.inactivityTimeout);
-    }
+    if (this.inactivityTimeout) clearTimeout(this.inactivityTimeout);
 
-    // Establecer nuevo timeout
     this.inactivityTimeout = setTimeout(async () => {
-      console.log('[DASHBOARD] Inactivity detected - marking as stopped');
       this.isLive = false;
 
-      // Para plan ULTIMATE: Notificar al servidor para completar la sesión
       if (this.plan === 'ultimate' && this.deviceId) {
-        const completed = await this.sessionsService.completeRecordingSession(
-          this.deviceId,
-        );
-        if (completed) {
-          console.log(
-            '[DASHBOARD-ULTIMATE] Recording session completed on server',
-          );
-        }
+        await this.sessionsService.completeRecordingSession(this.deviceId);
       }
-    }, 3_000); // 3 s without data → mark as stopped and complete session
+    }, 3_000);
   }
 
   ngOnDestroy() {
     this.telemetrySub?.unsubscribe();
     this.deviceSub?.unsubscribe();
     this.historicalSub?.unsubscribe();
-    if (this.inactivityTimeout) {
-      clearTimeout(this.inactivityTimeout);
-    }
-  }
-
-  /** Used by the template for all three configurable sensors */
-  getSensorStatus(value: number, sensor: string): string {
-    return this.alertThresholds.getStatus(value, sensor);
-  }
-
-  /** For display: always returns a number (0 when no data). */
-  barToPsi(bar: any): number {
-    return bar != null ? (+bar) * 14.504 : 0;
-  }
-
-  /** For status/color: returns null when there is no sensor data,
-   *  so getStatus can distinguish "no data" from "value is 0". */
-  pressStatus(bar: any, sensor: string): string {
-    const psi = bar != null ? (+bar) * 14.504 : null;
-    return this.alertThresholds.getStatus(psi, sensor);
-  }
-
-  pressIsDanger(bar: any, sensor: string): boolean {
-    return this.pressStatus(bar, sensor) === 'danger';
-  }
-
-  /** Legacy alias kept for backward compat */
-  getTempStatus(temp: number): string {
-    return this.alertThresholds.getStatus(temp, 'oil_temp');
-  }
-
-  getLedColor(index: number): string {
-    if (index < 8) return 'green';
-    if (index < 12) return 'red';
-    return 'blue';
+    if (this.inactivityTimeout) clearTimeout(this.inactivityTimeout);
   }
 }

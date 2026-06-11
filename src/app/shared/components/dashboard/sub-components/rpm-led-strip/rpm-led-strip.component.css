@@ -1,0 +1,49 @@
+.rpm-led-strip {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 7px;
+  padding: 10px 20px;
+  background: var(--bg-1);
+  border-bottom: 1px solid var(--brd-2);
+  flex: 0 0 auto;
+}
+
+.led {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--bg-3);
+  border: 1px solid var(--brd-3);
+  transition: all 0.05s ease-out;
+}
+
+.led.green.active {
+  background: #00cc44;
+  border-color: #00ff55;
+  box-shadow: 0 0 7px #00ff55, 0 0 14px rgba(0, 255, 85, 0.35);
+}
+
+.led.red.active {
+  background: #cc1100;
+  border-color: #ff2200;
+  box-shadow: 0 0 7px #ff2200, 0 0 14px rgba(255, 34, 0, 0.35);
+}
+
+.led.blue.active {
+  background: #0044cc;
+  border-color: #0066ff;
+  box-shadow: 0 0 7px #0066ff, 0 0 14px rgba(0, 102, 255, 0.45);
+}
+
+.led.all-blue-blink {
+  background: #0055ee !important;
+  border-color: #0077ff !important;
+  box-shadow: 0 0 10px #0077ff, 0 0 22px rgba(0, 119, 255, 0.55) !important;
+  animation: blink-shift 0.15s infinite;
+}
+
+@keyframes blink-shift {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.08; background: var(--bg-3) !important; box-shadow: none !important; }
+}

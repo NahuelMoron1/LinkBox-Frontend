@@ -1,0 +1,8 @@
+<div class="rpm-led-strip">
+  <div
+    *ngFor="let led of leds; let i = index"
+    class="led"
+    [ngClass]="rpm >= shiftRpm ? 'all-blue-blink' : getLedColor(i)"
+    [class.active]="(rpm / shiftRpm) * 15 > i || rpm >= shiftRpm"
+  ></div>
+</div>

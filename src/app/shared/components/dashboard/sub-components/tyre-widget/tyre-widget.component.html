@@ -1,0 +1,54 @@
+<div class="tyre-widget">
+  <div class="tyre-widget-header">
+    <span class="tyre-widget-title">{{ 'dash.tyres' | translate }}</span>
+    <div class="tyre-cfg-btns" *ngIf="plan === 'ultimate'">
+      <button class="cfg-btn tyre-cfg-btn"
+              [class.cfg-btn--active]="editingSensor === 'tyre_temp'"
+              (click)="configToggle.emit('tyre_temp')"
+              title="Configure tyre temp thresholds">T° ⚙</button>
+      <button class="cfg-btn tyre-cfg-btn"
+              [class.cfg-btn--active]="editingSensor === 'tyre_press'"
+              (click)="configToggle.emit('tyre_press')"
+              title="Configure tyre pressure thresholds">P ⚙</button>
+    </div>
+  </div>
+
+  <div class="tyre-grid">
+    <div class="tyre-cell">
+      <span class="tyre-pos">{{ 'dash.fl' | translate }}</span>
+      <span class="tyre-temp-val" [ngClass]="getSensorStatus(data.tyre_temp_fl, 'tyre_temp')">
+        {{ data.tyre_temp_fl || 0 | number:'1.0-0' }}<small>°</small>
+      </span>
+      <span class="tyre-press-val" [ngClass]="pressStatus(data.tyre_press_fl, 'tyre_press')">
+        {{ barToPsi(data.tyre_press_fl) | number:'1.0-0' }}<small> PSI</small>
+      </span>
+    </div>
+    <div class="tyre-cell">
+      <span class="tyre-pos">{{ 'dash.fr' | translate }}</span>
+      <span class="tyre-temp-val" [ngClass]="getSensorStatus(data.tyre_temp_fr, 'tyre_temp')">
+        {{ data.tyre_temp_fr || 0 | number:'1.0-0' }}<small>°</small>
+      </span>
+      <span class="tyre-press-val" [ngClass]="pressStatus(data.tyre_press_fr, 'tyre_press')">
+        {{ barToPsi(data.tyre_press_fr) | number:'1.0-0' }}<small> PSI</small>
+      </span>
+    </div>
+    <div class="tyre-cell">
+      <span class="tyre-pos">{{ 'dash.rl' | translate }}</span>
+      <span class="tyre-temp-val" [ngClass]="getSensorStatus(data.tyre_temp_rl, 'tyre_temp')">
+        {{ data.tyre_temp_rl || 0 | number:'1.0-0' }}<small>°</small>
+      </span>
+      <span class="tyre-press-val" [ngClass]="pressStatus(data.tyre_press_rl, 'tyre_press')">
+        {{ barToPsi(data.tyre_press_rl) | number:'1.0-0' }}<small> PSI</small>
+      </span>
+    </div>
+    <div class="tyre-cell">
+      <span class="tyre-pos">{{ 'dash.rr' | translate }}</span>
+      <span class="tyre-temp-val" [ngClass]="getSensorStatus(data.tyre_temp_rr, 'tyre_temp')">
+        {{ data.tyre_temp_rr || 0 | number:'1.0-0' }}<small>°</small>
+      </span>
+      <span class="tyre-press-val" [ngClass]="pressStatus(data.tyre_press_rr, 'tyre_press')">
+        {{ barToPsi(data.tyre_press_rr) | number:'1.0-0' }}<small> PSI</small>
+      </span>
+    </div>
+  </div>
+</div>

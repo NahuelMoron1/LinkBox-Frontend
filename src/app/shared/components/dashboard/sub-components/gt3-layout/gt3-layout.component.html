@@ -1,0 +1,88 @@
+<div class="gt3-info-bar">
+  <div class="gt3-info-col gt3-info-col--left"></div>
+  <div class="gt3-info-col gt3-info-col--center">
+    <span class="gt3-speed-value">{{ data.speed || 0 }}</span>
+    <span class="gt3-speed-unit">{{ 'dash.kmh' | translate }}</span>
+  </div>
+  <div class="gt3-info-col gt3-info-col--right">
+    <span class="gt3-rpm-value">{{ data.rpm || 0 | number:'1.0-0' }}</span>
+    <span class="gt3-rpm-label">{{ 'dash.rpm' | translate }}</span>
+  </div>
+</div>
+
+<div class="gt3-grid">
+
+  <!-- LEFT: neumáticos + sensores motor -->
+  <div class="gt3-side-panel gt3-side-panel--left">
+    <app-tyre-widget
+      [data]="data"
+      [plan]="plan"
+      [editingSensor]="editingSensor"
+      (configToggle)="configToggle.emit($event)"
+    ></app-tyre-widget>
+
+    <div class="sensor-table">
+      <div class="sensor-row" [ngClass]="getSensorStatus(data.oil_temp, 'oil_temp')">
+        <span class="sensor-label">
+          {{ 'dash.oilTemp' | translate }}
+          <button *ngIf="plan === 'ultimate'" class="cfg-btn"
+                  [class.cfg-btn--active]="editingSensor === 'oil_temp'"
+                  (click)="configToggle.emit('oil_temp')" title="Configure alert thresholds">⚙</button>
+        </span>
+        <span class="sensor-value">{{ data.oil_temp || 0 | number:'1.0-0' }}<small>°C</small></span>
+      </div>
+      <div class="sensor-row" [ngClass]="pressStatus(data.oil_press, 'oil_press')">
+        <span class="sensor-label">
+          {{ 'dash.oilPress' | translate }}
+          <button *ngIf="plan === 'ultimate'" class="cfg-btn"
+                  [class.cfg-btn--active]="editingSensor === 'oil_press'"
+                  (click)="configToggle.emit('oil_press')" title="Configure alert thresholds">⚙</button>
+        </span>
+        <span class="sensor-value">{{ barToPsi(data.oil_press) | number:'1.0-0' }}<small> PSI</small></span>
+      </div>
+      <div class="sensor-row" [ngClass]="getSensorStatus(data.water_temp, 'water_temp')">
+        <span class="sensor-label">
+          {{ 'dash.waterTemp' | translate }}
+          <button *ngIf="plan === 'ultimate'" class="cfg-btn"
+                  [class.cfg-btn--active]="editingSensor === 'water_temp'"
+                  (click)="configToggle.emit('water_temp')" title="Configure alert thresholds">⚙</button>
+        </span>
+        <span class="sensor-value">{{ data.water_temp || 0 | number:'1.0-0' }}<small>°C</small></span>
+      </div>
+      <div class="sensor-row sensor-row--pink">
+        <span class="sensor-label">{{ 'dash.fuelPress' | translate }}</span>
+        <span class="sensor-value">{{ data.fuel_press || '0.0' }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- CENTER: marcha -->
+  <div class="gt3-center-panel">
+    <div class="gt3-gear-container">
+      <span class="gt3-gear-value">{{ data.gear || 'N' }}</span>
+    </div>
+  </div>
+
+  <!-- RIGHT: alarma + sensores -->
+  <div class="gt3-side-panel gt3-side-panel--right">
+    <div class="gt3-alarm-box" *ngIf="pressIsDanger(data.oil_press, 'oil_press')">
+      <span class="alarm-icon">⚠</span>
+      <div class="alarm-body">
+        <span class="alarm-label">{{ 'dash.alarm' | translate }}</span>
+        <span class="alarm-sensor">{{ 'dash.oilPress' | translate }}</span>
+      </div>
+    </div>
+
+    <div class="sensor-table">
+      <div class="sensor-row">
+        <span class="sensor-label">{{ 'dash.sonda' | translate }}</span>
+        <span class="sensor-value">{{ data.sonda || '0.00' }}</span>
+      </div>
+      <div class="sensor-row" [ngClass]="isLive ? 'status-ok' : 'status-stopped'">
+        <span class="sensor-label">{{ 'dash.system' | translate }}</span>
+        <span class="sensor-value">{{ isLive ? ('dash.live' | translate) : ('dash.stopped' | translate) }}</span>
+      </div>
+    </div>
+  </div>
+
+</div>

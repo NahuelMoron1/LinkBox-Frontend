@@ -1,0 +1,73 @@
+<div class="alert-cfg-panel">
+  <div class="acfg-header">
+    <div class="acfg-title-block">
+      <span class="acfg-icon">⚙</span>
+      <span class="acfg-title">{{ 'dash.cfg.title' | translate }}</span>
+      <span class="acfg-sensor">{{ sensorLabelKey | translate }}</span>
+    </div>
+    <button class="acfg-close" (click)="closed.emit()">×</button>
+  </div>
+
+  <div class="acfg-zones">
+    <div class="acfg-zone acfg-zone--cold">
+      <span class="acfg-dot"></span>
+      <span class="acfg-zone-label">{{ 'dash.cfg.cold' | translate }}</span>
+      <span class="acfg-op">{{ 'dash.cfg.below' | translate }}</span>
+      <input type="number" class="acfg-input" min="0"
+             [ngModel]="editValues.cold"
+             (input)="sanitizeInput('cold', $event)" />
+      <span class="acfg-unit">{{ sensorUnit }}</span>
+    </div>
+    <div class="acfg-arrow">↓</div>
+    <div class="acfg-zone acfg-zone--warm">
+      <span class="acfg-dot"></span>
+      <span class="acfg-zone-label">{{ 'dash.cfg.warm' | translate }}</span>
+      <span class="acfg-op">{{ 'dash.cfg.below' | translate }}</span>
+      <input type="number" class="acfg-input" min="0"
+             [ngModel]="editValues.warm"
+             (input)="sanitizeInput('warm', $event)" />
+      <span class="acfg-unit">{{ sensorUnit }}</span>
+    </div>
+    <div class="acfg-arrow">↓</div>
+    <div class="acfg-zone acfg-zone--optimum">
+      <span class="acfg-dot"></span>
+      <span class="acfg-zone-label">{{ 'dash.cfg.optimum' | translate }}</span>
+      <span class="acfg-op">{{ 'dash.cfg.below' | translate }}</span>
+      <input type="number" class="acfg-input" min="0"
+             [ngModel]="editValues.optimum"
+             (input)="sanitizeInput('optimum', $event)" />
+      <span class="acfg-unit">{{ sensorUnit }}</span>
+    </div>
+    <div class="acfg-arrow">↓</div>
+    <div class="acfg-zone acfg-zone--warning">
+      <span class="acfg-dot"></span>
+      <span class="acfg-zone-label">{{ 'dash.cfg.warning' | translate }}</span>
+      <span class="acfg-op">{{ 'dash.cfg.below' | translate }}</span>
+      <input type="number" class="acfg-input" min="0"
+             [ngModel]="editValues.warning"
+             (input)="sanitizeInput('warning', $event)" />
+      <span class="acfg-unit">{{ sensorUnit }}</span>
+    </div>
+    <div class="acfg-arrow">↓</div>
+    <div class="acfg-zone acfg-zone--danger">
+      <span class="acfg-dot"></span>
+      <span class="acfg-zone-label">{{ 'dash.cfg.danger' | translate }}</span>
+      <span class="acfg-op">{{ 'dash.cfg.below' | translate }}</span>
+      <input type="number" class="acfg-input" min="0"
+             [ngModel]="editValues.danger"
+             (input)="sanitizeInput('danger', $event)" />
+      <span class="acfg-unit">{{ sensorUnit }}</span>
+    </div>
+    <div class="acfg-arrow">↓</div>
+    <div class="acfg-zone acfg-zone--danger">
+      <span class="acfg-dot"></span>
+      <span class="acfg-zone-label">{{ 'dash.cfg.danger' | translate }}</span>
+      <span class="acfg-op acfg-op--implicit">{{ 'dash.cfg.aboveDanger' | translate }}</span>
+    </div>
+  </div>
+
+  <div class="acfg-actions">
+    <button class="acfg-btn acfg-btn--reset" (click)="resetted.emit()">{{ 'dash.cfg.reset' | translate }}</button>
+    <button class="acfg-btn acfg-btn--save"  (click)="onSave()">{{ 'dash.cfg.save' | translate }}</button>
+  </div>
+</div>

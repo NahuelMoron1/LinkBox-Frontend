@@ -1,0 +1,73 @@
+<div class="classic-grid">
+
+  <!-- LEFT: neumáticos + sensores motor -->
+  <div class="classic-side-panel">
+    <app-tyre-widget
+      [data]="data"
+      [plan]="plan"
+      [editingSensor]="editingSensor"
+      (configToggle)="configToggle.emit($event)"
+    ></app-tyre-widget>
+
+    <div class="data-box" [ngClass]="pressStatus(data.oil_press, 'oil_press')">
+      <span class="label">
+        {{ 'dash.oilPress' | translate }}
+        <button *ngIf="plan === 'ultimate'" class="cfg-btn"
+                [class.cfg-btn--active]="editingSensor === 'oil_press'"
+                (click)="configToggle.emit('oil_press')">⚙</button>
+      </span>
+      <span class="value">{{ barToPsi(data.oil_press) | number:'1.0-0' }}<small> PSI</small></span>
+    </div>
+    <div class="data-box" [ngClass]="getSensorStatus(data.water_temp, 'water_temp')">
+      <span class="label">
+        {{ 'dash.waterTemp' | translate }}
+        <button *ngIf="plan === 'ultimate'" class="cfg-btn"
+                [class.cfg-btn--active]="editingSensor === 'water_temp'"
+                (click)="configToggle.emit('water_temp')">⚙</button>
+      </span>
+      <span class="value">{{ data.water_temp || 0 | number:'1.0-0' }}<small>°C</small></span>
+    </div>
+    <div class="data-box" [ngClass]="getSensorStatus(data.oil_temp, 'oil_temp')">
+      <span class="label">
+        {{ 'dash.oilTemp' | translate }}
+        <button *ngIf="plan === 'ultimate'" class="cfg-btn"
+                [class.cfg-btn--active]="editingSensor === 'oil_temp'"
+                (click)="configToggle.emit('oil_temp')">⚙</button>
+      </span>
+      <span class="value">{{ data.oil_temp || 0 | number:'1.0-0' }}<small>°C</small></span>
+    </div>
+  </div>
+
+  <!-- CENTER: gear + speed + rpm -->
+  <div class="classic-center-panel">
+    <div class="classic-gear-container">
+      <span class="label">{{ 'dash.gear' | translate }}</span>
+      <span class="value">{{ data.gear || 'N' }}</span>
+    </div>
+    <div class="classic-speed-container">
+      <span class="value">{{ data.speed || '0' }}</span>
+      <span class="label">{{ 'dash.kmh' | translate | uppercase }}</span>
+    </div>
+    <div class="classic-rpm-digital">
+      <span class="value">{{ data.rpm || '0' }}</span>
+      <span class="label">{{ 'dash.maxRpm' | translate }}</span>
+    </div>
+  </div>
+
+  <!-- RIGHT: combustible + AFR + estado -->
+  <div class="classic-side-panel">
+    <div class="data-box pink">
+      <span class="label">{{ 'dash.fuelPress' | translate }}</span>
+      <span class="value">{{ data.fuel_press || '0.0' }}</span>
+    </div>
+    <div class="data-box">
+      <span class="label">{{ 'dash.sonda' | translate }}</span>
+      <span class="value">{{ data.sonda || '0.00' }}</span>
+    </div>
+    <div class="data-box" [ngClass]="isLive ? 'status-ok' : 'status-stopped'">
+      <span class="label">{{ 'dash.system' | translate }}</span>
+      <span class="value">{{ isLive ? ('dash.live' | translate) : ('dash.stopped' | translate) }}</span>
+    </div>
+  </div>
+
+</div>
