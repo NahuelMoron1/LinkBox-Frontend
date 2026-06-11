@@ -10,11 +10,7 @@ export class TelemetryService {
   private socket: Socket;
 
   constructor() {
-    this.socket = io(environment.endpoint, { withCredentials: true });
-  }
-
-  joinRoom(key: string) {
-    this.socket.emit('joinRoom', key);
+    this.socket = io(environment.endpoint);
   }
 
   listenTelemetry(): Observable<any> {

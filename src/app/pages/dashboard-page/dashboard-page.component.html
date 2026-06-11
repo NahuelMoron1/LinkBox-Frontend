@@ -1,18 +1,1 @@
-<div class="page-wrapper">
-
-  <div class="page-header-bar">
-    <app-dashboard-header [deviceInfo]="deviceInfo"></app-dashboard-header>
-    <app-plan-info-toolbar
-      [deviceInfo]="deviceInfo"
-      [planInfo]="planInfo"
-      [key]="key"
-    ></app-plan-info-toolbar>
-  </div>
-
-  <app-dashboard
-    [key]="key"
-    [plan]="deviceInfo?.plan || null"
-    [deviceId]="deviceInfo?.id || null"
-  ></app-dashboard>
-
-</div>
+<app-dashboard></app-dashboard>
