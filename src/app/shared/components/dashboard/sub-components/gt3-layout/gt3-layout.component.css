@@ -64,7 +64,7 @@
 }
 
 .gt3-side-panel--left  { border-right: 1px solid var(--brd-2); justify-content: flex-start; }
-.gt3-side-panel--right { border-left: 1px solid var(--brd-2); }
+.gt3-side-panel--right { border-left: 1px solid var(--brd-2); justify-content: flex-start; padding: 0; }
 
 .gt3-center-panel {
   display: flex;
@@ -85,42 +85,58 @@
   letter-spacing: -4px;
 }
 
-/* ── Alarm box ──────────────────────────────────────────── */
+/* ── Alarm boxes ────────────────────────────────────────── */
 .gt3-alarm-box {
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 10px;
-  padding: 14px 10px;
-  background: #cc0000;
-  border: 1px solid #ff2222;
-  margin-bottom: 6px;
-  animation: alarm-blink 0.55s infinite;
+  gap: 14px;
+  flex: 1;
+  min-height: 160px;
   cursor: default;
 }
 
-@keyframes alarm-blink {
-  0%, 100% { background: #cc0000; border-color: #ff3333; }
-  50%       { background: #880000; border-color: #aa0000; }
+.gt3-alarm-box--oil {
+  background: #cc0000;
+  border-bottom: 1px solid #ff2222;
+  animation: alarm-blink-oil 0.55s infinite;
 }
 
-.alarm-icon { font-size: 1.8rem; line-height: 1; color: #ffee00; filter: drop-shadow(0 0 4px #ffee00); }
-.alarm-body { display: flex; flex-direction: column; gap: 2px; }
-.alarm-label { font-size: 0.75rem; font-weight: 900; letter-spacing: 4px; color: #ffffff; }
-.alarm-sensor { font-size: 0.68rem; font-weight: 700; letter-spacing: 1.5px; color: rgba(255,255,255,0.82); }
+.gt3-alarm-box--water {
+  background: #b34700;
+  border-bottom: 1px solid #ff6600;
+  animation: alarm-blink-water 0.55s infinite;
+}
+
+@keyframes alarm-blink-oil {
+  0%, 100% { background: #cc0000; }
+  50%       { background: #7a0000; }
+}
+
+@keyframes alarm-blink-water {
+  0%, 100% { background: #b34700; }
+  50%       { background: #6b2a00; }
+}
+
+.alarm-icon { font-size: 3rem; line-height: 1; color: #ffee00; filter: drop-shadow(0 0 6px #ffee00); }
+.alarm-body { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.alarm-label { font-size: 1rem; font-weight: 900; letter-spacing: 5px; color: #ffffff; }
+.alarm-sensor { font-size: 0.85rem; font-weight: 700; letter-spacing: 2px; color: rgba(255,255,255,0.85); }
 
 /* ── Sensor table ───────────────────────────────────────── */
 .sensor-table {
   border: 1px solid var(--brd-3);
   background: var(--bg-1);
   overflow: hidden;
+  margin-top: auto;
 }
 
 .sensor-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 12px 16px;
+  padding: 16px 18px;
   border-bottom: 1px solid var(--brd-1);
 }
 .sensor-row:last-child { border-bottom: none; }
@@ -129,7 +145,7 @@
   display: flex;
   align-items: center;
   gap: 5px;
-  font-size: 0.68rem;
+  font-size: 1.2rem;
   color: var(--tx-4);
   font-weight: 600;
   letter-spacing: 0.8px;
@@ -137,12 +153,12 @@
 }
 
 .sensor-value {
-  font-size: 1.55rem;
+  font-size: 2rem;
   font-weight: 700;
   color: var(--tx-2);
   font-variant-numeric: tabular-nums;
 }
-.sensor-value small { font-size: 0.62rem; margin-left: 2px; color: var(--tx-4); font-weight: 500; }
+.sensor-value small { font-size: 0.85rem; margin-left: 3px; color: var(--tx-4); font-weight: 500; }
 
 .sensor-row.cold     .sensor-value { color: #00e5f5; }
 .sensor-row.warm     .sensor-value { color: #ffcc00; }
