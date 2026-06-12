@@ -1,13 +1,13 @@
 <div class="gt3-info-bar">
-  <div class="gt3-info-col gt3-info-col--left"></div>
+  <div class="gt3-info-col gt3-info-col--left">
+    <span class="gt3-rpm-value">{{ data.speed || 0 }}</span>
+    <span class="gt3-rpm-label">{{ 'dash.kmh' | translate }}</span>
+  </div>
   <div class="gt3-info-col gt3-info-col--center">
-    <span class="gt3-speed-value">{{ data.speed || 0 }}</span>
-    <span class="gt3-speed-unit">{{ 'dash.kmh' | translate }}</span>
+    <span class="gt3-speed-value">{{ data.rpm || 0 | number:'1.0-0' }}</span>
+    <span class="gt3-speed-unit">{{ 'dash.rpm' | translate }}</span>
   </div>
-  <div class="gt3-info-col gt3-info-col--right">
-    <span class="gt3-rpm-value">{{ data.rpm || 0 | number:'1.0-0' }}</span>
-    <span class="gt3-rpm-label">{{ 'dash.rpm' | translate }}</span>
-  </div>
+  <div class="gt3-info-col gt3-info-col--right"></div>
 </div>
 
 <div class="gt3-grid">

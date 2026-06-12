@@ -18,6 +18,7 @@
 }
 
 .gt3-info-col        { flex: 1; }
+.gt3-info-col--left   { display: flex; align-items: baseline; justify-content: flex-start; gap: 6px; }
 .gt3-info-col--center { display: flex; align-items: baseline; justify-content: center; gap: 8px; }
 .gt3-info-col--right  { display: flex; align-items: baseline; justify-content: flex-end; gap: 5px; }
 
