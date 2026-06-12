@@ -13,6 +13,8 @@ export class TelemetryService {
     this.socket = io(environment.endpoint);
   }
 
+  getSocket(): Socket { return this.socket; }
+
   listenTelemetry(): Observable<any> {
     return new Observable((subscriber) => {
       this.socket.on('liveTelemetry', (data: any) => {

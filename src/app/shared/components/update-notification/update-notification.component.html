@@ -1,0 +1,61 @@
+@if (phase !== 'hidden') {
+  <div class="upd-overlay">
+    <div class="upd-card">
+
+      <!-- Header strip -->
+      <div class="upd-header">
+        <span class="upd-stripe"></span>
+        @if (phase === 'prompt')     { <span class="upd-title">ACTUALIZACIÓN DISPONIBLE</span> }
+        @if (phase === 'installing') { <span class="upd-title">INSTALANDO</span> }
+        @if (phase === 'success')    { <span class="upd-title">ACTUALIZACIÓN COMPLETA</span> }
+        @if (phase === 'error')      { <span class="upd-title">ERROR — VERSIÓN RESTAURADA</span> }
+        @if (version) { <span class="upd-ver">#{{ version }}</span> }
+      </div>
+
+      <!-- Prompt state -->
+      @if (phase === 'prompt') {
+        <p class="upd-desc">
+          Nueva versión detectada. El sistema validará los cambios<br>
+          antes de aplicarlos y revertirá automáticamente si algo falla.
+        </p>
+        <div class="upd-actions">
+          <button class="upd-btn upd-btn--primary" (click)="approve()">INSTALAR</button>
+          <button class="upd-btn upd-btn--ghost"   (click)="dismiss()">OMITIR</button>
+        </div>
+      }
+
+      <!-- Installing state -->
+      @if (phase === 'installing') {
+        <div class="upd-steps">
+          @for (step of stepOrder; track step) {
+            <div class="upd-step"
+                 [class.done]="isStepDone(step)"
+                 [class.active]="isStepActive(step)">
+              <span class="upd-dot"></span>
+              <span class="upd-step-label">{{ stepLabels[step] }}</span>
+            </div>
+          }
+        </div>
+      }
+
+      <!-- Success state -->
+      @if (phase === 'success') {
+        <p class="upd-desc upd-desc--ok">
+          Actualización aplicada. El sistema se reiniciará en segundos.
+        </p>
+      }
+
+      <!-- Error state -->
+      @if (phase === 'error') {
+        <p class="upd-desc upd-desc--err">
+          La validación falló. La versión anterior fue restaurada automáticamente.<br>
+          El sistema sigue funcionando normalmente.
+        </p>
+        <div class="upd-actions">
+          <button class="upd-btn upd-btn--ghost" (click)="dismiss()">CERRAR</button>
+        </div>
+      }
+
+    </div>
+  </div>
+}
