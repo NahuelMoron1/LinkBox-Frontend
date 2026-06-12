@@ -1,10 +1,19 @@
 import { Component } from '@angular/core';
+import { BootScreenComponent } from '../../shared/components/boot-screen/boot-screen.component';
 import { DashboardComponent } from '../../shared/components/dashboard/dashboard.component';
 
 @Component({
   selector: 'app-dashboard-page',
-  imports: [DashboardComponent],
+  imports: [BootScreenComponent, DashboardComponent],
   templateUrl: './dashboard-page.component.html',
   styleUrl: './dashboard-page.component.css',
 })
-export class DashboardPageComponent {}
+export class DashboardPageComponent {
+  isBooting = true;
+  showDashboard = false;
+
+  onBootDone(): void {
+    this.isBooting = false;
+    this.showDashboard = true;
+  }
+}

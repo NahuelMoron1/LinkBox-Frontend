@@ -5,7 +5,6 @@ import { TranslatePipe } from '../../pipes/translate.pipe';
 import { AlertThresholdsService, SensorThresholds, SENSOR_UNIT } from '../../services/alert-thresholds.service';
 import { I18nService } from '../../services/i18n.service';
 import { TelemetryService } from '../../services/telemetry.service';
-import { TelemetryChartDesignComponent } from '../telemetry-chart-design/telemetry-chart-design.component';
 import { RpmLedStripComponent } from './sub-components/rpm-led-strip/rpm-led-strip.component';
 import { Gt3LayoutComponent } from './sub-components/gt3-layout/gt3-layout.component';
 import { ClassicLayoutComponent } from './sub-components/classic-layout/classic-layout.component';
@@ -16,7 +15,6 @@ import { AlertThresholdConfigComponent } from './sub-components/alert-threshold-
   imports: [
     CommonModule,
     TranslatePipe,
-    TelemetryChartDesignComponent,
     RpmLedStripComponent,
     Gt3LayoutComponent,
     ClassicLayoutComponent,
@@ -30,7 +28,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
   private telemetrySub?: Subscription;
 
   public isLive = false;
-  public history: any[] = [];
   private inactivityTimeout?: ReturnType<typeof setTimeout>;
 
   readonly MAX_RPM   = 7000;
@@ -98,10 +95,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.telemetrySub = this.telemetryService
       .listenTelemetry()
       .subscribe((newData) => {
-        if (!this.isLive) this.history = [];
         this.isLive = true;
         this.data = newData;
-        this.history = [...this.history, newData];
         this.resetInactivityTimeout();
       });
 

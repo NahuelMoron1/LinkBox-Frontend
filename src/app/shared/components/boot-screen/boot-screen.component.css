@@ -1,0 +1,273 @@
+@font-face {
+  font-family: 'Formula1';
+  src: url('/Formula1-Regular-1.ttf') format('truetype');
+  font-weight: 400;
+}
+@font-face {
+  font-family: 'Formula1';
+  src: url('/Formula1-Bold-4.ttf') format('truetype');
+  font-weight: 700;
+}
+@font-face {
+  font-family: 'Formula1';
+  src: url('/Formula1-Wide.ttf') format('truetype');
+  font-weight: 900;
+}
+
+/* ─── Container ────────────────────────────────────────── */
+.boot-screen {
+  position: fixed;
+  inset: 0;
+  background: #080808;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  font-family: 'Formula1', 'Rajdhani', 'Verdana', sans-serif;
+  overflow: hidden;
+}
+
+.boot-screen.fade-out {
+  animation: screenFadeOut 0.7s ease forwards;
+}
+
+@keyframes screenFadeOut {
+  to { opacity: 0; }
+}
+
+/* ─── Scan line ─────────────────────────────────────────── */
+.scan-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -2px;
+  height: 2px;
+  background: linear-gradient(to right,
+    transparent 0%,
+    rgba(0, 255, 136, 0.12) 30%,
+    rgba(0, 255, 136, 0.30) 50%,
+    rgba(0, 255, 136, 0.12) 70%,
+    transparent 100%
+  );
+  animation: scanDown 1.8s ease-out 0.3s forwards;
+}
+
+@keyframes scanDown {
+  0%   { top: -2px; opacity: 1; }
+  95%  { opacity: 0.6; }
+  100% { top: 100%; opacity: 0; }
+}
+
+/* ─── Background arc ────────────────────────────────────── */
+.bg-arc {
+  position: absolute;
+  width: 700px;
+  height: 700px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -52%);
+  pointer-events: none;
+  opacity: 0;
+  animation: arcFadeIn 1s ease 0.4s forwards;
+}
+
+@keyframes arcFadeIn {
+  to { opacity: 1; }
+}
+
+/* Sweeping arc that fills then drains — like a needle calibration sweep */
+.sweep-arc {
+  animation: arcSweepIn 1.2s cubic-bezier(0.4, 0, 0.2, 1) 0.6s forwards,
+             arcSweepOut 0.5s ease 2.4s forwards;
+}
+
+@keyframes arcSweepIn {
+  to { stroke-dashoffset: 0; }
+}
+
+@keyframes arcSweepOut {
+  to { stroke-dashoffset: -1885; }
+}
+
+/* ─── Corner HUD brackets ───────────────────────────────── */
+.corner {
+  position: absolute;
+  width: 28px;
+  height: 28px;
+  opacity: 0;
+  animation: cornerIn 0.4s ease 0.2s forwards;
+}
+
+.corner.top-left    { top: 20px;    left: 20px;    border-top: 1.5px solid #00ff88; border-left: 1.5px solid #00ff88; }
+.corner.top-right   { top: 20px;    right: 20px;   border-top: 1.5px solid #00ff88; border-right: 1.5px solid #00ff88; }
+.corner.bottom-left { bottom: 20px; left: 20px;    border-bottom: 1.5px solid #00ff88; border-left: 1.5px solid #00ff88; }
+.corner.bottom-right{ bottom: 20px; right: 20px;   border-bottom: 1.5px solid #00ff88; border-right: 1.5px solid #00ff88; }
+
+@keyframes cornerIn {
+  to { opacity: 0.55; }
+}
+
+/* ─── Main content ──────────────────────────────────────── */
+.boot-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 520px;
+  position: relative;
+  z-index: 1;
+}
+
+/* ─── Logo ──────────────────────────────────────────────── */
+.logo-wrap {
+  opacity: 0;
+  transform: scale(0.94);
+  animation: logoIn 0.9s cubic-bezier(0.34, 1.26, 0.64, 1) 0.7s forwards;
+  filter: drop-shadow(0 0 18px rgba(0, 255, 136, 0.25));
+  margin-bottom: 36px;
+}
+
+.logo-img {
+  width: 420px;
+  display: block;
+}
+
+@keyframes logoIn {
+  to { opacity: 1; transform: scale(1); }
+}
+
+/* ─── Separator ─────────────────────────────────────────── */
+.separator {
+  width: 0;
+  height: 1px;
+  background: linear-gradient(to right, transparent, #00ff88 30%, #00ff88 70%, transparent);
+  opacity: 0.3;
+  animation: sepExpand 0.5s ease 1.3s forwards;
+  margin-bottom: 24px;
+  align-self: center;
+}
+
+@keyframes sepExpand {
+  to { width: 480px; }
+}
+
+/* ─── Progress bar ──────────────────────────────────────── */
+.progress-area {
+  width: 480px;
+  margin-bottom: 28px;
+  opacity: 0;
+  animation: fadeUp 0.4s ease 1.4s forwards;
+}
+
+.progress-track {
+  width: 100%;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.07);
+  border-radius: 2px;
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+
+.progress-fill {
+  height: 100%;
+  width: 0;
+  background: #00ff88;
+  box-shadow: 0 0 10px rgba(0, 255, 136, 0.7);
+  animation: fillBar 2.2s cubic-bezier(0.4, 0, 0.2, 1) 1.5s forwards;
+}
+
+@keyframes fillBar {
+  0%   { width: 0%; }
+  30%  { width: 38%; }
+  60%  { width: 65%; }
+  85%  { width: 88%; }
+  100% { width: 100%; }
+}
+
+.progress-labels {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.initializing-label {
+  font-size: 9px;
+  letter-spacing: 3px;
+  color: rgba(255, 255, 255, 0.25);
+}
+
+.pct-label {
+  font-size: 9px;
+  letter-spacing: 2px;
+  color: rgba(0, 255, 136, 0.5);
+  opacity: 0;
+  animation: fadeIn 0.4s ease 3.5s forwards;
+}
+
+/* ─── Status checklist ──────────────────────────────────── */
+.status-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  width: 480px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.status-list li {
+  font-size: 11px;
+  letter-spacing: 2.5px;
+  color: rgba(255, 255, 255, 0.45);
+  opacity: 0;
+  transform: translateX(-10px);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.tick {
+  color: #00ff88;
+  font-size: 12px;
+  flex-shrink: 0;
+}
+
+.status-list .s1 { animation: lineIn 0.35s ease 1.6s forwards; }
+.status-list .s2 { animation: lineIn 0.35s ease 2.0s forwards; }
+.status-list .s3 { animation: lineIn 0.35s ease 2.4s forwards; }
+.status-list .s4 { animation: lineIn 0.35s ease 2.8s forwards; }
+.status-list .s5 { animation: lineIn 0.35s ease 3.2s forwards; }
+
+.status-list li.ready {
+  color: #00ff88;
+  font-weight: 700;
+}
+
+@keyframes lineIn {
+  to { opacity: 1; transform: translateX(0); }
+}
+
+/* ─── Bottom bar ────────────────────────────────────────── */
+.bottom-bar {
+  position: absolute;
+  bottom: 28px;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 40px;
+  font-size: 9px;
+  letter-spacing: 3px;
+  color: rgba(255, 255, 255, 0.18);
+  opacity: 0;
+  animation: fadeIn 0.5s ease 0.6s forwards;
+}
+
+/* ─── Shared keyframes ──────────────────────────────────── */
+@keyframes fadeIn {
+  to { opacity: 1; }
+}
+
+@keyframes fadeUp {
+  to { opacity: 1; }
+}

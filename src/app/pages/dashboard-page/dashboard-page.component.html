@@ -1,1 +1,7 @@
-<app-dashboard></app-dashboard>
+@if (isBooting) {
+  <app-boot-screen (done)="onBootDone()"></app-boot-screen>
+}
+
+@if (showDashboard) {
+  <app-dashboard class="dashboard-reveal"></app-dashboard>
+}
