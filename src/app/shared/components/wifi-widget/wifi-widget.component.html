@@ -1,0 +1,78 @@
+<button class="wifi-fab" (click)="togglePanel()">
+  <svg class="wifi-icon" [class.wifi-icon--on]="status.connected" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M2 8.5C7.5 3.5 16.5 3.5 22 8.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+    <path d="M5.5 12C9.5 8.5 14.5 8.5 18.5 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+    <path d="M9 15.5C10.8 14 13.2 14 15 15.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+    <circle cx="12" cy="19" r="1.4" fill="currentColor"/>
+  </svg>
+</button>
+
+@if (open) {
+  <div class="wifi-overlay" (click)="togglePanel()">
+    <div class="wifi-panel" (click)="$event.stopPropagation()">
+
+      <div class="wifi-header">
+        <span class="wifi-stripe"></span>
+        <span class="wifi-title">RED WIFI</span>
+        <button class="wifi-close" (click)="togglePanel()">✕</button>
+      </div>
+
+      <div class="wifi-status">
+        @if (status.connected) {
+          <span class="status-dot status-dot--ok"></span>
+          <span class="wifi-status-text">CONECTADO A {{ status.ssid }}</span>
+        } @else {
+          <span class="status-dot status-dot--off"></span>
+          <span class="wifi-status-text">SIN CONEXIÓN</span>
+        }
+      </div>
+
+      @if (status.connected) {
+        <button class="wifi-update-btn" (click)="onCheckUpdates()">BUSCAR ACTUALIZACIONES</button>
+      }
+
+      <div class="wifi-list-header">
+        <span>REDES DISPONIBLES</span>
+        <button class="wifi-refresh" (click)="scan()" [disabled]="scanning">
+          {{ scanning ? 'BUSCANDO...' : 'ACTUALIZAR' }}
+        </button>
+      </div>
+
+      <ul class="wifi-list">
+        @for (net of networks; track net.ssid) {
+          <li class="wifi-item" [class.active]="selected?.ssid === net.ssid" (click)="selectNetwork(net)">
+            <span class="wifi-ssid">{{ net.ssid }}</span>
+            <span class="wifi-meta">
+              @if (net.secured) { <span class="wifi-lock">&#128274;</span> }
+              <span class="wifi-signal" [attr.data-bars]="signalBars(net.signal)">
+                <span></span><span></span><span></span><span></span>
+              </span>
+            </span>
+          </li>
+
+          @if (selected?.ssid === net.ssid) {
+            <li class="wifi-connect-form">
+              @if (net.secured) {
+                <input type="password" [(ngModel)]="password" placeholder="Contraseña" class="wifi-input" />
+              }
+              @if (connectError) {
+                <p class="wifi-error">{{ connectError }}</p>
+              }
+              <div class="wifi-form-actions">
+                <button class="wifi-btn wifi-btn--primary" (click)="connect()" [disabled]="connecting">
+                  {{ connecting ? 'CONECTANDO...' : 'CONECTAR' }}
+                </button>
+                <button class="wifi-btn wifi-btn--ghost" (click)="cancelSelection()">CANCELAR</button>
+              </div>
+            </li>
+          }
+        }
+
+        @if (!scanning && networks.length === 0) {
+          <li class="wifi-empty">No se encontraron redes</li>
+        }
+      </ul>
+
+    </div>
+  </div>
+}

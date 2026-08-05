@@ -1,0 +1,22 @@
+@if (visible) {
+  <div class="cfm-overlay">
+    <div class="cfm-card">
+      <div class="cfm-header">
+        <span class="cfm-stripe"></span>
+        <span class="cfm-title">ACTUALIZACIÓN DISPONIBLE</span>
+        @if (version) { <span class="cfm-ver">#{{ version }}</span> }
+      </div>
+
+      <p class="cfm-desc">
+        Hay una nueva versión disponible. El sistema validará los cambios<br>
+        antes de aplicarlos y revertirá automáticamente si algo falla.<br>
+        ¿Deseás continuar?
+      </p>
+
+      <div class="cfm-actions">
+        <button class="cfm-btn cfm-btn--primary" (click)="confirm.emit()">SÍ</button>
+        <button class="cfm-btn cfm-btn--ghost" (click)="cancel.emit()">NO</button>
+      </div>
+    </div>
+  </div>
+}

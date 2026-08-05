@@ -1,0 +1,93 @@
+.cfm-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10001;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.72);
+  backdrop-filter: blur(3px);
+}
+
+.cfm-card {
+  background: #0d0d0d;
+  border: 1px solid #2a2a2a;
+  border-top: 3px solid #e10600;
+  width: 420px;
+  max-width: 90vw;
+  padding: 0 0 28px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.8);
+}
+
+.cfm-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 22px;
+  border-bottom: 1px solid #1e1e1e;
+}
+
+.cfm-stripe {
+  width: 3px;
+  height: 18px;
+  background: #e10600;
+  flex-shrink: 0;
+}
+
+.cfm-title {
+  font-family: 'Formula1', 'Arial Narrow', Arial, sans-serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 3px;
+  color: #e0e0e0;
+  text-transform: uppercase;
+  flex: 1;
+}
+
+.cfm-ver {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+  color: #555;
+  letter-spacing: 1px;
+}
+
+.cfm-desc {
+  font-size: 0.82rem;
+  color: #888;
+  line-height: 1.6;
+  padding: 20px 22px 0;
+  margin: 0;
+  letter-spacing: 0.3px;
+}
+
+.cfm-actions {
+  display: flex;
+  gap: 12px;
+  padding: 22px 22px 0;
+}
+
+.cfm-btn {
+  flex: 1;
+  padding: 12px 0;
+  font-family: 'Formula1', 'Arial Narrow', Arial, sans-serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  border: none;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.cfm-btn--primary {
+  background: #e10600;
+  color: #fff;
+}
+.cfm-btn--primary:hover { background: #c00500; }
+
+.cfm-btn--ghost {
+  background: transparent;
+  color: #555;
+  border: 1px solid #2a2a2a;
+}
+.cfm-btn--ghost:hover { color: #999; border-color: #444; }

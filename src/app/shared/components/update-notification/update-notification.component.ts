@@ -1,9 +1,9 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, EventEmitter, OnInit, OnDestroy, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
-import { UpdateService, UpdateInfo, UpdateStep } from '../../services/update.service';
+import { UpdateService, UpdateStep } from '../../services/update.service';
 
-type Phase = 'hidden' | 'prompt' | 'installing' | 'success' | 'error';
+type Phase = 'hidden' | 'installing';
 
 const STEP_LABELS: Record<string, string> = {
   downloading: 'Descargando cambios',
@@ -24,8 +24,9 @@ const STEP_ORDER = ['downloading', 'validating', 'frontend', 'compiling', 'resta
   styleUrl: './update-notification.component.css',
 })
 export class UpdateNotificationComponent implements OnInit, OnDestroy {
+  @Output() complete = new EventEmitter<boolean>();
+
   phase: Phase = 'hidden';
-  version = '';
   currentStep: UpdateStep | null = null;
   stepOrder = STEP_ORDER;
   stepLabels = STEP_LABELS;
@@ -36,12 +37,6 @@ export class UpdateNotificationComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.subs.add(
-      this.update.available.subscribe((info: UpdateInfo) => {
-        this.version = info.version;
-        this.phase = 'prompt';
-      })
-    );
-    this.subs.add(
       this.update.progress.subscribe((step: UpdateStep) => {
         this.currentStep = step;
         this.phase = 'installing';
@@ -49,19 +44,13 @@ export class UpdateNotificationComponent implements OnInit, OnDestroy {
     );
     this.subs.add(
       this.update.complete.subscribe(({ success }) => {
-        this.phase = success ? 'success' : 'error';
-        if (success) {
-          // Brief "success" screen — then the backend restarts and connection drops
-          setTimeout(() => { this.phase = 'hidden'; }, 4000);
-        }
+        this.phase = 'hidden';
+        this.complete.emit(success);
       })
     );
   }
 
   ngOnDestroy(): void { this.subs.unsubscribe(); }
-
-  approve(): void { this.update.approve(); this.phase = 'installing'; }
-  dismiss(): void { this.update.reject(); this.phase = 'hidden'; }
 
   isStepDone(step: string): boolean {
     if (!this.currentStep) return false;

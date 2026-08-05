@@ -1,8 +1,14 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Subject } from 'rxjs';
+import { firstValueFrom, Subject } from 'rxjs';
+import { environment } from '../../environments/environment';
 import { TelemetryService } from './telemetry.service';
 
-export interface UpdateInfo { version: string; }
+export interface UpdateCheckResult {
+  available: boolean;
+  version: string | null;
+}
+
 export type UpdateStep =
   | 'downloading' | 'validating' | 'frontend'
   | 'compiling'  | 'restarting' | 'done'
@@ -10,21 +16,28 @@ export type UpdateStep =
 
 @Injectable({ providedIn: 'root' })
 export class UpdateService {
-  private available$ = new Subject<UpdateInfo>();
-  private progress$  = new Subject<UpdateStep>();
-  private complete$  = new Subject<{ success: boolean }>();
+  private apiUrl = `${environment.endpoint}/api/update`;
 
-  available = this.available$.asObservable();
-  progress  = this.progress$.asObservable();
-  complete  = this.complete$.asObservable();
+  private progress$ = new Subject<UpdateStep>();
+  private complete$ = new Subject<{ success: boolean }>();
 
-  constructor(telemetry: TelemetryService) {
+  progress = this.progress$.asObservable();
+  complete = this.complete$.asObservable();
+
+  constructor(
+    private http: HttpClient,
+    telemetry: TelemetryService,
+  ) {
     const socket = telemetry.getSocket();
-    socket.on('update:available', (info: UpdateInfo)          => this.available$.next(info));
-    socket.on('update:progress',  ({ step }: { step: UpdateStep }) => this.progress$.next(step));
-    socket.on('update:complete',  (d: { success: boolean })   => this.complete$.next(d));
+    socket.on('update:progress', ({ step }: { step: UpdateStep }) => this.progress$.next(step));
+    socket.on('update:complete', (d: { success: boolean }) => this.complete$.next(d));
   }
 
-  approve(): void { fetch('/api/update/approve', { method: 'POST' }); }
-  reject():  void { fetch('/api/update/reject',  { method: 'POST' }); }
+  check(): Promise<UpdateCheckResult> {
+    return firstValueFrom(this.http.post<UpdateCheckResult>(`${this.apiUrl}/check`, {}));
+  }
+
+  install(): void {
+    this.http.post(`${this.apiUrl}/install`, {}).subscribe();
+  }
 }

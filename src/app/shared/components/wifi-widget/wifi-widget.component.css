@@ -1,0 +1,299 @@
+/* ── Floating action button ──────────────────────────────── */
+.wifi-fab {
+  position: fixed;
+  top: 14px;
+  right: 14px;
+  z-index: 9998;
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(13, 13, 13, 0.7);
+  border: 1px solid #2a2a2a;
+  border-radius: 50%;
+  cursor: pointer;
+  color: #555;
+  transition: color 0.15s, border-color 0.15s;
+}
+
+.wifi-fab:hover {
+  border-color: #444;
+  color: #888;
+}
+
+.wifi-icon {
+  width: 18px;
+  height: 18px;
+}
+
+.wifi-icon--on {
+  color: #00ff88;
+}
+
+/* ── Overlay & panel ──────────────────────────────────────── */
+.wifi-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(2px);
+}
+
+.wifi-panel {
+  background: #0d0d0d;
+  border: 1px solid #2a2a2a;
+  border-top: 3px solid #00ff88;
+  width: 360px;
+  max-width: 92vw;
+  max-height: 80vh;
+  margin: 56px 14px 0 0;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.8);
+  animation: panelIn 0.2s ease-out;
+}
+
+@keyframes panelIn {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Header ───────────────────────────────────────────────── */
+.wifi-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  border-bottom: 1px solid #1e1e1e;
+}
+
+.wifi-stripe {
+  width: 3px;
+  height: 18px;
+  background: #00ff88;
+  flex-shrink: 0;
+}
+
+.wifi-title {
+  font-family: 'Formula1', 'Arial Narrow', Arial, sans-serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 3px;
+  color: #e0e0e0;
+  text-transform: uppercase;
+  flex: 1;
+}
+
+.wifi-close {
+  background: transparent;
+  border: none;
+  color: #555;
+  font-size: 0.85rem;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+  transition: color 0.15s;
+}
+.wifi-close:hover { color: #999; }
+
+/* ── Status ───────────────────────────────────────────────── */
+.wifi-status {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 16px;
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.status-dot--ok  { background: #00ff88; box-shadow: 0 0 6px #00ff88; }
+.status-dot--off { background: #555; }
+
+.wifi-status-text {
+  font-size: 0.74rem;
+  letter-spacing: 1.5px;
+  color: #999;
+  text-transform: uppercase;
+}
+
+/* ── Update button ────────────────────────────────────────── */
+.wifi-update-btn {
+  margin: 0 16px 14px;
+  padding: 12px 0;
+  background: #00ff88;
+  color: #080808;
+  border: none;
+  font-family: 'Formula1', 'Arial Narrow', Arial, sans-serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.wifi-update-btn:hover { background: #00e07a; }
+
+/* ── List header ──────────────────────────────────────────── */
+.wifi-list-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px 8px;
+  font-size: 0.66rem;
+  letter-spacing: 2px;
+  color: #555;
+  text-transform: uppercase;
+  border-top: 1px solid #1e1e1e;
+  padding-top: 14px;
+}
+
+.wifi-refresh {
+  background: transparent;
+  border: 1px solid #2a2a2a;
+  color: #888;
+  font-size: 0.62rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s;
+}
+.wifi-refresh:hover:not(:disabled) { color: #00ff88; border-color: #00ff88; }
+.wifi-refresh:disabled { opacity: 0.5; cursor: default; }
+
+/* ── Network list ─────────────────────────────────────────── */
+.wifi-list {
+  list-style: none;
+  margin: 0;
+  padding: 0 0 12px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.wifi-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border-bottom: 1px solid #141414;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.wifi-item:hover  { background: #141414; }
+.wifi-item.active { background: #161616; }
+
+.wifi-ssid {
+  font-size: 0.78rem;
+  letter-spacing: 1px;
+  color: #ccc;
+}
+
+.wifi-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.wifi-lock {
+  font-size: 0.7rem;
+  opacity: 0.6;
+}
+
+/* Signal bars */
+.wifi-signal {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 12px;
+}
+.wifi-signal span {
+  width: 3px;
+  background: #333;
+  border-radius: 1px;
+}
+.wifi-signal span:nth-child(1) { height: 4px; }
+.wifi-signal span:nth-child(2) { height: 6px; }
+.wifi-signal span:nth-child(3) { height: 9px; }
+.wifi-signal span:nth-child(4) { height: 12px; }
+
+.wifi-signal[data-bars="1"] span:nth-child(1) { background: #00ff88; }
+.wifi-signal[data-bars="2"] span:nth-child(-n+2) { background: #00ff88; }
+.wifi-signal[data-bars="3"] span:nth-child(-n+3) { background: #00ff88; }
+.wifi-signal[data-bars="4"] span { background: #00ff88; }
+
+/* ── Connect form ─────────────────────────────────────────── */
+.wifi-connect-form {
+  padding: 12px 16px 16px;
+  background: #111;
+  border-bottom: 1px solid #141414;
+}
+
+.wifi-input {
+  width: 100%;
+  box-sizing: border-box;
+  background: #0a0a0a;
+  border: 1px solid #2a2a2a;
+  color: #e0e0e0;
+  padding: 10px 12px;
+  font-size: 0.78rem;
+  letter-spacing: 1px;
+  margin-bottom: 10px;
+}
+.wifi-input:focus {
+  outline: none;
+  border-color: #00ff88;
+}
+
+.wifi-error {
+  font-size: 0.7rem;
+  color: #ff5252;
+  letter-spacing: 0.5px;
+  margin: 0 0 10px;
+}
+
+.wifi-form-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.wifi-btn {
+  flex: 1;
+  padding: 10px 0;
+  font-family: 'Formula1', 'Arial Narrow', Arial, sans-serif;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  border: none;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.wifi-btn--primary { background: #00ff88; color: #080808; }
+.wifi-btn--primary:hover:not(:disabled) { background: #00e07a; }
+.wifi-btn--primary:disabled { opacity: 0.5; cursor: default; }
+
+.wifi-btn--ghost {
+  background: transparent;
+  color: #555;
+  border: 1px solid #2a2a2a;
+}
+.wifi-btn--ghost:hover { color: #999; border-color: #444; }
+
+/* ── Empty state ──────────────────────────────────────────── */
+.wifi-empty {
+  padding: 20px 16px;
+  font-size: 0.74rem;
+  color: #555;
+  letter-spacing: 1px;
+  text-align: center;
+}

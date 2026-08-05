@@ -1,9 +1,24 @@
 @if (isBooting) {
-  <app-boot-screen (done)="onBootDone()"></app-boot-screen>
+  <app-boot-screen mode="boot" (done)="onBootDone()"></app-boot-screen>
+}
+
+@if (checkingUpdates) {
+  <app-boot-screen mode="checking" [finished]="checkingFinished" (done)="onCheckingDone()"></app-boot-screen>
 }
 
 @if (showDashboard) {
   <app-dashboard class="dashboard-reveal"></app-dashboard>
 }
 
-<app-update-notification></app-update-notification>
+<app-wifi-widget (checkUpdates)="onCheckUpdates()"></app-wifi-widget>
+
+<app-confirm-dialog
+  [visible]="showConfirm"
+  [version]="updateVersion"
+  (confirm)="onConfirmUpdate()"
+  (cancel)="onCancelUpdate()"
+></app-confirm-dialog>
+
+<app-update-notification (complete)="onUpdateComplete($event)"></app-update-notification>
+
+<app-toast></app-toast>

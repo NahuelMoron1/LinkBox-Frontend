@@ -45,59 +45,6 @@
   flex: 1;
 }
 
-.upd-ver {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.72rem;
-  color: #555;
-  letter-spacing: 1px;
-}
-
-/* ── Description ─────────────────────────────────────────── */
-.upd-desc {
-  font-size: 0.82rem;
-  color: #888;
-  line-height: 1.6;
-  padding: 20px 22px 0;
-  margin: 0;
-  letter-spacing: 0.3px;
-}
-
-.upd-desc--ok  { color: #00c853; }
-.upd-desc--err { color: #ff5252; }
-
-/* ── Actions ─────────────────────────────────────────────── */
-.upd-actions {
-  display: flex;
-  gap: 12px;
-  padding: 22px 22px 0;
-}
-
-.upd-btn {
-  flex: 1;
-  padding: 12px 0;
-  font-family: 'Formula1', 'Arial Narrow', Arial, sans-serif;
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 3px;
-  text-transform: uppercase;
-  border: none;
-  cursor: pointer;
-  transition: background 0.15s, color 0.15s;
-}
-
-.upd-btn--primary {
-  background: #e10600;
-  color: #fff;
-}
-.upd-btn--primary:hover { background: #c00500; }
-
-.upd-btn--ghost {
-  background: transparent;
-  color: #555;
-  border: 1px solid #2a2a2a;
-}
-.upd-btn--ghost:hover { color: #999; border-color: #444; }
-
 /* ── Progress steps ──────────────────────────────────────── */
 .upd-steps {
   display: flex;
