@@ -3,18 +3,19 @@ import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
 import { UpdateService, UpdateStep } from '../../services/update.service';
 
-type Phase = 'hidden' | 'installing';
+type Phase = 'hidden' | 'installing' | 'error';
 
 const STEP_LABELS: Record<string, string> = {
-  downloading: 'Descargando cambios',
-  validating:  'Validando compilación',
-  frontend:    'Actualizando interfaz',
-  compiling:   'Compilando TypeScript',
-  restarting:  'Reiniciando sistema',
-  done:        'Listo',
+  downloading:         'Descargando nueva versión',
+  starting_candidate:  'Iniciando versión nueva',
+  healthcheck:         'Verificando que arrancó bien',
+  swapping:            'Aplicando actualización',
+  verifying:           'Confirmando versión activa',
+  done:                'Listo',
 };
 
-const STEP_ORDER = ['downloading', 'validating', 'frontend', 'compiling', 'restarting'];
+const STEP_ORDER = ['downloading', 'starting_candidate', 'healthcheck', 'swapping', 'verifying'];
+const ERROR_DISPLAY_MS = 6000;
 
 @Component({
   selector: 'app-update-notification',
@@ -30,6 +31,7 @@ export class UpdateNotificationComponent implements OnInit, OnDestroy {
   currentStep: UpdateStep | null = null;
   stepOrder = STEP_ORDER;
   stepLabels = STEP_LABELS;
+  errorMessage: string | null = null;
 
   private subs = new Subscription();
 
@@ -43,8 +45,17 @@ export class UpdateNotificationComponent implements OnInit, OnDestroy {
       })
     );
     this.subs.add(
-      this.update.complete.subscribe(({ success }) => {
-        this.phase = 'hidden';
+      this.update.complete.subscribe(({ success, error }) => {
+        if (success) {
+          this.phase = 'hidden';
+        } else {
+          this.errorMessage = error || 'No se pudo completar la actualización';
+          this.phase = 'error';
+          setTimeout(() => {
+            this.phase = 'hidden';
+            this.errorMessage = null;
+          }, ERROR_DISPLAY_MS);
+        }
         this.complete.emit(success);
       })
     );

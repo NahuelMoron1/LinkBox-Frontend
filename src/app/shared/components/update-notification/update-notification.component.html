@@ -23,3 +23,14 @@
     </div>
   </div>
 }
+@if (phase === 'error') {
+  <div class="upd-overlay">
+    <div class="upd-card upd-card-error">
+      <div class="upd-header">
+        <span class="upd-stripe"></span>
+        <span class="upd-title">ACTUALIZACIÓN FALLIDA</span>
+      </div>
+      <p class="upd-error-message">{{ errorMessage }}</p>
+    </div>
+  </div>
+}

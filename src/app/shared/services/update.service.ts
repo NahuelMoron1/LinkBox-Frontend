@@ -10,16 +10,21 @@ export interface UpdateCheckResult {
 }
 
 export type UpdateStep =
-  | 'downloading' | 'validating' | 'frontend'
-  | 'compiling'  | 'restarting' | 'done'
+  | 'downloading' | 'starting_candidate' | 'healthcheck'
+  | 'swapping' | 'verifying' | 'rolling_back' | 'done'
   | `error:${string}`;
+
+export interface UpdateCompleteResult {
+  success: boolean;
+  error?: string | null;
+}
 
 @Injectable({ providedIn: 'root' })
 export class UpdateService {
   private apiUrl = `${environment.endpoint}/api/update`;
 
   private progress$ = new Subject<UpdateStep>();
-  private complete$ = new Subject<{ success: boolean }>();
+  private complete$ = new Subject<UpdateCompleteResult>();
 
   progress = this.progress$.asObservable();
   complete = this.complete$.asObservable();
@@ -30,7 +35,7 @@ export class UpdateService {
   ) {
     const socket = telemetry.getSocket();
     socket.on('update:progress', ({ step }: { step: UpdateStep }) => this.progress$.next(step));
-    socket.on('update:complete', (d: { success: boolean }) => this.complete$.next(d));
+    socket.on('update:complete', (d: UpdateCompleteResult) => this.complete$.next(d));
   }
 
   check(): Promise<UpdateCheckResult> {

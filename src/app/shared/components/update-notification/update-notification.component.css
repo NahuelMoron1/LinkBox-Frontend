@@ -94,3 +94,15 @@
 }
 .upd-step.active .upd-step-label { color: #e0e0e0; }
 .upd-step.done   .upd-step-label { color: #555;    }
+
+/* ── Error state ──────────────────────────────────────────── */
+.upd-card-error { border-top-color: #ff9800; }
+.upd-card-error .upd-stripe { background: #ff9800; }
+
+.upd-error-message {
+  padding: 18px 22px 0;
+  margin: 0 0 20px;
+  font-size: 0.82rem;
+  color: #ccc;
+  line-height: 1.5;
+}

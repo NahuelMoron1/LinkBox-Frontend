@@ -1,0 +1,36 @@
+name: Dashboard Only CI
+
+on:
+  push:
+    branches: [Dashboard_Only]
+  pull_request:
+    branches: [Dashboard_Only]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npx ng test --watch=false --browsers=ChromeHeadlessCI --code-coverage
+        env:
+          CHROME_BIN: /usr/bin/google-chrome-stable
+
+  trigger-image-rebuild:
+    needs: test
+    if: github.event_name == 'push' && github.ref == 'refs/heads/Dashboard_Only'
+    runs-on: ubuntu-latest
+    steps:
+      # Server es dueño del Dockerfile y publica la imagen combinada — un
+      # cambio de solo-frontend también debe producir una imagen nueva.
+      - name: Dispatch build to Server repo
+        run: |
+          curl -sf -X POST \
+            -H "Authorization: Bearer ${{ secrets.CROSS_REPO_TOKEN }}" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/${{ github.repository_owner }}/Server/dispatches" \
+            -d '{"event_type":"frontend-updated"}'

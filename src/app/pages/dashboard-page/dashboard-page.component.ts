@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { BootScreenComponent } from '../../shared/components/boot-screen/boot-screen.component';
 import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog.component';
+import { ConnectionStatusComponent } from '../../shared/components/connection-status/connection-status.component';
 import { DashboardComponent } from '../../shared/components/dashboard/dashboard.component';
 import { ToastComponent } from '../../shared/components/toast/toast.component';
 import { UpdateNotificationComponent } from '../../shared/components/update-notification/update-notification.component';
@@ -16,6 +17,7 @@ import { UpdateService } from '../../shared/services/update.service';
     UpdateNotificationComponent,
     ConfirmDialogComponent,
     WifiWidgetComponent,
+    ConnectionStatusComponent,
     ToastComponent,
   ],
   templateUrl: './dashboard-page.component.html',
