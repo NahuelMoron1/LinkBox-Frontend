@@ -8,10 +8,12 @@ describe('DeviceIdBadgeComponent', () => {
   let fixture: ComponentFixture<DeviceIdBadgeComponent>;
   let deviceInfoStub: jasmine.SpyObj<DeviceInfoService>;
 
-  function setup(response: { deviceId: string | null; version: string } | 'error') {
+  function setup(response: { deviceId: string | null; version: string; shiftRpm?: number } | 'error') {
     deviceInfoStub = jasmine.createSpyObj<DeviceInfoService>('DeviceInfoService', ['getInfo']);
     deviceInfoStub.getInfo.and.returnValue(
-      response === 'error' ? throwError(() => new Error('boom')) : of(response),
+      response === 'error'
+        ? throwError(() => new Error('boom'))
+        : of({ shiftRpm: 6500, ...response }),
     );
 
     TestBed.configureTestingModule({

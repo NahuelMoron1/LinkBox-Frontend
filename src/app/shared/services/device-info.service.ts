@@ -6,6 +6,7 @@ import { environment } from '../../environments/environment';
 export interface DeviceInfoResponse {
   deviceId: string | null;
   version: string;
+  shiftRpm: number;
 }
 
 @Injectable({ providedIn: 'root' })

@@ -21,11 +21,11 @@ describe('DeviceInfoService', () => {
 
   it('gets the device info', () => {
     service.getInfo().subscribe((res) => {
-      expect(res).toEqual({ deviceId: 'abc-123', version: 'v1.0.0' });
+      expect(res).toEqual({ deviceId: 'abc-123', version: 'v1.0.0', shiftRpm: 6200 });
     });
     const req = httpMock.expectOne(apiUrl);
     expect(req.request.method).toBe('GET');
-    req.flush({ deviceId: 'abc-123', version: 'v1.0.0' });
+    req.flush({ deviceId: 'abc-123', version: 'v1.0.0', shiftRpm: 6200 });
   });
 
   it('passes through a null deviceId', () => {
@@ -33,6 +33,6 @@ describe('DeviceInfoService', () => {
       expect(res.deviceId).toBeNull();
     });
     const req = httpMock.expectOne(apiUrl);
-    req.flush({ deviceId: null, version: 'v1.0.0' });
+    req.flush({ deviceId: null, version: 'v1.0.0', shiftRpm: 6500 });
   });
 });

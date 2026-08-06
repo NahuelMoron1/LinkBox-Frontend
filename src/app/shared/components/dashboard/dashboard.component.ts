@@ -3,6 +3,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { TranslatePipe } from '../../pipes/translate.pipe';
 import { AlertThresholdsService, SensorThresholds, SENSOR_UNIT } from '../../services/alert-thresholds.service';
+import { DeviceInfoService } from '../../services/device-info.service';
 import { I18nService } from '../../services/i18n.service';
 import { TelemetryService } from '../../services/telemetry.service';
 import { RpmLedStripComponent } from './sub-components/rpm-led-strip/rpm-led-strip.component';
@@ -31,7 +32,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
   private inactivityTimeout?: ReturnType<typeof setTimeout>;
 
   readonly MAX_RPM   = 7000;
-  readonly SHIFT_RPM = 6500;
+  // Default hasta que responda /api/device/info — cada Pi puede tener un auto
+  // con un régimen de corte distinto (LINKBOX_SHIFT_RPM, ver device-info.service.ts
+  // y linkbox-deploy/container.env.example). El shift light físico (Nano +
+  // WS2812) lee el mismo valor, así que los dos quedan siempre sincronizados.
+  SHIFT_RPM = 6500;
   readonly plan      = 'ultimate';
 
   selectedStyle: 'gt3' | 'classic' = 'gt3';
@@ -84,6 +89,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   constructor(
     private telemetryService: TelemetryService,
+    private deviceInfoService: DeviceInfoService,
     public alertThresholds: AlertThresholdsService,
     public i18n: I18nService,
   ) {}
@@ -99,6 +105,13 @@ export class DashboardComponent implements OnInit, OnDestroy {
         this.data = newData;
         this.resetInactivityTimeout();
       });
+
+    this.deviceInfoService.getInfo().subscribe({
+      next: (info) => {
+        if (info.shiftRpm > 0) this.SHIFT_RPM = info.shiftRpm;
+      },
+      error: () => {}, // se queda con el default de 6500
+    });
 
     this.resetInactivityTimeout();
   }

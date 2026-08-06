@@ -1,7 +1,8 @@
 import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
-import { Subject } from 'rxjs';
+import { of, Subject } from 'rxjs';
 import { DashboardComponent } from './dashboard.component';
 import { TelemetryService } from '../../services/telemetry.service';
+import { DeviceInfoService } from '../../services/device-info.service';
 import { AlertThresholdsService } from '../../services/alert-thresholds.service';
 
 describe('DashboardComponent', () => {
@@ -17,6 +18,10 @@ describe('DashboardComponent', () => {
       imports: [DashboardComponent],
       providers: [
         { provide: TelemetryService, useValue: { listenTelemetry: () => telemetry$.asObservable() } },
+        {
+          provide: DeviceInfoService,
+          useValue: { getInfo: () => of({ deviceId: null, version: '0.0.0-test', shiftRpm: 6500 }) },
+        },
       ],
     }).compileComponents();
 
@@ -129,6 +134,24 @@ describe('DashboardComponent', () => {
     const resetSpy = spyOn(thresholds, 'reset');
     component.resetSensorConfig();
     expect(resetSpy).not.toHaveBeenCalled();
+  });
+
+  it('adopts shiftRpm from device info, keeping the 6500 default if the call fails', () => {
+    expect(component.SHIFT_RPM).toBe(6500); // seteado por el stub de arriba (getInfo -> shiftRpm: 6500)
+  });
+
+  it('ignores a device info response with a non-positive shiftRpm', () => {
+    TestBed.resetTestingModule();
+    TestBed.configureTestingModule({
+      imports: [DashboardComponent],
+      providers: [
+        { provide: TelemetryService, useValue: { listenTelemetry: () => new Subject<any>().asObservable() } },
+        { provide: DeviceInfoService, useValue: { getInfo: () => of({ deviceId: null, version: '0.0.0-test', shiftRpm: 0 }) } },
+      ],
+    }).compileComponents();
+    const f = TestBed.createComponent(DashboardComponent);
+    f.detectChanges();
+    expect(f.componentInstance.SHIFT_RPM).toBe(6500);
   });
 
   it('unsubscribes and clears the inactivity timer on destroy', fakeAsync(() => {
