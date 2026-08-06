@@ -3,6 +3,7 @@ import { BootScreenComponent } from '../../shared/components/boot-screen/boot-sc
 import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog.component';
 import { ConnectionStatusComponent } from '../../shared/components/connection-status/connection-status.component';
 import { DashboardComponent } from '../../shared/components/dashboard/dashboard.component';
+import { DeviceIdBadgeComponent } from '../../shared/components/device-id-badge/device-id-badge.component';
 import { ToastComponent } from '../../shared/components/toast/toast.component';
 import { UpdateNotificationComponent } from '../../shared/components/update-notification/update-notification.component';
 import { WifiWidgetComponent } from '../../shared/components/wifi-widget/wifi-widget.component';
@@ -18,6 +19,7 @@ import { UpdateService } from '../../shared/services/update.service';
     ConfirmDialogComponent,
     WifiWidgetComponent,
     ConnectionStatusComponent,
+    DeviceIdBadgeComponent,
     ToastComponent,
   ],
   templateUrl: './dashboard-page.component.html',
