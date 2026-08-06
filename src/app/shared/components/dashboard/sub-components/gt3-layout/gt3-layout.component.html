@@ -1,13 +1,13 @@
 <div class="gt3-info-bar">
-  <div class="gt3-info-col gt3-info-col--left"></div>
+  <div class="gt3-info-col gt3-info-col--left">
+    <span class="gt3-rpm-value">{{ data.speed || 0 }}</span>
+    <span class="gt3-rpm-label">{{ 'dash.kmh' | translate }}</span>
+  </div>
   <div class="gt3-info-col gt3-info-col--center">
-    <span class="gt3-speed-value">{{ data.speed || 0 }}</span>
-    <span class="gt3-speed-unit">{{ 'dash.kmh' | translate }}</span>
+    <span class="gt3-speed-value">{{ data.rpm || 0 | number:'1.0-0' }}</span>
+    <span class="gt3-speed-unit">{{ 'dash.rpm' | translate }}</span>
   </div>
-  <div class="gt3-info-col gt3-info-col--right">
-    <span class="gt3-rpm-value">{{ data.rpm || 0 | number:'1.0-0' }}</span>
-    <span class="gt3-rpm-label">{{ 'dash.rpm' | translate }}</span>
-  </div>
+  <div class="gt3-info-col gt3-info-col--right"></div>
 </div>
 
 <div class="gt3-grid">
@@ -63,13 +63,24 @@
     </div>
   </div>
 
-  <!-- RIGHT: alarma + sensores -->
+  <!-- RIGHT: alarmas + sensores -->
   <div class="gt3-side-panel gt3-side-panel--right">
-    <div class="gt3-alarm-box" *ngIf="pressIsDanger(data.oil_press, 'oil_press')">
+
+    <div class="gt3-alarm-box gt3-alarm-box--oil"
+         *ngIf="pressIsDanger(data.oil_press, 'oil_press')">
       <span class="alarm-icon">⚠</span>
       <div class="alarm-body">
         <span class="alarm-label">{{ 'dash.alarm' | translate }}</span>
         <span class="alarm-sensor">{{ 'dash.oilPress' | translate }}</span>
+      </div>
+    </div>
+
+    <div class="gt3-alarm-box gt3-alarm-box--water"
+         *ngIf="getSensorStatus(data.water_temp, 'water_temp') === 'danger'">
+      <span class="alarm-icon">🌡</span>
+      <div class="alarm-body">
+        <span class="alarm-label">{{ 'dash.alarm' | translate }}</span>
+        <span class="alarm-sensor">{{ 'dash.waterTemp' | translate }}</span>
       </div>
     </div>
 
